@@ -1,0 +1,28 @@
+{
+  "devices": {},
+  "symbols": {},
+  "footprints": {
+    "e467738be29c4123ac2a9e1ab0367d91_e0": {
+      "uuid": "e467738be29c4123ac2a9e1ab0367d91_e0",
+      "path": "a165c21cf1844349949fd75c5412e5d7",
+      "ticket": 4632,
+      "updateTime": 1775540605924,
+      "createTime": 1775540605903,
+      "title": "usb-c-smd_type-c-6pin-2md-073",
+      "description": "",
+      "display_title": "USB-C-SMD_TYPE-C-6PIN-2MD-073",
+      "creator": {},
+      "modifier": {},
+      "owner": {
+        "uuid": "b49f1396e6f34f4a9116bebba68149b7",
+        "nickname": "嘉立创EDA-Zyke",
+        "username": "zy0226"
+      },
+      "custom_tags": "[\"USB-C-SMD\"]",
+      "source": "c541aa9fcf2449e280587c0f39f523c7|a165c21cf1844349949fd75c5412e5d7",
+      "version": "1775540605924",
+      "docType": 4
+    }
+  },
+  "panelLibs": {}
+}
