@@ -11,7 +11,7 @@
 	"license": "MIT",
 	"repository": {
 		"type": "github",
-		"url": "https://github.com/turbobabr/easyeda-ibom-extension"
+		"url": "https://github.com/easyeda/eext-interactive-html-bom"
 	},
 	"categories": "PCB",
 	"keywords": [
@@ -24,8 +24,8 @@
 	"images": {
 		"logo": "./images/logo.png"
 	},
-	"homepage": "https://github.com/turbobabr/easyeda-ibom-extension",
-	"bugs": "https://github.com/turbobabr/easyeda-ibom-extension/issues",
+	"homepage": "https://github.com/easyeda/eext-interactive-html-bom",
+	"bugs": "https://github.com/easyeda/eext-interactive-html-bom/issues",
 	"activationEvents": {},
 	"entry": "./dist/index",
 	"dependentExtensions": {},
@@ -37,12 +37,12 @@
 				"menuItems": [
 					{
 						"id": "showIBOM",
-						"title": "打开交互式 BOM",
+						"title": "打开交互式 BOM...",
 						"registerFn": "showIBOM"
 					},
 					{
 						"id": "exportHTML",
-						"title": "导出 HTML 文件",
+						"title": "导出 HTML 文件...",
 						"registerFn": "exportHTML"
 					},
 					{
