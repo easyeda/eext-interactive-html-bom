@@ -314,7 +314,7 @@ canvas:active {
 }
 
 .bom .bom-checkbox:after {
-  content: "Double click to set/unset all";
+  content: "双击勾选/取消全部";
   position: absolute;
   color: white;
   top: -35px;
@@ -3715,7 +3715,7 @@ function populateBomHeader() {
     }
   }
   if (settings.bommode == "netlist") {
-    th = createColumnHeader("Net name", "bom-netname", (a, b) => {
+    th = createColumnHeader("网络", "bom-netname", (a, b) => {
       if (a > b) return -1;
       if (a < b) return 1;
       return 0;
@@ -3729,7 +3729,7 @@ function populateBomHeader() {
         th, th.onclick.bind(th), checkboxSetUnsetAllHandler(checkbox));
       tr.appendChild(th);
     }
-    tr.appendChild(createColumnHeader("References", "References", (a, b) => {
+    tr.appendChild(createColumnHeader("位号", "References", (a, b) => {
       var i = 0;
       while (i < a[3].length && i < b[3].length) {
         if (a[3][i] != b[3][i]) return a[3][i] > b[3][i] ? 1 : -1;
@@ -3752,15 +3752,15 @@ function populateBomHeader() {
           config.extra_fields[i], "extra", extraFieldCompareClosure(i)));
       }
     }
-    tr.appendChild(createColumnHeader("Value", "Value", (a, b) => {
+    tr.appendChild(createColumnHeader("值", "Value", (a, b) => {
       return valueCompare(a[5], b[5], a[1], b[1]);
     }));
-    tr.appendChild(createColumnHeader("Footprint", "Footprint", (a, b) => {
+    tr.appendChild(createColumnHeader("封装", "Footprint", (a, b) => {
       if (a[2] != b[2]) return a[2] > b[2] ? 1 : -1;
       else return 0;
     }));
     if (settings.bommode == "grouped") {
-      tr.appendChild(createColumnHeader("Quantity", "Quantity", (a, b) => {
+      tr.appendChild(createColumnHeader("数量", "Quantity", (a, b) => {
         return a[3].length - b[3].length;
       }));
     }
@@ -4012,7 +4012,7 @@ function populateMetadata() {
   if(pcbdata.metadata.revision==='0')pcbdata.metadata.revision='';
   if(pcbdata.metadata.company==='Unknown')pcbdata.metadata.company='';
   document.getElementById("title").innerHTML = pcbdata.metadata.title;
-  document.getElementById("revision").innerHTML = "Rev: " + pcbdata.metadata.revision;
+  document.getElementById("revision").innerHTML = "版本号：" + pcbdata.metadata.revision;
   document.getElementById("company").innerHTML = pcbdata.metadata.company;
   document.getElementById("filedate").innerHTML = pcbdata.metadata.date;
   if (pcbdata.metadata.title != "") {
@@ -4272,7 +4272,7 @@ function populateDarkenWhenCheckedOptions() {
 
     container.appendChild(div);
   }
-  createOption("", "None");
+  createOption("", "无");
   for (var checkbox of settings.checkboxes) {
     createOption(checkbox, checkbox);
   }
@@ -4881,8 +4881,8 @@ for(const c of comp){
   if(mfr)hasCC.M=true;if(sup)hasCC.S=true;
   active.push({designator:des,name,fpName,layer:ly,manufacturer:mfr,manufacturerId:mfrId,supplier:sup,supplierId:supId});
 }
-const cc=[];if(hasCC.M)cc.push('Manufacturer');if(hasCC.S)cc.push('Supplier');
-function grp(items){const m=new Map();for(const it of items){const key=it.name+'||'+it.fpName;if(!m.has(key))m.set(key,[]);m.get(key).push(it);}const rows=[];for(const[key,its]of m){rows.push([its.length,its[0].name,its[0].fpName,its.map(it=>[it.designator,refIdx[it.designator]!==undefined?refIdx[it.designator]:0]),cc.map(c2=>{if(c2==='Manufacturer')return its[0].manufacturer;if(c2==='Supplier')return its[0].supplierId||its[0].supplier;return '';})]);} return rows;}
+const cc=[];if(hasCC.M)cc.push('制造商');if(hasCC.S)cc.push('供应商');
+function grp(items){const m=new Map();for(const it of items){const key=it.name+'||'+it.fpName;if(!m.has(key))m.set(key,[]);m.get(key).push(it);}const rows=[];for(const[key,its]of m){rows.push([its.length,its[0].name,its[0].fpName,its.map(it=>[it.designator,refIdx[it.designator]!==undefined?refIdx[it.designator]:0]),cc.map(c2=>{if(c2==='制造商')return its[0].manufacturer;if(c2==='供应商')return its[0].supplierId||its[0].supplier;return '';})]);} return rows;}
 const bom={both:grp(active),F:grp(active.filter(i=>i.layer==='F')),B:grp(active.filter(i=>i.layer==='B')),skipped,customColumns:cc};
 
 
@@ -5156,7 +5156,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       show_fabrication:false, redraw_on_drag:true, highlight_pin1:false,
       extra_fields: data.bom&&data.bom.customColumns?data.bom.customColumns:[],
       dark_mode:false, bom_view:"left-right", board_rotation:0.0,
-      checkboxes:"Sourced,Placed", show_silkscreen:true, show_pads:true, layer_view:"FB",
+      checkboxes:"找到,焊接", show_silkscreen:true, show_pads:true, layer_view:"FB",
       show_crosshair:false
     };
 
@@ -5219,75 +5219,75 @@ document.addEventListener('DOMContentLoaded', async function() {
         <div class="menu-content">
           <label class="menu-label menu-label-top" style="width: calc(50% - 18px)">
             <input id="darkmodeCheckbox" type="checkbox" onchange="setDarkMode(this.checked)">
-            Dark mode
+            深色模式
           </label><!-- This comment eats space! All of it!
           --><label class="menu-label menu-label-top" style="width: calc(50% - 17px); border-left: 0;">
             <input id="fullscreenCheckbox" type="checkbox" onchange="setFullscreen(this.checked)">
-            Full Screen
+            全屏模式
           </label>
           <label class="menu-label" style="width: calc(50% - 18px)">
             <input id="fabricationCheckbox" type="checkbox" checked onchange="fabricationVisible(this.checked)">
-            Fab layer
+            Fab 层
           </label><!-- This comment eats space! All of it!
           --><label class="menu-label" style="width: calc(50% - 17px); border-left: 0;">
             <input id="silkscreenCheckbox" type="checkbox" checked onchange="silkscreenVisible(this.checked)">
-            Silkscreen
+            丝印
           </label>
           <label class="menu-label" style="width: calc(50% - 18px)">
             <input id="referencesCheckbox" type="checkbox" checked onchange="referencesVisible(this.checked)">
-            References
+            参考标签
           </label><!-- This comment eats space! All of it!
           --><label class="menu-label" style="width: calc(50% - 17px); border-left: 0;">
             <input id="valuesCheckbox" type="checkbox" checked onchange="valuesVisible(this.checked)">
-            Values
+            值
           </label>
           <div id="tracksAndZonesCheckboxes">
             <label class="menu-label" style="width: calc(50% - 18px)">
               <input id="tracksCheckbox" type="checkbox" checked onchange="tracksVisible(this.checked)">
-              Tracks
+              导线
             </label><!-- This comment eats space! All of it!
             --><label class="menu-label" style="width: calc(50% - 17px); border-left: 0;">
               <input id="zonesCheckbox" type="checkbox" checked onchange="zonesVisible(this.checked)">
-              Zones
+              区域
             </label>
           </div>
           <label class="menu-label" style="width: calc(50% - 18px)">
             <input id="padsCheckbox" type="checkbox" checked onchange="padsVisible(this.checked)">
-            Pads
+            焊盘
           </label><!-- This comment eats space! All of it!
           --><label class="menu-label" style="width: calc(50% - 17px); border-left: 0;">
             <input id="dnpOutlineCheckbox" type="checkbox" checked onchange="dnpOutline(this.checked)">
-            DNP outlined
+            DNP 标记
           </label>
           <label class="menu-label">
             <input id="highlightpin1Checkbox" type="checkbox" onchange="setHighlightPin1(this.checked)">
-            Highlight first pin
+            突出显示第一个引脚
           </label>
           <label class="menu-label">
             <input id="dragCheckbox" type="checkbox" checked onchange="setRedrawOnDrag(this.checked)">
-            Continuous redraw on drag
+            连续重绘
           </label>
           <label class="menu-label">
             <input id="crosshairCheckbox" type="checkbox" checked onchange="setShowCrosshair(this.checked)">
-            Show Crosshair
+            显示十字准星
           </label>
           <label class="menu-label">
-            <span>Board rotation</span>
+            <span>电路板旋转</span>
             <span style="float: right"><span id="rotationDegree">0</span>&#176;</span>
             <input id="boardRotation" type="range" min="-36" max="36" value="0" class="slider" oninput="setBoardRotation(this.value)">
           </label>
           <label class="menu-label">
-            <div style="margin-left: 5px">Bom checkboxes</div>
+            <div style="margin-left: 5px">BOM 复选框</div>
             <input id="bomCheckboxes" class="menu-textbox" type=text
                    oninput="setBomCheckboxes(this.value)">
           </label>
           <label class="menu-label">
-            <div style="margin-left: 5px">Darken when checked</div>
+            <div style="margin-left: 5px">勾选后变暗</div>
             <div id="darkenWhenCheckedContainer"></div>
           </label>
           <label class="menu-label">
             <span class="shameless-plug">
-              <span>Created using</span>
+              <span>使用以下工具创建</span>
               <a id="github-link" target="blank" href="https://github.com/openscopeproject/InteractiveHtmlBom">InteractiveHtmlBom</a>
             </span>
           </label>
@@ -5296,32 +5296,32 @@ document.addEventListener('DOMContentLoaded', async function() {
       <div class="button-container hideonprint"
            style="float: right; position: relative; top: 8px">
         <button id="fl-btn" class="left-most-button" onclick="changeCanvasLayout('F')"
-                title="Front only">F
+                title="仅正面">正面
         </button>
         <button id="fb-btn" class="middle-button" onclick="changeCanvasLayout('FB')"
-                title="Front and Back">FB
+                title="正反面">正反
         </button>
         <button id="bl-btn" class="right-most-button" onclick="changeCanvasLayout('B')"
-                title="Back only">B
+                title="仅背面">背面
         </button>
       </div>
       <div class="button-container hideonprint"
            style="float: right; position: relative; top: 8px">
         <button id="bom-btn" class="left-most-button" onclick="changeBomLayout('bom-only')"
-                title="BOM only"></button>
+                title="仅BOM"></button>
         <button id="lr-btn" class="middle-button" onclick="changeBomLayout('left-right')"
-                title="BOM left, drawings right"></button>
+                title="BOM在左，图形在右"></button>
         <button id="tb-btn" class="right-most-button" onclick="changeBomLayout('top-bottom')"
-                title="BOM top, drawings bot"></button>
+                title="BOM在上，图形在下"></button>
       </div>
       <div class="button-container hideonprint"
            style="float: right; position: relative; top: 8px">
         <button id="bom-grouped-btn" class="left-most-button" onclick="changeBomMode('grouped')"
-                title="Grouped BOM"></button>
+                title="分组 BOM"></button>
         <button id="bom-ungrouped-btn" class="middle-button" onclick="changeBomMode('ungrouped')"
-                title="Ungrouped BOM"></button>
+                title="未分组 BOM"></button>
         <button id="bom-netlist-btn" class="right-most-button" onclick="changeBomMode('netlist')"
-                title="Netlist"></button>
+                title="网表"></button>
       </div>
       <div class="hideonprint menu" style="float: right; top: 8px;">
         <button class="statsbtn"></button>
@@ -5329,31 +5329,31 @@ document.addEventListener('DOMContentLoaded', async function() {
           <table class="stats">
             <tbody>
               <tr>
-                <td width="40%">Board stats</td>
-                <td>Front</td>
-                <td>Back</td>
-                <td>Total</td>
+                <td width="40%">电路板统计</td>
+                <td>正面</td>
+                <td>背面</td>
+                <td>总计</td>
               </tr>
               <tr>
-                <td>Components</td>
+                <td>组件</td>
                 <td id="stats-components-front">~</td>
                 <td id="stats-components-back">~</td>
                 <td id="stats-components-total">~</td>
               </tr>
               <tr>
-                <td>Groups</td>
+                <td>组</td>
                 <td id="stats-groups-front">~</td>
                 <td id="stats-groups-back">~</td>
                 <td id="stats-groups-total">~</td>
               </tr>
               <tr>
-                <td>SMD pads</td>
+                <td>SMD 焊盘</td>
                 <td id="stats-smd-pads-front">~</td>
                 <td id="stats-smd-pads-back">~</td>
                 <td id="stats-smd-pads-total">~</td>
               </tr>
               <tr>
-                <td>TH pads</td>
+                <td>TH 焊盘</td>
                 <td colspan=3 id="stats-th-pads">~</td>
               </tr>
             </tbody>
@@ -5362,7 +5362,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             <col width="40%"/><col />
             <tbody id="checkbox-stats">
               <tr>
-                <td colspan=2 style="border-top: 0">Checkboxes</td>
+                <td colspan=2 style="border-top: 0">复选框</td>
               </tr>
             </tbody>
           </table>
@@ -5372,28 +5372,28 @@ document.addEventListener('DOMContentLoaded', async function() {
         <button class="iobtn"></button>
         <div class="menu-content">
           <div class="menu-label menu-label-top">
-            <div style="margin-left: 5px;">Save board image</div>
+            <div style="margin-left: 5px;">保存电路板图片</div>
             <div class="flexbox">
-              <input id="render-save-width" class="menu-textbox" type="text" value="1000" placeholder="Width"
+              <input id="render-save-width" class="menu-textbox" type="text" value="1000" placeholder="宽度"
                   style="flex-grow: 1; width: 50px;" oninput="validateSaveImgDimension(this)">
               <span>X</span>
-              <input id="render-save-height" class="menu-textbox" type="text" value="1000" placeholder="Height"
+              <input id="render-save-height" class="menu-textbox" type="text" value="1000" placeholder="高度"
                   style="flex-grow: 1; width: 50px;" oninput="validateSaveImgDimension(this)">
             </div>
             <label>
               <input id="render-save-transparent" type="checkbox">
-              Transparent background
+              透明背景
             </label>
             <div class="flexbox">
-              <button class="savebtn" onclick="saveImage('F')">Front</button>
-              <button class="savebtn" onclick="saveImage('B')">Back</button>
+              <button class="savebtn" onclick="saveImage('F')">正面</button>
+              <button class="savebtn" onclick="saveImage('B')">背面</button>
             </div>
           </div>
           <div class="menu-label">
-            <span style="margin-left: 5px;">Config and checkbox state</span>
+            <span style="margin-left: 5px;">配置和复选框状态</span>
             <div class="flexbox">
-              <button class="savebtn" onclick="saveSettings()">Export</button>
-              <button class="savebtn" onclick="loadSettings()">Import</button>
+              <button class="savebtn" onclick="saveSettings()">导出</button>
+              <button class="savebtn" onclick="loadSettings()">导入</button>
             </div>
           </div>
         </div>
@@ -5404,18 +5404,18 @@ document.addEventListener('DOMContentLoaded', async function() {
         <tbody>
           <tr>
             <td id="title" class="title" style="width: 70%">
-              Title
+              标题
             </td>
             <td id="revision" class="title" style="width: 30%">
-              Revision
+              修订版本
             </td>
           </tr>
           <tr>
             <td id="company">
-              Company
+              公司
             </td>
             <td id="filedate">
-              Date
+              日期
             </td>
           </tr>
         </tbody>
@@ -5425,12 +5425,12 @@ document.addEventListener('DOMContentLoaded', async function() {
   <div id="bot" class="split" style="height: calc(100% - 80px)">
     <div id="bomdiv" class="split split-horizontal">
       <div style="width: 100%">
-        <input id="reflookup" class="textbox searchbox reflookup hideonprint" type="text" placeholder="Ref lookup"
+        <input id="reflookup" class="textbox searchbox reflookup hideonprint" type="text" placeholder="参考查找"
                oninput="updateRefLookup(this.value)">
-        <input id="filter" class="textbox searchbox filter hideonprint" type="text" placeholder="Filter"
+        <input id="filter" class="textbox searchbox filter hideonprint" type="text" placeholder="过滤"
                oninput="updateFilter(this.value)">
         <div class="button-container hideonprint" style="float: left; margin: 0;">
-          <button id="copy" title="Copy bom table to clipboard"
+          <button id="copy" title="复制 BOM 表到剪贴板"
                onclick="copyToClipboard()"></button>
         </div>
       </div>
