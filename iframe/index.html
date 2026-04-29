@@ -28,7 +28,7 @@
 html, body {
   margin: 0px;
   height: 100%;
-  font-family: Verdana, sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 .dark.topmostdiv {
@@ -75,11 +75,11 @@ button:focus {
 }
 
 button#tb-btn {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8.47 8.47'%3E%3Crect transform='translate(0 -288.53)' ry='1.17' y='288.8' x='.27' height='7.94' width='7.94' fill='%23f9f9f9'/%3E%3Cg transform='translate(0 -288.53)'%3E%3Crect width='7.94' height='7.94' x='.27' y='288.8' ry='1.17' fill='none' stroke='%23000' stroke-width='.4' stroke-linejoin='round'/%3E%3Cpath d='M1.32 290.12h5.82M1.32 291.45h5.82' fill='none' stroke='%23000' stroke-width='.4'/%3E%3Cpath d='M4.37 292.5v4.23M.26 292.63H8.2' fill='none' stroke='%23000' stroke-width='.3'/%3E%3Ctext font-weight='700' font-size='3.17' font-family='sans-serif'%3E%3Ctspan x='1.35' y='295.73'%3EF%3C/tspan%3E%3Ctspan x='5.03' y='295.68'%3EB%3C/tspan%3E%3C/text%3E%3C/g%3E%3C/svg%3E%0A");
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOSIgaGVpZ2h0PSI5IiB2aWV3Qm94PSIwIDAgOSA5IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8ZyBjbGlwLXBhdGg9InVybCgjY2xpcDBfNF8yKSI+CjxnIGNsaXAtcGF0aD0idXJsKCNjbGlwMV80XzIpIj4KPHBhdGggZD0iTTcuMDQgMC4yNjk5ODhIMS40NEMwLjc5MzgyNyAwLjI2OTk4OCAwLjI3IDAuNzkzODI4IDAuMjcgMS40NFY3LjA0MDAxQzAuMjcgNy42ODYxOCAwLjc5MzgyNyA4LjIwOTk5IDEuNDQgOC4yMDk5OUg3LjA0QzcuNjg2MTcgOC4yMDk5OSA4LjIxIDcuNjg2MTggOC4yMSA3LjA0MDAxVjEuNDRDOC4yMSAwLjc5MzgyOCA3LjY4NjE3IDAuMjY5OTg4IDcuMDQgMC4yNjk5ODhaIiBmaWxsPSIjRjlGOUY5Ii8+CjxwYXRoIGQ9Ik03LjA0IDAuMjY5OTg5SDEuNDRDMC43OTM4MjcgMC4yNjk5ODkgMC4yNyAwLjc5MzgyOSAwLjI3IDEuNDRWNy4wNDAwMUMwLjI3IDcuNjg2MTggMC43OTM4MjcgOC4yMDk5OSAxLjQ0IDguMjA5OTlINy4wNEM3LjY4NjE3IDguMjA5OTkgOC4yMSA3LjY4NjE4IDguMjEgNy4wNDAwMVYxLjQ0QzguMjEgMC43OTM4MjkgNy42ODYxNyAwLjI2OTk4OSA3LjA0IDAuMjY5OTg5WiIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSIwLjQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTEuMzIgMS41OUg3LjE0TTEuMzIgMi45MjAwMUg3LjE0IiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjAuNCIvPgo8cGF0aCBkPSJNNC4zNyAzLjk3VjguMjAwMDFNMC4yNiA0LjEwMDAxSDguMiIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSIwLjMiLz4KPHBhdGggZD0iTTUuNTcgNC45ODUwMUg3LjMyVjUuMjgyNTFINS41N1Y0Ljk4NTAxWk01LjYwNSA1LjYzNTAxSDYuOTU3NVY1LjkyNTAxSDUuNjA1VjUuNjM1MDFaTTUuNDE3NSA0Ljk4NTAxSDUuNzE3NVY1LjY4NTAxQzUuNzE3NSA1Ljc5NTAxIDUuNzEzMzMgNS45MTU4NCA1LjcwNSA2LjA0NzUxQzUuNjk4MzMgNi4xNzkxOCA1LjY4MjUgNi4zMTQxOCA1LjY1NzUgNi40NTI1MUM1LjYzNDE3IDYuNTkwODQgNS41OTkxNyA2LjcyNDE4IDUuNTUyNSA2Ljg1MjUxQzUuNTA3NSA2Ljk4MDg0IDUuNDQ4MzMgNy4wOTY2OCA1LjM3NSA3LjIwMDAxQzUuMzU2NjcgNy4xODE2OCA1LjMzMTY3IDcuMTYwODQgNS4zIDcuMTM3NTFDNS4yNyA3LjExNDE4IDUuMjM4MzMgNy4wOTE2OCA1LjIwNSA3LjA3MDAxQzUuMTcxNjcgNy4wNTAwMSA1LjE0MzMzIDcuMDM0MTggNS4xMiA3LjAyMjUxQzUuMTg4MzMgNi45Mjc1MSA1LjI0MjUgNi44MjMzNCA1LjI4MjUgNi43MTAwMUM1LjMyMjUgNi41OTY2OCA1LjM1MjUgNi40ODA4NCA1LjM3MjUgNi4zNjI1MUM1LjM5MjUgNi4yNDI1MSA1LjQwNSA2LjEyNTAxIDUuNDEgNi4wMTAwMUM1LjQxNSA1Ljg5MzM0IDUuNDE3NSA1Ljc4NTAxIDUuNDE3NSA1LjY4NTAxVjQuOTg1MDFaTTYuODc3NSA1LjYzNTAxSDYuOTM3NUw2Ljk5MjUgNS42MjI1MUw3LjIwNSA1LjcwNzUxQzcuMTUzMzMgNS45MTc1MSA3LjA4MjUgNi4xMDMzNCA2Ljk5MjUgNi4yNjUwMUM2LjkwMjUgNi40MjUwMSA2Ljc5NTgzIDYuNTY1ODQgNi42NzI1IDYuNjg3NTFDNi41NDkxNyA2LjgwNzUxIDYuNDEwODMgNi45MDkxOCA2LjI1NzUgNi45OTI1MUM2LjEwNTgzIDcuMDc3NTEgNS45NDA4MyA3LjE0ODM0IDUuNzYyNSA3LjIwNTAxQzUuNzQ5MTcgNy4xNzY2OCA1LjczMjUgNy4xNDUwMSA1LjcxMjUgNy4xMTAwMUM1LjY5NDE3IDcuMDc2NjggNS42NzMzMyA3LjA0MzM0IDUuNjUgNy4wMTAwMUM1LjYyODMzIDYuOTc2NjggNS42MDc1IDYuOTQ5MTggNS41ODc1IDYuOTI3NTFDNS43NDc1IDYuODg3NTEgNS44OTY2NyA2LjgzMTY4IDYuMDM1IDYuNzYwMDFDNi4xNzUgNi42ODY2OCA2LjMwMDgzIDYuNTk4MzQgNi40MTI1IDYuNDk1MDFDNi41MjU4MyA2LjM5MTY4IDYuNjIxNjcgNi4yNzMzNCA2LjcgNi4xNDAwMUM2Ljc4IDYuMDA1MDEgNi44MzkxNyA1Ljg1NTAxIDYuODc3NSA1LjY5MDAxVjUuNjM1MDFaTTYuMDc3NSA1Ljc5NzUxQzYuMTc3NSA2LjA4OTE4IDYuMzM3NSA2LjMzMDg0IDYuNTU3NSA2LjUyMjUxQzYuNzc3NSA2LjcxNDE4IDcuMDY1ODMgNi44NDgzNCA3LjQyMjUgNi45MjUwMUM3LjM5OTE3IDYuOTQ2NjggNy4zNzQxNyA2Ljk3NDE4IDcuMzQ3NSA3LjAwNzUxQzcuMzIyNSA3LjA0MDg0IDcuMjk4MzMgNy4wNzUwMSA3LjI3NSA3LjExMDAxQzcuMjUzMzMgNy4xNDUwMSA3LjIzNSA3LjE3NjY4IDcuMjIgNy4yMDUwMUM2Ljk2ODMzIDcuMTQwMDEgNi43NTA4MyA3LjA0ODM0IDYuNTY3NSA2LjkzMDAxQzYuMzg1ODMgNi44MTE2OCA2LjIzMTY3IDYuNjY1MDEgNi4xMDUgNi40OTAwMUM1Ljk4IDYuMzEzMzQgNS44NzUgNi4xMDkxOCA1Ljc5IDUuODc3NTFMNi4wNzc1IDUuNzk3NTFaIiBmaWxsPSJibGFjayIvPgo8cGF0aCBkPSJNMS4zMjEzOCA1LjAxNzUxSDMuNDUxMzhWNS4zMTAwMUgxLjMyMTM4VjUuMDE3NTFaTTIuNDM4ODggNS44NjI1MUgzLjMyMzg4VjYuMTU1MDFIMi40Mzg4OFY1Ljg2MjUxWk0xLjIzNjM4IDYuODE3NTFIMy41MjEzOFY3LjExMDAxSDEuMjM2MzhWNi44MTc1MVpNMi4yOTM4OCA1LjEzNTAxSDIuNjExMzhWNi45NjAwMUgyLjI5Mzg4VjUuMTM1MDFaTTEuNTQ2MzggNS43MDAwMUgxLjg1ODg4VjYuOTcyNTFIMS41NDYzOFY1LjcwMDAxWiIgZmlsbD0iYmxhY2siLz4KPC9nPgo8L2c+CjxkZWZzPgo8Y2xpcFBhdGggaWQ9ImNsaXAwXzRfMiI+CjxyZWN0IHdpZHRoPSI4LjQ3IiBoZWlnaHQ9IjguNDciIGZpbGw9IndoaXRlIi8+CjwvY2xpcFBhdGg+CjxjbGlwUGF0aCBpZD0iY2xpcDFfNF8yIj4KPHJlY3Qgd2lkdGg9IjguNDciIGhlaWdodD0iOC40NyIgZmlsbD0id2hpdGUiLz4KPC9jbGlwUGF0aD4KPC9kZWZzPgo8L3N2Zz4K");
 }
 
 button#lr-btn {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8.47 8.47'%3E%3Crect transform='translate(0 -288.53)' ry='1.17' y='288.8' x='.27' height='7.94' width='7.94' fill='%23f9f9f9'/%3E%3Cg transform='translate(0 -288.53)'%3E%3Crect width='7.94' height='7.94' x='.27' y='288.8' ry='1.17' fill='none' stroke='%23000' stroke-width='.4' stroke-linejoin='round'/%3E%3Cpath d='M1.06 290.12H3.7m-2.64 1.33H3.7m-2.64 1.32H3.7m-2.64 1.3H3.7m-2.64 1.33H3.7' fill='none' stroke='%23000' stroke-width='.4'/%3E%3Cpath d='M4.37 288.8v7.94m0-4.11h3.96' fill='none' stroke='%23000' stroke-width='.3'/%3E%3Ctext font-weight='700' font-size='3.17' font-family='sans-serif'%3E%3Ctspan x='5.11' y='291.96'%3EF%3C/tspan%3E%3Ctspan x='5.03' y='295.68'%3EB%3C/tspan%3E%3C/text%3E%3C/g%3E%3C/svg%3E%0A");
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOSIgaGVpZ2h0PSI5IiB2aWV3Qm94PSIwIDAgOSA5IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8ZyBjbGlwLXBhdGg9InVybCgjY2xpcDBfMV8xMSkiPgo8ZyBjbGlwLXBhdGg9InVybCgjY2xpcDFfMV8xMSkiPgo8cGF0aCBkPSJNNy4wNCAwLjI2OTk4OEgxLjQ0QzAuNzkzODI3IDAuMjY5OTg4IDAuMjcgMC43OTM4MjggMC4yNyAxLjQ0VjcuMDQwMDFDMC4yNyA3LjY4NjE4IDAuNzkzODI3IDguMjA5OTkgMS40NCA4LjIwOTk5SDcuMDRDNy42ODYxNyA4LjIwOTk5IDguMjEgNy42ODYxOCA4LjIxIDcuMDQwMDFWMS40NEM4LjIxIDAuNzkzODI4IDcuNjg2MTcgMC4yNjk5ODggNy4wNCAwLjI2OTk4OFoiIGZpbGw9IiNGOUY5RjkiLz4KPHBhdGggZD0iTTcuMDQgMC4yNjk5ODlIMS40NEMwLjc5MzgyNyAwLjI2OTk4OSAwLjI3IDAuNzkzODI5IDAuMjcgMS40NFY3LjA0MDAxQzAuMjcgNy42ODYxOCAwLjc5MzgyNyA4LjIwOTk5IDEuNDQgOC4yMDk5OUg3LjA0QzcuNjg2MTcgOC4yMDk5OSA4LjIxIDcuNjg2MTggOC4yMSA3LjA0MDAxVjEuNDRDOC4yMSAwLjc5MzgyOSA3LjY4NjE3IDAuMjY5OTg5IDcuMDQgMC4yNjk5ODlaIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjAuNCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8cGF0aCBkPSJNMS4wNiAxLjU5SDMuN00xLjA2IDIuOTIwMDFIMy43TTEuMDYgNC4yMzk5OUgzLjdNMS4wNiA1LjU0MDAxSDMuN00xLjA2IDYuODdIMy43IiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjAuNCIvPgo8cGF0aCBkPSJNNC4zNyAwLjI2OTk4OVY4LjIwOTk5TTQuMzcgNC4xMDAwMUg4LjMzIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjAuMyIvPgo8cGF0aCBkPSJNNS41Mjk4NyA1LjAzMDYzSDcuMjc5ODhWNS4zMjgxM0g1LjUyOTg3VjUuMDMwNjNaTTUuNTY0ODcgNS42ODA2M0g2LjkxNzM3VjUuOTcwNjNINS41NjQ4N1Y1LjY4MDYzWk01LjM3NzM3IDUuMDMwNjNINS42NzczN1Y1LjczMDYzQzUuNjc3MzcgNS44NDA2MyA1LjY3MzIxIDUuOTYxNDYgNS42NjQ4NyA2LjA5MzEzQzUuNjU4MjEgNi4yMjQ4IDUuNjQyMzcgNi4zNTk4IDUuNjE3MzcgNi40OTgxM0M1LjU5NDA0IDYuNjM2NDYgNS41NTkwNCA2Ljc2OTggNS41MTIzNyA2Ljg5ODEzQzUuNDY3MzcgNy4wMjY0NiA1LjQwODIxIDcuMTQyMyA1LjMzNDg3IDcuMjQ1NjNDNS4zMTY1NCA3LjIyNzMgNS4yOTE1NCA3LjIwNjQ2IDUuMjU5ODcgNy4xODMxM0M1LjIyOTg3IDcuMTU5OCA1LjE5ODIxIDcuMTM3MyA1LjE2NDg3IDcuMTE1NjNDNS4xMzE1NCA3LjA5NTYzIDUuMTAzMjEgNy4wNzk4IDUuMDc5ODcgNy4wNjgxM0M1LjE0ODIxIDYuOTczMTMgNS4yMDIzNyA2Ljg2ODk2IDUuMjQyMzcgNi43NTU2M0M1LjI4MjM3IDYuNjQyMyA1LjMxMjM3IDYuNTI2NDYgNS4zMzIzNyA2LjQwODEzQzUuMzUyMzcgNi4yODgxMyA1LjM2NDg3IDYuMTcwNjMgNS4zNjk4NyA2LjA1NTYzQzUuMzc0ODcgNS45Mzg5NiA1LjM3NzM3IDUuODMwNjMgNS4zNzczNyA1LjczMDYzVjUuMDMwNjNaTTYuODM3MzcgNS42ODA2M0g2Ljg5NzM3TDYuOTUyMzcgNS42NjgxM0w3LjE2NDg4IDUuNzUzMTNDNy4xMTMyMSA1Ljk2MzEzIDcuMDQyMzcgNi4xNDg5NiA2Ljk1MjM3IDYuMzEwNjNDNi44NjIzNyA2LjQ3MDYzIDYuNzU1NzEgNi42MTE0NiA2LjYzMjM3IDYuNzMzMTNDNi41MDkwNCA2Ljg1MzEzIDYuMzcwNzEgNi45NTQ4IDYuMjE3MzcgNy4wMzgxM0M2LjA2NTcxIDcuMTIzMTMgNS45MDA3MSA3LjE5Mzk2IDUuNzIyMzcgNy4yNTA2M0M1LjcwOTA0IDcuMjIyMyA1LjY5MjM3IDcuMTkwNjMgNS42NzIzNyA3LjE1NTYzQzUuNjU0MDQgNy4xMjIzIDUuNjMzMjEgNy4wODg5NiA1LjYwOTg3IDcuMDU1NjNDNS41ODgyMSA3LjAyMjMgNS41NjczNyA2Ljk5NDggNS41NDczNyA2Ljk3MzEzQzUuNzA3MzcgNi45MzMxMyA1Ljg1NjU0IDYuODc3MyA1Ljk5NDg3IDYuODA1NjNDNi4xMzQ4NyA2LjczMjMgNi4yNjA3MSA2LjY0Mzk2IDYuMzcyMzcgNi41NDA2M0M2LjQ4NTcxIDYuNDM3MyA2LjU4MTU0IDYuMzE4OTYgNi42NTk4NyA2LjE4NTYzQzYuNzM5ODcgNi4wNTA2MyA2Ljc5OTA0IDUuOTAwNjMgNi44MzczNyA1LjczNTYzVjUuNjgwNjNaTTYuMDM3MzcgNS44NDMxM0M2LjEzNzM3IDYuMTM0OCA2LjI5NzM3IDYuMzc2NDYgNi41MTczNyA2LjU2ODEzQzYuNzM3MzcgNi43NTk4IDcuMDI1NzEgNi44OTM5NiA3LjM4MjM3IDYuOTcwNjNDNy4zNTkwNCA2Ljk5MjMgNy4zMzQwNCA3LjAxOTggNy4zMDczNyA3LjA1MzEzQzcuMjgyMzcgNy4wODY0NiA3LjI1ODIxIDcuMTIwNjMgNy4yMzQ4NyA3LjE1NTYzQzcuMjEzMjEgNy4xOTA2MyA3LjE5NDg3IDcuMjIyMyA3LjE3OTg3IDcuMjUwNjNDNi45MjgyMSA3LjE4NTYzIDYuNzEwNzEgNy4wOTM5NiA2LjUyNzM3IDYuOTc1NjNDNi4zNDU3MSA2Ljg1NzMgNi4xOTE1NCA2LjcxMDYzIDYuMDY0ODcgNi41MzU2M0M1LjkzOTg3IDYuMzU4OTYgNS44MzQ4NyA2LjE1NDggNS43NDk4NyA1LjkyMzEzTDYuMDM3MzcgNS44NDMxM1oiIGZpbGw9ImJsYWNrIi8+CjxwYXRoIGQ9Ik01LjI0NzIgMS4yMTkwM0g3LjM3NzJWMS41MTE1M0g1LjI0NzJWMS4yMTkwM1pNNi4zNjQ3IDIuMDY0MDNINy4yNDk3VjIuMzU2NTNINi4zNjQ3VjIuMDY0MDNaTTUuMTYyMiAzLjAxOTAzSDcuNDQ3MlYzLjMxMTU0SDUuMTYyMlYzLjAxOTAzWk02LjIxOTcgMS4zMzY1M0g2LjUzNzJWMy4xNjE1NEg2LjIxOTdWMS4zMzY1M1pNNS40NzIyIDEuOTAxNTNINS43ODQ3VjMuMTc0MDRINS40NzIyVjEuOTAxNTNaIiBmaWxsPSJibGFjayIvPgo8L2c+CjwvZz4KPGRlZnM+CjxjbGlwUGF0aCBpZD0iY2xpcDBfMV8xMSI+CjxyZWN0IHdpZHRoPSI4LjQ3IiBoZWlnaHQ9IjguNDciIGZpbGw9IndoaXRlIi8+CjwvY2xpcFBhdGg+CjxjbGlwUGF0aCBpZD0iY2xpcDFfMV8xMSI+CjxyZWN0IHdpZHRoPSI4LjQ3IiBoZWlnaHQ9IjguNDciIGZpbGw9IndoaXRlIi8+CjwvY2xpcFBhdGg+CjwvZGVmcz4KPC9zdmc+Cg==");
 }
 
 button#bom-btn {
@@ -192,7 +192,7 @@ canvas:active {
 
 .bom {
   border-collapse: collapse;
-  font-family: Consolas, "DejaVu Sans Mono", Monaco, monospace;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   font-size: 10pt;
   table-layout: fixed;
   width: 100%;
@@ -314,7 +314,7 @@ canvas:active {
 }
 
 .bom .bom-checkbox:after {
-  content: "Double click to set/unset all";
+  content: "双击勾选/取消全部";
   position: absolute;
   color: white;
   top: -35px;
@@ -373,7 +373,7 @@ canvas:active {
   height: 40px;
   margin: 10px 5px;
   padding: 12px 32px;
-  font-family: Consolas, "DejaVu Sans Mono", Monaco, monospace;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   font-size: 18px;
   box-sizing: border-box;
   border: 1px solid #888;
@@ -564,7 +564,7 @@ mark.highlight {
   height: 24px;
   margin: 10px 5px;
   padding: 5px 5px;
-  font-family: Consolas, "DejaVu Sans Mono", Monaco, monospace;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   font-size: 14px;
   box-sizing: border-box;
   border: 1px solid #888;
@@ -3715,7 +3715,7 @@ function populateBomHeader() {
     }
   }
   if (settings.bommode == "netlist") {
-    th = createColumnHeader("Net name", "bom-netname", (a, b) => {
+    th = createColumnHeader("网络", "bom-netname", (a, b) => {
       if (a > b) return -1;
       if (a < b) return 1;
       return 0;
@@ -3729,7 +3729,7 @@ function populateBomHeader() {
         th, th.onclick.bind(th), checkboxSetUnsetAllHandler(checkbox));
       tr.appendChild(th);
     }
-    tr.appendChild(createColumnHeader("References", "References", (a, b) => {
+    tr.appendChild(createColumnHeader("位号", "References", (a, b) => {
       var i = 0;
       while (i < a[3].length && i < b[3].length) {
         if (a[3][i] != b[3][i]) return a[3][i] > b[3][i] ? 1 : -1;
@@ -3752,15 +3752,15 @@ function populateBomHeader() {
           config.extra_fields[i], "extra", extraFieldCompareClosure(i)));
       }
     }
-    tr.appendChild(createColumnHeader("Value", "Value", (a, b) => {
+    tr.appendChild(createColumnHeader("值", "Value", (a, b) => {
       return valueCompare(a[5], b[5], a[1], b[1]);
     }));
-    tr.appendChild(createColumnHeader("Footprint", "Footprint", (a, b) => {
+    tr.appendChild(createColumnHeader("封装", "Footprint", (a, b) => {
       if (a[2] != b[2]) return a[2] > b[2] ? 1 : -1;
       else return 0;
     }));
     if (settings.bommode == "grouped") {
-      tr.appendChild(createColumnHeader("Quantity", "Quantity", (a, b) => {
+      tr.appendChild(createColumnHeader("数量", "Quantity", (a, b) => {
         return a[3].length - b[3].length;
       }));
     }
@@ -4012,7 +4012,7 @@ function populateMetadata() {
   if(pcbdata.metadata.revision==='0')pcbdata.metadata.revision='';
   if(pcbdata.metadata.company==='Unknown')pcbdata.metadata.company='';
   document.getElementById("title").innerHTML = pcbdata.metadata.title;
-  document.getElementById("revision").innerHTML = "Rev: " + pcbdata.metadata.revision;
+  document.getElementById("revision").innerHTML = "版本号：" + pcbdata.metadata.revision;
   document.getElementById("company").innerHTML = pcbdata.metadata.company;
   document.getElementById("filedate").innerHTML = pcbdata.metadata.date;
   if (pcbdata.metadata.title != "") {
@@ -4272,7 +4272,7 @@ function populateDarkenWhenCheckedOptions() {
 
     container.appendChild(div);
   }
-  createOption("", "None");
+  createOption("", "无");
   for (var checkbox of settings.checkboxes) {
     createOption(checkbox, checkbox);
   }
@@ -4294,7 +4294,7 @@ document.onkeydown = function(e) {
         return;
       }
       if (currentHighlightedRowId !== null) {
-        checkBomCheckbox(currentHighlightedRowId, "placed");
+        checkBomCheckbox(currentHighlightedRowId, "焊接");
         highlightNextRow();
         e.preventDefault();
       }
@@ -4881,8 +4881,8 @@ for(const c of comp){
   if(mfr)hasCC.M=true;if(sup)hasCC.S=true;
   active.push({designator:des,name,fpName,layer:ly,manufacturer:mfr,manufacturerId:mfrId,supplier:sup,supplierId:supId});
 }
-const cc=[];if(hasCC.M)cc.push('Manufacturer');if(hasCC.S)cc.push('Supplier');
-function grp(items){const m=new Map();for(const it of items){const key=it.name+'||'+it.fpName;if(!m.has(key))m.set(key,[]);m.get(key).push(it);}const rows=[];for(const[key,its]of m){rows.push([its.length,its[0].name,its[0].fpName,its.map(it=>[it.designator,refIdx[it.designator]!==undefined?refIdx[it.designator]:0]),cc.map(c2=>{if(c2==='Manufacturer')return its[0].manufacturer;if(c2==='Supplier')return its[0].supplierId||its[0].supplier;return '';})]);} return rows;}
+const cc=[];if(hasCC.M)cc.push('制造商');if(hasCC.S)cc.push('供应商');
+function grp(items){const m=new Map();for(const it of items){const key=it.name+'||'+it.fpName;if(!m.has(key))m.set(key,[]);m.get(key).push(it);}const rows=[];for(const[key,its]of m){rows.push([its.length,its[0].name,its[0].fpName,its.map(it=>[it.designator,refIdx[it.designator]!==undefined?refIdx[it.designator]:0]),cc.map(c2=>{if(c2==='制造商')return its[0].manufacturer;if(c2==='供应商')return its[0].supplierId||its[0].supplier;return '';})]);} return rows;}
 const bom={both:grp(active),F:grp(active.filter(i=>i.layer==='F')),B:grp(active.filter(i=>i.layer==='B')),skipped,customColumns:cc};
 
 
@@ -5156,7 +5156,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       show_fabrication:false, redraw_on_drag:true, highlight_pin1:false,
       extra_fields: data.bom&&data.bom.customColumns?data.bom.customColumns:[],
       dark_mode:false, bom_view:"left-right", board_rotation:0.0,
-      checkboxes:"Sourced,Placed", show_silkscreen:true, show_pads:true, layer_view:"FB",
+      checkboxes:"找到,焊接", show_silkscreen:true, show_pads:true, layer_view:"FB",
       show_crosshair:false
     };
 
@@ -5219,75 +5219,75 @@ document.addEventListener('DOMContentLoaded', async function() {
         <div class="menu-content">
           <label class="menu-label menu-label-top" style="width: calc(50% - 18px)">
             <input id="darkmodeCheckbox" type="checkbox" onchange="setDarkMode(this.checked)">
-            Dark mode
+            深色模式
           </label><!-- This comment eats space! All of it!
           --><label class="menu-label menu-label-top" style="width: calc(50% - 17px); border-left: 0;">
             <input id="fullscreenCheckbox" type="checkbox" onchange="setFullscreen(this.checked)">
-            Full Screen
+            全屏模式
           </label>
           <label class="menu-label" style="width: calc(50% - 18px)">
             <input id="fabricationCheckbox" type="checkbox" checked onchange="fabricationVisible(this.checked)">
-            Fab layer
+            Fab 层
           </label><!-- This comment eats space! All of it!
           --><label class="menu-label" style="width: calc(50% - 17px); border-left: 0;">
             <input id="silkscreenCheckbox" type="checkbox" checked onchange="silkscreenVisible(this.checked)">
-            Silkscreen
+            丝印
           </label>
           <label class="menu-label" style="width: calc(50% - 18px)">
             <input id="referencesCheckbox" type="checkbox" checked onchange="referencesVisible(this.checked)">
-            References
+            参考标签
           </label><!-- This comment eats space! All of it!
           --><label class="menu-label" style="width: calc(50% - 17px); border-left: 0;">
             <input id="valuesCheckbox" type="checkbox" checked onchange="valuesVisible(this.checked)">
-            Values
+            值
           </label>
           <div id="tracksAndZonesCheckboxes">
             <label class="menu-label" style="width: calc(50% - 18px)">
               <input id="tracksCheckbox" type="checkbox" checked onchange="tracksVisible(this.checked)">
-              Tracks
+              导线
             </label><!-- This comment eats space! All of it!
             --><label class="menu-label" style="width: calc(50% - 17px); border-left: 0;">
               <input id="zonesCheckbox" type="checkbox" checked onchange="zonesVisible(this.checked)">
-              Zones
+              区域
             </label>
           </div>
           <label class="menu-label" style="width: calc(50% - 18px)">
             <input id="padsCheckbox" type="checkbox" checked onchange="padsVisible(this.checked)">
-            Pads
+            焊盘
           </label><!-- This comment eats space! All of it!
           --><label class="menu-label" style="width: calc(50% - 17px); border-left: 0;">
             <input id="dnpOutlineCheckbox" type="checkbox" checked onchange="dnpOutline(this.checked)">
-            DNP outlined
+            DNP 标记
           </label>
           <label class="menu-label">
             <input id="highlightpin1Checkbox" type="checkbox" onchange="setHighlightPin1(this.checked)">
-            Highlight first pin
+            突出显示第一个引脚
           </label>
           <label class="menu-label">
             <input id="dragCheckbox" type="checkbox" checked onchange="setRedrawOnDrag(this.checked)">
-            Continuous redraw on drag
+            连续重绘
           </label>
           <label class="menu-label">
             <input id="crosshairCheckbox" type="checkbox" checked onchange="setShowCrosshair(this.checked)">
-            Show Crosshair
+            显示十字准星
           </label>
           <label class="menu-label">
-            <span>Board rotation</span>
+            <span>电路板旋转</span>
             <span style="float: right"><span id="rotationDegree">0</span>&#176;</span>
             <input id="boardRotation" type="range" min="-36" max="36" value="0" class="slider" oninput="setBoardRotation(this.value)">
           </label>
           <label class="menu-label">
-            <div style="margin-left: 5px">Bom checkboxes</div>
+            <div style="margin-left: 5px">BOM 复选框</div>
             <input id="bomCheckboxes" class="menu-textbox" type=text
                    oninput="setBomCheckboxes(this.value)">
           </label>
           <label class="menu-label">
-            <div style="margin-left: 5px">Darken when checked</div>
+            <div style="margin-left: 5px">勾选后变暗</div>
             <div id="darkenWhenCheckedContainer"></div>
           </label>
           <label class="menu-label">
             <span class="shameless-plug">
-              <span>Created using</span>
+              <span>使用以下工具创建</span>
               <a id="github-link" target="blank" href="https://github.com/openscopeproject/InteractiveHtmlBom">InteractiveHtmlBom</a>
             </span>
           </label>
@@ -5296,32 +5296,32 @@ document.addEventListener('DOMContentLoaded', async function() {
       <div class="button-container hideonprint"
            style="float: right; position: relative; top: 8px">
         <button id="fl-btn" class="left-most-button" onclick="changeCanvasLayout('F')"
-                title="Front only">F
+                title="仅正面">正面
         </button>
         <button id="fb-btn" class="middle-button" onclick="changeCanvasLayout('FB')"
-                title="Front and Back">FB
+                title="正反面">正反
         </button>
         <button id="bl-btn" class="right-most-button" onclick="changeCanvasLayout('B')"
-                title="Back only">B
+                title="仅背面">背面
         </button>
       </div>
       <div class="button-container hideonprint"
            style="float: right; position: relative; top: 8px">
         <button id="bom-btn" class="left-most-button" onclick="changeBomLayout('bom-only')"
-                title="BOM only"></button>
+                title="仅BOM"></button>
         <button id="lr-btn" class="middle-button" onclick="changeBomLayout('left-right')"
-                title="BOM left, drawings right"></button>
+                title="BOM在左，图形在右"></button>
         <button id="tb-btn" class="right-most-button" onclick="changeBomLayout('top-bottom')"
-                title="BOM top, drawings bot"></button>
+                title="BOM在上，图形在下"></button>
       </div>
       <div class="button-container hideonprint"
            style="float: right; position: relative; top: 8px">
         <button id="bom-grouped-btn" class="left-most-button" onclick="changeBomMode('grouped')"
-                title="Grouped BOM"></button>
+                title="分组 BOM"></button>
         <button id="bom-ungrouped-btn" class="middle-button" onclick="changeBomMode('ungrouped')"
-                title="Ungrouped BOM"></button>
+                title="未分组 BOM"></button>
         <button id="bom-netlist-btn" class="right-most-button" onclick="changeBomMode('netlist')"
-                title="Netlist"></button>
+                title="网表"></button>
       </div>
       <div class="hideonprint menu" style="float: right; top: 8px;">
         <button class="statsbtn"></button>
@@ -5329,31 +5329,31 @@ document.addEventListener('DOMContentLoaded', async function() {
           <table class="stats">
             <tbody>
               <tr>
-                <td width="40%">Board stats</td>
-                <td>Front</td>
-                <td>Back</td>
-                <td>Total</td>
+                <td width="40%">电路板统计</td>
+                <td>正面</td>
+                <td>背面</td>
+                <td>总计</td>
               </tr>
               <tr>
-                <td>Components</td>
+                <td>组件</td>
                 <td id="stats-components-front">~</td>
                 <td id="stats-components-back">~</td>
                 <td id="stats-components-total">~</td>
               </tr>
               <tr>
-                <td>Groups</td>
+                <td>组</td>
                 <td id="stats-groups-front">~</td>
                 <td id="stats-groups-back">~</td>
                 <td id="stats-groups-total">~</td>
               </tr>
               <tr>
-                <td>SMD pads</td>
+                <td>SMD 焊盘</td>
                 <td id="stats-smd-pads-front">~</td>
                 <td id="stats-smd-pads-back">~</td>
                 <td id="stats-smd-pads-total">~</td>
               </tr>
               <tr>
-                <td>TH pads</td>
+                <td>TH 焊盘</td>
                 <td colspan=3 id="stats-th-pads">~</td>
               </tr>
             </tbody>
@@ -5362,7 +5362,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             <col width="40%"/><col />
             <tbody id="checkbox-stats">
               <tr>
-                <td colspan=2 style="border-top: 0">Checkboxes</td>
+                <td colspan=2 style="border-top: 0">复选框</td>
               </tr>
             </tbody>
           </table>
@@ -5372,28 +5372,28 @@ document.addEventListener('DOMContentLoaded', async function() {
         <button class="iobtn"></button>
         <div class="menu-content">
           <div class="menu-label menu-label-top">
-            <div style="margin-left: 5px;">Save board image</div>
+            <div style="margin-left: 5px;">保存电路板图片</div>
             <div class="flexbox">
-              <input id="render-save-width" class="menu-textbox" type="text" value="1000" placeholder="Width"
+              <input id="render-save-width" class="menu-textbox" type="text" value="1000" placeholder="宽度"
                   style="flex-grow: 1; width: 50px;" oninput="validateSaveImgDimension(this)">
               <span>X</span>
-              <input id="render-save-height" class="menu-textbox" type="text" value="1000" placeholder="Height"
+              <input id="render-save-height" class="menu-textbox" type="text" value="1000" placeholder="高度"
                   style="flex-grow: 1; width: 50px;" oninput="validateSaveImgDimension(this)">
             </div>
             <label>
               <input id="render-save-transparent" type="checkbox">
-              Transparent background
+              透明背景
             </label>
             <div class="flexbox">
-              <button class="savebtn" onclick="saveImage('F')">Front</button>
-              <button class="savebtn" onclick="saveImage('B')">Back</button>
+              <button class="savebtn" onclick="saveImage('F')">正面</button>
+              <button class="savebtn" onclick="saveImage('B')">背面</button>
             </div>
           </div>
           <div class="menu-label">
-            <span style="margin-left: 5px;">Config and checkbox state</span>
+            <span style="margin-left: 5px;">配置和复选框状态</span>
             <div class="flexbox">
-              <button class="savebtn" onclick="saveSettings()">Export</button>
-              <button class="savebtn" onclick="loadSettings()">Import</button>
+              <button class="savebtn" onclick="saveSettings()">导出</button>
+              <button class="savebtn" onclick="loadSettings()">导入</button>
             </div>
           </div>
         </div>
@@ -5404,18 +5404,18 @@ document.addEventListener('DOMContentLoaded', async function() {
         <tbody>
           <tr>
             <td id="title" class="title" style="width: 70%">
-              Title
+              标题
             </td>
             <td id="revision" class="title" style="width: 30%">
-              Revision
+              修订版本
             </td>
           </tr>
           <tr>
             <td id="company">
-              Company
+              公司
             </td>
             <td id="filedate">
-              Date
+              日期
             </td>
           </tr>
         </tbody>
@@ -5425,12 +5425,12 @@ document.addEventListener('DOMContentLoaded', async function() {
   <div id="bot" class="split" style="height: calc(100% - 80px)">
     <div id="bomdiv" class="split split-horizontal">
       <div style="width: 100%">
-        <input id="reflookup" class="textbox searchbox reflookup hideonprint" type="text" placeholder="Ref lookup"
+        <input id="reflookup" class="textbox searchbox reflookup hideonprint" type="text" placeholder="位号查找"
                oninput="updateRefLookup(this.value)">
-        <input id="filter" class="textbox searchbox filter hideonprint" type="text" placeholder="Filter"
+        <input id="filter" class="textbox searchbox filter hideonprint" type="text" placeholder="过滤"
                oninput="updateFilter(this.value)">
         <div class="button-container hideonprint" style="float: left; margin: 0;">
-          <button id="copy" title="Copy bom table to clipboard"
+          <button id="copy" title="复制 BOM 表到剪贴板"
                onclick="copyToClipboard()"></button>
         </div>
       </div>
