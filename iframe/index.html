@@ -314,7 +314,7 @@ canvas:active {
 }
 
 .bom .bom-checkbox:after {
-  content: "双击勾选/取消全部";
+  content: "Double click to check/uncheck all";
   position: absolute;
   color: white;
   top: -35px;
@@ -1486,6 +1486,208 @@ var config = {};
 ///////////////////////////////////////////////
 
 ///////////////////////////////////////////////
+// i18n locale system
+var __locale = 'zh-Hans';
+var __t = {
+  "zh-Hans": {
+    "Loading...": "正在加载...",
+    "Dark Mode": "深色模式",
+    "Fullscreen": "全屏模式",
+    "Fab Layer": "Fab 层",
+    "Silkscreen": "丝印",
+    "References": "参考标签",
+    "Values": "值",
+    "Tracks": "导线",
+    "Zones": "区域",
+    "Pads": "焊盘",
+    "DNP Mark": "DNP 标记",
+    "Highlight Pin 1": "突出显示第一个引脚",
+    "Redraw on Drag": "连续重绘",
+    "Show Crosshair": "显示十字准星",
+    "Board Rotation": "电路板旋转",
+    "BOM Checkboxes": "BOM 复选框",
+    "Darken when checked": "勾选后变暗",
+    "None": "无",
+    "Created with": "使用以下工具创建",
+    "Front Only": "仅正面",
+    "Front and Back": "正反面",
+    "Back Only": "仅背面",
+    "BOM Only": "仅BOM",
+    "BOM Left, Graphics Right": "BOM在左，图形在右",
+    "BOM Top, Graphics Bottom": "BOM在上，图形在下",
+    "Grouped BOM": "分组 BOM",
+    "Ungrouped BOM": "未分组 BOM",
+    "Netlist": "网表",
+    "Board Stats": "电路板统计",
+    "Front": "正面",
+    "Back": "背面",
+    "Total": "总计",
+    "Components": "组件",
+    "Groups": "组",
+    "SMD Pads": "SMD 焊盘",
+    "TH Pads": "TH 焊盘",
+    "Checkboxes": "复选框",
+    "Save Board Image": "保存电路板图片",
+    "Width": "宽度",
+    "Height": "高度",
+    "Transparent BG": "透明背景",
+    "Config and Checkbox State": "配置和复选框状态",
+    "Export": "导出",
+    "Import": "导入",
+    "Title": "标题",
+    "Revision": "修订版本",
+    "Version": "版本号：",
+    "Company": "公司",
+    "Date": "日期",
+    "Ref Lookup": "位号查找",
+    "Filter": "过滤",
+    "Copy BOM to Clipboard": "复制 BOM 表到剪贴板",
+    "Net": "网络",
+    "Reference": "位号",
+    "Value": "值",
+    "Footprint": "封装",
+    "Quantity": "数量",
+    "Double click to check/uncheck all": "双击勾选/取消全部",
+    "PCB data not loaded": "PCB 数据未加载",
+    "Export failed": "导出失败",
+    "Solder": "焊接",
+    "Found": "找到",
+    "Waiting for EDA API...": "等待 EDA API...",
+    "EDA API timeout": "eda API 超时",
+    "Collecting PCB data...": "正在采集 PCB 数据...",
+    "Processing data...": "正在处理数据...",
+    "Generating HTML file...": "正在生成 HTML 文件...",
+    "Export complete!": "导出完成！",
+    "Export failed: ": "导出失败：",
+    "Failed: ": "失败：",
+    "Manufacturer": "制造商",
+    "Supplier": "供应商"
+  },
+  "en": {
+    "Loading...": "Loading...",
+    "Dark Mode": "Dark Mode",
+    "Fullscreen": "Fullscreen",
+    "Fab Layer": "Fab Layer",
+    "Silkscreen": "Silkscreen",
+    "References": "References",
+    "Values": "Values",
+    "Tracks": "Tracks",
+    "Zones": "Zones",
+    "Pads": "Pads",
+    "DNP Mark": "DNP Mark",
+    "Highlight Pin 1": "Highlight Pin 1",
+    "Redraw on Drag": "Redraw on Drag",
+    "Show Crosshair": "Show Crosshair",
+    "Board Rotation": "Board Rotation",
+    "BOM Checkboxes": "BOM Checkboxes",
+    "Darken when checked": "Darken when checked",
+    "None": "None",
+    "Created with": "Created with",
+    "Front Only": "Front Only",
+    "Front and Back": "Front and Back",
+    "Back Only": "Back Only",
+    "BOM Only": "BOM Only",
+    "BOM Left, Graphics Right": "BOM Left, Graphics Right",
+    "BOM Top, Graphics Bottom": "BOM Top, Graphics Bottom",
+    "Grouped BOM": "Grouped BOM",
+    "Ungrouped BOM": "Ungrouped BOM",
+    "Netlist": "Netlist",
+    "Board Stats": "Board Stats",
+    "Front": "Front",
+    "Back": "Back",
+    "Total": "Total",
+    "Components": "Components",
+    "Groups": "Groups",
+    "SMD Pads": "SMD Pads",
+    "TH Pads": "TH Pads",
+    "Checkboxes": "Checkboxes",
+    "Save Board Image": "Save Board Image",
+    "Width": "Width",
+    "Height": "Height",
+    "Transparent BG": "Transparent BG",
+    "Config and Checkbox State": "Config and Checkbox State",
+    "Export": "Export",
+    "Import": "Import",
+    "Title": "Title",
+    "Revision": "Revision",
+    "Version": "Version: ",
+    "Company": "Company",
+    "Date": "Date",
+    "Ref Lookup": "Ref Lookup",
+    "Filter": "Filter",
+    "Copy BOM to Clipboard": "Copy BOM to Clipboard",
+    "Net": "Net",
+    "Reference": "Reference",
+    "Value": "Value",
+    "Footprint": "Footprint",
+    "Quantity": "Quantity",
+    "Double click to check/uncheck all": "Double click to check/uncheck all",
+    "PCB data not loaded": "PCB data not loaded",
+    "Export failed": "Export failed",
+    "Solder": "Solder",
+    "Found": "Found",
+    "Waiting for EDA API...": "Waiting for EDA API...",
+    "EDA API timeout": "EDA API timeout",
+    "Collecting PCB data...": "Collecting PCB data...",
+    "Processing data...": "Processing data...",
+    "Generating HTML file...": "Generating HTML file...",
+    "Export complete!": "Export complete!",
+    "Export failed: ": "Export failed: ",
+    "Failed: ": "Failed: ",
+    "Manufacturer": "Manufacturer",
+    "Supplier": "Supplier"
+  }
+};
+function t(key) {
+  try {
+    if (typeof eda !== 'undefined' && eda.sys_I18n) return eda.sys_I18n.text(key);
+  } catch(e) {}
+  var d = __t[__locale] || __t['zh-Hans'];
+  return d[key] || key;
+}
+function tReplace(s) {
+  // Simple key lookup for inline replacements
+  var d = __t[__locale] || __t['zh-Hans'];
+  return d[s] || s;
+}
+// Detect locale
+try {
+  if (typeof eda !== 'undefined' && eda.sys_I18n) {
+    var lang = (eda.sys_I18n.getCurrentLanguage && eda.sys_I18n.getCurrentLanguage()) || navigator.language || 'zh-Hans';
+    if (lang.startsWith('en')) __locale = 'en';
+    else if (lang.startsWith('zh')) __locale = 'zh-Hans';
+  } else {
+    var nav = navigator.language || 'zh-Hans';
+    if (nav.startsWith('en')) __locale = 'en';
+    else __locale = 'zh-Hans';
+  }
+} catch(e) {}
+function applyI18n() {
+  document.querySelectorAll('[data-i18n]').forEach(function(el) {
+    var key = el.getAttribute('data-i18n');
+    var val = t(key);
+    if (el.tagName === 'INPUT') {
+      if (el.hasAttribute('placeholder')) el.setAttribute('placeholder', val);
+      else el.setAttribute('value', val);
+    } else {
+      el.textContent = val;
+    }
+  });
+  document.querySelectorAll('[data-i18n-title]').forEach(function(el) {
+    el.setAttribute('title', t(el.getAttribute('data-i18n-title')));
+  });
+  // Update CSS pseudo-element content for checkbox tooltip
+  var style = document.getElementById('i18n-dynamic-style');
+  if (!style) {
+    style = document.createElement('style');
+    style.id = 'i18n-dynamic-style';
+    document.head.appendChild(style);
+  }
+  style.textContent = '.bom .bom-checkbox:after { content: "' + t("Double click to check/uncheck all") + '"; }';
+}
+///////////////////////////////////////////////
+
+///////////////////////////////////////////////
 var pcbdata = null;
 ///////////////////////////////////////////////
 
@@ -1976,7 +2178,7 @@ function saveFile(filename, blob) {
 }
 
 function exportStandaloneHTML() {
-  if (!window.pcbdata) { alert('PCB 数据未加载'); return; }
+  if (!window.pcbdata) { alert(t('PCB data not loaded')); return; }
   try {
     var pcbJson = JSON.stringify(window.pcbdata).replace(/<\//g, '<\\/');
     var cfgJson = JSON.stringify(window.config).replace(/<\//g, '<\\/');
@@ -1986,7 +2188,7 @@ function exportStandaloneHTML() {
     var blob = new Blob(['\uFEFF<!DOCTYPE html>\n' + html], {type: 'text/html;charset=utf-8'});
     saveFile((window.pcbdata.metadata.title || 'ibom') + '.html', blob);
   } catch(e) {
-    alert('导出失败: ' + e.message);
+    alert(t('Export failed') + ': ' + e.message);
     console.error('[iBOM Export]', e);
   }
 }
@@ -3715,7 +3917,7 @@ function populateBomHeader() {
     }
   }
   if (settings.bommode == "netlist") {
-    th = createColumnHeader("网络", "bom-netname", (a, b) => {
+    th = createColumnHeader(t("Net"), "bom-netname", (a, b) => {
       if (a > b) return -1;
       if (a < b) return 1;
       return 0;
@@ -3729,7 +3931,7 @@ function populateBomHeader() {
         th, th.onclick.bind(th), checkboxSetUnsetAllHandler(checkbox));
       tr.appendChild(th);
     }
-    tr.appendChild(createColumnHeader("位号", "References", (a, b) => {
+    tr.appendChild(createColumnHeader(t("Reference"), "References", (a, b) => {
       var i = 0;
       while (i < a[3].length && i < b[3].length) {
         if (a[3][i] != b[3][i]) return a[3][i] > b[3][i] ? 1 : -1;
@@ -3752,15 +3954,15 @@ function populateBomHeader() {
           config.extra_fields[i], "extra", extraFieldCompareClosure(i)));
       }
     }
-    tr.appendChild(createColumnHeader("值", "Value", (a, b) => {
+    tr.appendChild(createColumnHeader(t("Value"), "Value", (a, b) => {
       return valueCompare(a[5], b[5], a[1], b[1]);
     }));
-    tr.appendChild(createColumnHeader("封装", "Footprint", (a, b) => {
+    tr.appendChild(createColumnHeader(t("Footprint"), "Footprint", (a, b) => {
       if (a[2] != b[2]) return a[2] > b[2] ? 1 : -1;
       else return 0;
     }));
     if (settings.bommode == "grouped") {
-      tr.appendChild(createColumnHeader("数量", "Quantity", (a, b) => {
+      tr.appendChild(createColumnHeader(t("Quantity"), "Quantity", (a, b) => {
         return a[3].length - b[3].length;
       }));
     }
@@ -4012,7 +4214,7 @@ function populateMetadata() {
   if(pcbdata.metadata.revision==='0')pcbdata.metadata.revision='';
   if(pcbdata.metadata.company==='Unknown')pcbdata.metadata.company='';
   document.getElementById("title").innerHTML = pcbdata.metadata.title;
-  document.getElementById("revision").innerHTML = "版本号：" + pcbdata.metadata.revision;
+  document.getElementById("revision").innerHTML = t("Version") + pcbdata.metadata.revision;
   document.getElementById("company").innerHTML = pcbdata.metadata.company;
   document.getElementById("filedate").innerHTML = pcbdata.metadata.date;
   if (pcbdata.metadata.title != "") {
@@ -4272,7 +4474,7 @@ function populateDarkenWhenCheckedOptions() {
 
     container.appendChild(div);
   }
-  createOption("", "无");
+  createOption("", t("None"));
   for (var checkbox of settings.checkboxes) {
     createOption(checkbox, checkbox);
   }
@@ -4294,7 +4496,7 @@ document.onkeydown = function(e) {
         return;
       }
       if (currentHighlightedRowId !== null) {
-        checkBomCheckbox(currentHighlightedRowId, "焊接");
+        checkBomCheckbox(currentHighlightedRowId, t("Solder"));
         highlightNextRow();
         e.preventDefault();
       }
@@ -4881,8 +5083,8 @@ for(const c of comp){
   if(mfr)hasCC.M=true;if(sup)hasCC.S=true;
   active.push({designator:des,name,fpName,layer:ly,manufacturer:mfr,manufacturerId:mfrId,supplier:sup,supplierId:supId});
 }
-const cc=[];if(hasCC.M)cc.push('制造商');if(hasCC.S)cc.push('供应商');
-function grp(items){const m=new Map();for(const it of items){const key=it.name+'||'+it.fpName;if(!m.has(key))m.set(key,[]);m.get(key).push(it);}const rows=[];for(const[key,its]of m){rows.push([its.length,its[0].name,its[0].fpName,its.map(it=>[it.designator,refIdx[it.designator]!==undefined?refIdx[it.designator]:0]),cc.map(c2=>{if(c2==='制造商')return its[0].manufacturer;if(c2==='供应商')return its[0].supplierId||its[0].supplier;return '';})]);} return rows;}
+const cc=[];if(hasCC.M)cc.push(t('Manufacturer'));if(hasCC.S)cc.push(t('Supplier'));
+function grp(items){const m=new Map();for(const it of items){const key=it.name+'||'+it.fpName;if(!m.has(key))m.set(key,[]);m.get(key).push(it);}const rows=[];for(const[key,its]of m){rows.push([its.length,its[0].name,its[0].fpName,its.map(it=>[it.designator,refIdx[it.designator]!==undefined?refIdx[it.designator]:0]),cc.map(c2=>{if(c2===t('Manufacturer'))return its[0].manufacturer;if(c2===t('Supplier'))return its[0].supplierId||its[0].supplier;return '';})]);} return rows;}
 const bom={both:grp(active),F:grp(active.filter(i=>i.layer==='F')),B:grp(active.filter(i=>i.layer==='B')),skipped,customColumns:cc};
 
 
@@ -5129,6 +5331,7 @@ function fixPcbData(data) {
 
 // === Auto-init ===
 document.addEventListener('DOMContentLoaded', async function() {
+  applyI18n();
   // If pcbdata is already embedded (standalone HTML export), skip data collection
   if (window.pcbdata && window.pcbdata.footprints) {
     var ov2 = document.getElementById('loading-overlay');
@@ -5139,24 +5342,24 @@ document.addEventListener('DOMContentLoaded', async function() {
   var ov = document.getElementById('loading-overlay');
   function st(m) { if(ov){var p=ov.querySelector('p');if(p)p.textContent=m;} }
   try {
-    st('等待 EDA API...');
+    st(t('Waiting for EDA API...'));
     await new Promise(function(ok,no){
       if(typeof eda!=='undefined'&&eda.pcb_PrimitiveComponent){ok();return;}
-      var s=Date.now(),t=setInterval(function(){
-        if(typeof eda!=='undefined'&&eda.pcb_PrimitiveComponent){clearInterval(t);ok();}
-        else if(Date.now()-s>15000){clearInterval(t);no(new Error('eda API 超时'));}
+      var s=Date.now(),iv=setInterval(function(){
+        if(typeof eda!=='undefined'&&eda.pcb_PrimitiveComponent){clearInterval(iv);ok();}
+        else if(Date.now()-s>15000){clearInterval(iv);no(new Error(t('EDA API timeout')));}
       },200);
     });
-    st('正在采集 PCB 数据...');
+    st(t('Collecting PCB data...'));
     var data = await collectPcbData();
-    st('正在处理数据...');
+    st(t('Processing data...'));
     fixPcbData(data);
     window.pcbdata = data;
     window.config = {
       show_fabrication:false, redraw_on_drag:true, highlight_pin1:false,
       extra_fields: data.bom&&data.bom.customColumns?data.bom.customColumns:[],
       dark_mode:false, bom_view:"left-right", board_rotation:0.0,
-      checkboxes:"找到,焊接", show_silkscreen:true, show_pads:true, layer_view:"FB",
+      checkboxes:t("Found")+","+t("Solder"), show_silkscreen:true, show_pads:true, layer_view:"FB",
       show_crosshair:false
     };
 
@@ -5171,7 +5374,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     } catch(e) {}
 
     if (isExport) {
-      st('正在生成 HTML 文件...');
+      st(t('Generating HTML file...'));
       try {
         // Read the iframe HTML template
         var templateFile = await eda.sys_FileSystem.getExtensionFile('/iframe/index.html');
@@ -5184,10 +5387,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         var blob = new Blob([templateHtml], {type: 'text/html'});
         var filename = (data.metadata.title || 'ibom') + '.html';
         await eda.sys_FileSystem.saveFile(blob, filename);
-        st('导出完成！');
+        st(t('Export complete!'));
         setTimeout(function() { try { eda.sys_IFrame.closeIFrame('ibom-export'); } catch(e) {} }, 1500);
       } catch(ex) {
-        st('导出失败: ' + ex.message);
+        st(t('Export failed: ') + ex.message);
         console.error('[iBOM Export]', ex);
       }
       return;
@@ -5201,7 +5404,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     console.log('[iBOM Pro] 渲染完成');
   } catch(e) {
     console.error('[iBOM Pro]',e);
-    st('失败: '+e.message);
+    st(t('Failed: ')+e.message);
   }
 });
 
@@ -5210,7 +5413,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 </head>
 
 <body>
-<div id="loading-overlay"><p>正在加载...</p></div>
+<div id="loading-overlay"><p data-i18n="Loading...">正在加载...</p></div>
 <div id="topmostdiv" class="topmostdiv">
   <div id="top">
     <div style="float: right; height: 100%;">
@@ -5219,75 +5422,75 @@ document.addEventListener('DOMContentLoaded', async function() {
         <div class="menu-content">
           <label class="menu-label menu-label-top" style="width: calc(50% - 18px)">
             <input id="darkmodeCheckbox" type="checkbox" onchange="setDarkMode(this.checked)">
-            深色模式
+            <span data-i18n="Dark Mode">深色模式</span>
           </label><!-- This comment eats space! All of it!
           --><label class="menu-label menu-label-top" style="width: calc(50% - 17px); border-left: 0;">
             <input id="fullscreenCheckbox" type="checkbox" onchange="setFullscreen(this.checked)">
-            全屏模式
+            <span data-i18n="Fullscreen">全屏模式</span>
           </label>
           <label class="menu-label" style="width: calc(50% - 18px)">
             <input id="fabricationCheckbox" type="checkbox" checked onchange="fabricationVisible(this.checked)">
-            Fab 层
+            <span data-i18n="Fab Layer">Fab 层</span>
           </label><!-- This comment eats space! All of it!
           --><label class="menu-label" style="width: calc(50% - 17px); border-left: 0;">
             <input id="silkscreenCheckbox" type="checkbox" checked onchange="silkscreenVisible(this.checked)">
-            丝印
+            <span data-i18n="Silkscreen">丝印</span>
           </label>
           <label class="menu-label" style="width: calc(50% - 18px)">
             <input id="referencesCheckbox" type="checkbox" checked onchange="referencesVisible(this.checked)">
-            参考标签
+            <span data-i18n="References">参考标签</span>
           </label><!-- This comment eats space! All of it!
           --><label class="menu-label" style="width: calc(50% - 17px); border-left: 0;">
             <input id="valuesCheckbox" type="checkbox" checked onchange="valuesVisible(this.checked)">
-            值
+            <span data-i18n="Values">值</span>
           </label>
           <div id="tracksAndZonesCheckboxes">
             <label class="menu-label" style="width: calc(50% - 18px)">
               <input id="tracksCheckbox" type="checkbox" checked onchange="tracksVisible(this.checked)">
-              导线
+              <span data-i18n="Tracks">导线</span>
             </label><!-- This comment eats space! All of it!
             --><label class="menu-label" style="width: calc(50% - 17px); border-left: 0;">
               <input id="zonesCheckbox" type="checkbox" checked onchange="zonesVisible(this.checked)">
-              区域
+              <span data-i18n="Zones">区域</span>
             </label>
           </div>
           <label class="menu-label" style="width: calc(50% - 18px)">
             <input id="padsCheckbox" type="checkbox" checked onchange="padsVisible(this.checked)">
-            焊盘
+            <span data-i18n="Pads">焊盘</span>
           </label><!-- This comment eats space! All of it!
           --><label class="menu-label" style="width: calc(50% - 17px); border-left: 0;">
             <input id="dnpOutlineCheckbox" type="checkbox" checked onchange="dnpOutline(this.checked)">
-            DNP 标记
+            <span data-i18n="DNP Mark">DNP 标记</span>
           </label>
           <label class="menu-label">
             <input id="highlightpin1Checkbox" type="checkbox" onchange="setHighlightPin1(this.checked)">
-            突出显示第一个引脚
+            <span data-i18n="Highlight Pin 1">突出显示第一个引脚</span>
           </label>
           <label class="menu-label">
             <input id="dragCheckbox" type="checkbox" checked onchange="setRedrawOnDrag(this.checked)">
-            连续重绘
+            <span data-i18n="Redraw on Drag">连续重绘</span>
           </label>
           <label class="menu-label">
             <input id="crosshairCheckbox" type="checkbox" checked onchange="setShowCrosshair(this.checked)">
-            显示十字准星
+            <span data-i18n="Show Crosshair">显示十字准星</span>
           </label>
           <label class="menu-label">
-            <span>电路板旋转</span>
+            <span data-i18n="Board Rotation">电路板旋转</span>
             <span style="float: right"><span id="rotationDegree">0</span>&#176;</span>
             <input id="boardRotation" type="range" min="-36" max="36" value="0" class="slider" oninput="setBoardRotation(this.value)">
           </label>
           <label class="menu-label">
-            <div style="margin-left: 5px">BOM 复选框</div>
+            <div style="margin-left: 5px" data-i18n="BOM Checkboxes">BOM 复选框</div>
             <input id="bomCheckboxes" class="menu-textbox" type=text
                    oninput="setBomCheckboxes(this.value)">
           </label>
           <label class="menu-label">
-            <div style="margin-left: 5px">勾选后变暗</div>
+            <div style="margin-left: 5px" data-i18n="Darken when checked">勾选后变暗</div>
             <div id="darkenWhenCheckedContainer"></div>
           </label>
           <label class="menu-label">
             <span class="shameless-plug">
-              <span>使用以下工具创建</span>
+              <span data-i18n="Created with">使用以下工具创建</span>
               <a id="github-link" target="blank" href="https://github.com/openscopeproject/InteractiveHtmlBom">InteractiveHtmlBom</a>
             </span>
           </label>
@@ -5296,32 +5499,32 @@ document.addEventListener('DOMContentLoaded', async function() {
       <div class="button-container hideonprint"
            style="float: right; position: relative; top: 8px">
         <button id="fl-btn" class="left-most-button" onclick="changeCanvasLayout('F')"
-                title="仅正面">正面
+                data-i18n-title="Front Only" data-i18n="Front">正面
         </button>
         <button id="fb-btn" class="middle-button" onclick="changeCanvasLayout('FB')"
-                title="正反面">正反
+                data-i18n-title="Front and Back">正反
         </button>
         <button id="bl-btn" class="right-most-button" onclick="changeCanvasLayout('B')"
-                title="仅背面">背面
+                data-i18n-title="Back Only" data-i18n="Back">背面
         </button>
       </div>
       <div class="button-container hideonprint"
            style="float: right; position: relative; top: 8px">
         <button id="bom-btn" class="left-most-button" onclick="changeBomLayout('bom-only')"
-                title="仅BOM"></button>
+                data-i18n-title="BOM Only"></button>
         <button id="lr-btn" class="middle-button" onclick="changeBomLayout('left-right')"
-                title="BOM在左，图形在右"></button>
+                data-i18n-title="BOM Left, Graphics Right"></button>
         <button id="tb-btn" class="right-most-button" onclick="changeBomLayout('top-bottom')"
-                title="BOM在上，图形在下"></button>
+                data-i18n-title="BOM Top, Graphics Bottom"></button>
       </div>
       <div class="button-container hideonprint"
            style="float: right; position: relative; top: 8px">
         <button id="bom-grouped-btn" class="left-most-button" onclick="changeBomMode('grouped')"
-                title="分组 BOM"></button>
+                data-i18n-title="Grouped BOM"></button>
         <button id="bom-ungrouped-btn" class="middle-button" onclick="changeBomMode('ungrouped')"
-                title="未分组 BOM"></button>
+                data-i18n-title="Ungrouped BOM"></button>
         <button id="bom-netlist-btn" class="right-most-button" onclick="changeBomMode('netlist')"
-                title="网表"></button>
+                data-i18n-title="Netlist"></button>
       </div>
       <div class="hideonprint menu" style="float: right; top: 8px;">
         <button class="statsbtn"></button>
@@ -5329,31 +5532,31 @@ document.addEventListener('DOMContentLoaded', async function() {
           <table class="stats">
             <tbody>
               <tr>
-                <td width="40%">电路板统计</td>
-                <td>正面</td>
-                <td>背面</td>
-                <td>总计</td>
+                <td width="40%" data-i18n="Board Stats">电路板统计</td>
+                <td data-i18n="Front">正面</td>
+                <td data-i18n="Back">背面</td>
+                <td data-i18n="Total">总计</td>
               </tr>
               <tr>
-                <td>组件</td>
+                <td data-i18n="Components">组件</td>
                 <td id="stats-components-front">~</td>
                 <td id="stats-components-back">~</td>
                 <td id="stats-components-total">~</td>
               </tr>
               <tr>
-                <td>组</td>
+                <td data-i18n="Groups">组</td>
                 <td id="stats-groups-front">~</td>
                 <td id="stats-groups-back">~</td>
                 <td id="stats-groups-total">~</td>
               </tr>
               <tr>
-                <td>SMD 焊盘</td>
+                <td data-i18n="SMD Pads">SMD 焊盘</td>
                 <td id="stats-smd-pads-front">~</td>
                 <td id="stats-smd-pads-back">~</td>
                 <td id="stats-smd-pads-total">~</td>
               </tr>
               <tr>
-                <td>TH 焊盘</td>
+                <td data-i18n="TH Pads">TH 焊盘</td>
                 <td colspan=3 id="stats-th-pads">~</td>
               </tr>
             </tbody>
@@ -5362,7 +5565,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             <col width="40%"/><col />
             <tbody id="checkbox-stats">
               <tr>
-                <td colspan=2 style="border-top: 0">复选框</td>
+                <td colspan=2 style="border-top: 0" data-i18n="Checkboxes">复选框</td>
               </tr>
             </tbody>
           </table>
@@ -5372,28 +5575,28 @@ document.addEventListener('DOMContentLoaded', async function() {
         <button class="iobtn"></button>
         <div class="menu-content">
           <div class="menu-label menu-label-top">
-            <div style="margin-left: 5px;">保存电路板图片</div>
+            <div style="margin-left: 5px;" data-i18n="Save Board Image">保存电路板图片</div>
             <div class="flexbox">
-              <input id="render-save-width" class="menu-textbox" type="text" value="1000" placeholder="宽度"
+              <input id="render-save-width" class="menu-textbox" type="text" value="1000" data-i18n="Width" placeholder="宽度"
                   style="flex-grow: 1; width: 50px;" oninput="validateSaveImgDimension(this)">
               <span>X</span>
-              <input id="render-save-height" class="menu-textbox" type="text" value="1000" placeholder="高度"
+              <input id="render-save-height" class="menu-textbox" type="text" value="1000" data-i18n="Height" placeholder="高度"
                   style="flex-grow: 1; width: 50px;" oninput="validateSaveImgDimension(this)">
             </div>
             <label>
               <input id="render-save-transparent" type="checkbox">
-              透明背景
+              <span data-i18n="Transparent BG">透明背景</span>
             </label>
             <div class="flexbox">
-              <button class="savebtn" onclick="saveImage('F')">正面</button>
-              <button class="savebtn" onclick="saveImage('B')">背面</button>
+              <button class="savebtn" onclick="saveImage('F')" data-i18n="Front">正面</button>
+              <button class="savebtn" onclick="saveImage('B')" data-i18n="Back">背面</button>
             </div>
           </div>
           <div class="menu-label">
-            <span style="margin-left: 5px;">配置和复选框状态</span>
+            <span style="margin-left: 5px;" data-i18n="Config and Checkbox State">配置和复选框状态</span>
             <div class="flexbox">
-              <button class="savebtn" onclick="saveSettings()">导出</button>
-              <button class="savebtn" onclick="loadSettings()">导入</button>
+              <button class="savebtn" onclick="saveSettings()" data-i18n="Export">导出</button>
+              <button class="savebtn" onclick="loadSettings()" data-i18n="Import">导入</button>
             </div>
           </div>
         </div>
@@ -5404,18 +5607,18 @@ document.addEventListener('DOMContentLoaded', async function() {
         <tbody>
           <tr>
             <td id="title" class="title" style="width: 70%">
-              标题
+              <span data-i18n="Title">标题</span>
             </td>
             <td id="revision" class="title" style="width: 30%">
-              修订版本
+              <span data-i18n="Revision">修订版本</span>
             </td>
           </tr>
           <tr>
             <td id="company">
-              公司
+              <span data-i18n="Company">公司</span>
             </td>
             <td id="filedate">
-              日期
+              <span data-i18n="Date">日期</span>
             </td>
           </tr>
         </tbody>
@@ -5425,12 +5628,12 @@ document.addEventListener('DOMContentLoaded', async function() {
   <div id="bot" class="split" style="height: calc(100% - 80px)">
     <div id="bomdiv" class="split split-horizontal">
       <div style="width: 100%">
-        <input id="reflookup" class="textbox searchbox reflookup hideonprint" type="text" placeholder="位号查找"
+        <input id="reflookup" class="textbox searchbox reflookup hideonprint" type="text" data-i18n="Ref Lookup" placeholder="位号查找"
                oninput="updateRefLookup(this.value)">
-        <input id="filter" class="textbox searchbox filter hideonprint" type="text" placeholder="过滤"
+        <input id="filter" class="textbox searchbox filter hideonprint" type="text" data-i18n="Filter" placeholder="过滤"
                oninput="updateFilter(this.value)">
         <div class="button-container hideonprint" style="float: left; margin: 0;">
-          <button id="copy" title="复制 BOM 表到剪贴板"
+          <button id="copy" data-i18n-title="Copy BOM to Clipboard" title="复制 BOM 表到剪贴板"
                onclick="copyToClipboard()"></button>
         </div>
       </div>
