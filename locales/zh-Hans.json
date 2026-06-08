@@ -23,7 +23,7 @@
 	"None": "无",
 	"Created with": "使用以下工具创建",
 	"Front Only": "仅正面",
-	"Front and Back": "正反面",
+	"Front and Back": "正反",
 	"Back Only": "仅背面",
 	"BOM Only": "仅BOM",
 	"BOM Left, Graphics Right": "BOM在左，图形在右",
@@ -74,5 +74,6 @@
 	"Export failed: ": "导出失败：",
 	"Failed: ": "失败：",
 	"Manufacturer": "制造商",
-	"Supplier": "供应商"
+	"Supplier": "供应商",
+	"Exporting iBOM...": "正在导出 iBOM..."
 }

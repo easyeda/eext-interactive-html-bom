@@ -23,7 +23,7 @@
 	"None": "None",
 	"Created with": "Created with",
 	"Front Only": "Front Only",
-	"Front and Back": "Front and Back",
+	"Front and Back": "Both",
 	"Back Only": "Back Only",
 	"BOM Only": "BOM Only",
 	"BOM Left, Graphics Right": "BOM Left, Graphics Right",
@@ -74,5 +74,6 @@
 	"Export failed: ": "Export failed: ",
 	"Failed: ": "Failed: ",
 	"Manufacturer": "Manufacturer",
-	"Supplier": "Supplier"
+	"Supplier": "Supplier",
+	"Exporting iBOM...": "Exporting iBOM..."
 }

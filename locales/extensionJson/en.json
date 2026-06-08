@@ -1,6 +1,8 @@
 {
 	"About...": "About...",
+	"iBOM": "iBOM",
 	"打开交互式 BOM...": "Open Interactive BOM...",
 	"导出 HTML 文件...": "Export HTML File...",
-	"关于...": "About..."
+	"关于...": "About...",
+	"交互式 BOM 查看器，基于 InteractiveHtmlBom 项目移植而来": "Interactive BOM viewer, ported from the InteractiveHtmlBom project"
 }

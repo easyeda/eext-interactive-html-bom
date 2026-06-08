@@ -29,7 +29,7 @@ export async function exportHTML(): Promise<void> {
 	eda.sys_IFrame.openIFrame('/iframe/index.html', 400, 200, 'ibom-export', {
 		maximizeButton: false,
 		minimizeButton: false,
-		title: '正在导出 iBOM...',
+		title: eda.sys_I18n.text('Exporting iBOM...'),
 	});
 }
 
