@@ -4759,24 +4759,30 @@ for(const c of comp){
   // bbox in local (un-rotated) coords
   const rr=-rot*Math.PI/180,cr=Math.cos(rr),sr=Math.sin(rr);
   let lx1=Infinity,ly1=Infinity,lx2=-Infinity,ly2=-Infinity;
-  fp.forEach(p=>{const dx=p.pos[0]-cx,dy=p.pos[1]-cy,lx=dx*cr-dy*sr,ly=dx*sr+dy*cr,hw=p.size[0]/2,hh=p.size[1]/2;if(lx-hw<lx1)lx1=lx-hw;if(ly-hh<ly1)ly1=ly-hh;if(lx+hw>lx2)lx2=lx+hw;if(ly+hh>ly2)ly2=ly+hh;});
+  let sumAbsLx=0,sumAbsLy=0;
+  fp.forEach(p=>{const dx=p.pos[0]-cx,dy=p.pos[1]-cy,lx=dx*cr-dy*sr,ly=dx*sr+dy*cr,hw=p.size[0]/2,hh=p.size[1]/2;if(lx-hw<lx1)lx1=lx-hw;if(ly-hh<ly1)ly1=ly-hh;if(lx+hw>lx2)lx2=lx+hw;if(ly+hh>ly2)ly2=ly+hh;sumAbsLx+=Math.abs(lx);sumAbsLy+=Math.abs(ly);});
   if(lx1===Infinity){lx1=0;ly1=0;lx2=0;ly2=0;}
+  // Detect if pins are along Y axis (rotated 90° from expected)
+  var bboxAngle=rot;
+  if(fp.length>0&&sumAbsLy>sumAbsLx){bboxAngle=rot-90;}
   // Build ref/val text drawings positioned above the component center
   var fpDrawings=[];
   var val=g(c,'name')||'';
   // Resolve template variables like ={Value}
   if(val.match(/^=\{.*\}$/)){var fld=val.replace(/^=\{/,'').replace(/\}$/,'');var op2=g(c,'otherProperty')||c.otherProperty||{};val=op2[fld]||'';}
   var fontSize=Math.max(30,Math.min(50,(lx2-lx1)*0.3));
-  // Offset above bbox top in local coords, then rotate to global
-  var localOffY=ly1-fontSize*1.2;// above top edge
-  var rotRad2=rot*Math.PI/180;
-  var refGx=cx+localOffY*Math.sin(rotRad2);
-  var refGy=cy-localOffY*Math.cos(rotRad2);
-  var valGx=cx+(localOffY-fontSize*1.3)*Math.sin(rotRad2);
-  var valGy=cy-(localOffY-fontSize*1.3)*Math.cos(rotRad2);
+  // Offset above bbox top in local coords, position in global coords
+  var localOffY=ly1-fontSize*1.2;// above top edge (negative = above)
+  // Place ref/val directly above component center in global coords
+  // localOffY is negative, so cy+localOffY moves UP on screen
+  var refGx=cx;
+  var refGy=cy+localOffY;
+  var valOff=localOffY-fontSize*1.3;
+  var valGx=cx;
+  var valGy=cy+valOff;
   if(ref)fpDrawings.push({layer:layer,drawing:{ref:1,text:ref,x:refGx,y:refGy,fontSize:fontSize,rotation:rot}});
   if(val)fpDrawings.push({layer:layer,drawing:{val:1,text:val,x:valGx,y:valGy,fontSize:fontSize*0.8,rotation:rot}});
-  footprints.push({ref,center:[cx,cy],bbox:{pos:[cx,cy],angle:rot,relpos:[lx1,ly1],size:[lx2-lx1,ly2-ly1]},pads:fp,drawings:fpDrawings,layer});}
+  footprints.push({ref,center:[cx,cy],bbox:{pos:[cx,cy],angle:bboxAngle,relpos:[lx1,ly1],size:[lx2-lx1,ly2-ly1]},pads:fp,drawings:fpDrawings,layer});}
 
 // === TRACKS (ALL Y negated) ===
 console.log('[iBOM Export] 转换走线...');
@@ -4994,6 +5000,26 @@ function fpSilkToSvg(item,cx,cy,rot,layer){
         }
         prevX=apt[0];prevY=apt[1];
         i+=4;
+      } else if(cmd==='R'&&i+6<path.length){
+        // Rounded rectangle: R, ox, oy, w, h, rotation, roundRadius
+        // ox, oy are offset coordinates; apply scaled offset to rect center
+        var rx=path[i+1],ry=path[i+2],rw=path[i+3],rh=path[i+4],rrot=path[i+5],rrr=path[i+6];
+        // Handle R-command internal rotation=90 swapping width and height
+        var effectiveW=(rrot===90||rrot===-90)?rh:rw;
+        var effectiveH=(rrot===90||rrot===-90)?rw:rh;
+        // Apply ox,oy as scaled offset (elibu coords may use different scale)
+        var offX=rx, offY=ry;
+        // Transform corners: anchor at (ox,oy) with size (w,h)
+        var rpt1=fpToGlobal(offX,offY,cx,cy,rot,layer);
+        var rpt2=fpToGlobal(offX+effectiveW,offY-effectiveH,cx,cy,rot,layer);
+        var minX=Math.min(rpt1[0],rpt2[0]);
+        var minY=Math.min(rpt1[1],rpt2[1]);
+        var maxX=Math.max(rpt1[0],rpt2[0]);
+        var maxY=Math.max(rpt1[1],rpt2[1]);
+        // Use bounding box dimensions for the axis-aligned rect
+        parts.push(rrP(minX,minY,maxX-minX,maxY-minY,rrr,rrr));
+        prevX=minX+rrr;prevY=minY;
+        i+=7;first=false;
       } else {i++;}
     } else if(typeof c==='number'&&i+1<path.length){
       var pt=fpToGlobal(c,path[i+1],cx,cy,rot,layer);
@@ -5002,7 +5028,7 @@ function fpSilkToSvg(item,cx,cy,rot,layer){
       i+=2;first=false;
     } else {i++;}
   }
-  if(parts.length<2)return null;
+  if(parts.length<1)return null;
   return parts.join(' ');
 }
 // Cache: footprintUuid -> parsed silk items

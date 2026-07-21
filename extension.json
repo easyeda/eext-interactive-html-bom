@@ -3,7 +3,7 @@
 	"uuid": "94033c9338e84a498ef75cd91e7869eb",
 	"displayName": "交互式BOM(移植版)",
 	"description": "交互式 BOM 查看器，基于 InteractiveHtmlBom 项目移植而来",
-	"version": "2.4.3",
+	"version": "2.4.4",
 	"publisher": "EasyEDA",
 	"engines": {
 		"eda": "^3.2.0"
