@@ -2825,6 +2825,17 @@ function drawProText(ctx, item, color) {
   if (item.rotation) ctx.rotate(-item.rotation * Math.PI / 180);
   var fontSize = item.fontSize || 10;
   ctx.font = fontSize + "px sans-serif"; ctx.textBaseline = "alphabetic";
+  // Draw bbox-matching box if dimensions provided
+  if (item.bboxW && item.bboxH) {
+    ctx.save();
+    ctx.globalAlpha = 0.15;
+    ctx.fillRect(-item.bboxW/2, -item.bboxH/2, item.bboxW, item.bboxH);
+    ctx.globalAlpha = 1;
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = color;
+    ctx.strokeRect(-item.bboxW/2, -item.bboxH/2, item.bboxW, item.bboxH);
+    ctx.restore();
+  }
   var lines = item.text.split("\n");
   for (var i = 0; i < lines.length; i++) { if (lines[i]) ctx.fillText(lines[i], 0, i * fontSize * 1.3); }
   ctx.restore();
@@ -4762,27 +4773,26 @@ for(const c of comp){
   let sumAbsLx=0,sumAbsLy=0;
   fp.forEach(p=>{const dx=p.pos[0]-cx,dy=p.pos[1]-cy,lx=dx*cr-dy*sr,ly=dx*sr+dy*cr,hw=p.size[0]/2,hh=p.size[1]/2;if(lx-hw<lx1)lx1=lx-hw;if(ly-hh<ly1)ly1=ly-hh;if(lx+hw>lx2)lx2=lx+hw;if(ly+hh>ly2)ly2=ly+hh;sumAbsLx+=Math.abs(lx);sumAbsLy+=Math.abs(ly);});
   if(lx1===Infinity){lx1=0;ly1=0;lx2=0;ly2=0;}
-  // Detect if pins are along Y axis (rotated 90° from expected)
-  var bboxAngle=rot;
-  if(fp.length>0&&sumAbsLy>sumAbsLx){bboxAngle=rot-90;}
-  // Build ref/val text drawings positioned above the component center
+  // Build ref/val text drawings centered inside the bbox
   var fpDrawings=[];
   var val=g(c,'name')||'';
   // Resolve template variables like ={Value}
   if(val.match(/^=\{.*\}$/)){var fld=val.replace(/^=\{/,'').replace(/\}$/,'');var op2=g(c,'otherProperty')||c.otherProperty||{};val=op2[fld]||'';}
-  var fontSize=Math.max(30,Math.min(50,(lx2-lx1)*0.3));
-  // Offset above bbox top in local coords, position in global coords
-  var localOffY=ly1-fontSize*1.2;// above top edge (negative = above)
-  // Place ref/val directly above component center in global coords
-  // localOffY is negative, so cy+localOffY moves UP on screen
-  var refGx=cx;
-  var refGy=cy+localOffY;
-  var valOff=localOffY-fontSize*1.3;
-  var valGx=cx;
-  var valGy=cy+valOff;
-  if(ref)fpDrawings.push({layer:layer,drawing:{ref:1,text:ref,x:refGx,y:refGy,fontSize:fontSize,rotation:rot}});
+  var bboxW=lx2-lx1, bboxH=ly2-ly1;
+  var fontSize=Math.max(10,Math.min(50,Math.min(bboxW*0.4,bboxH*0.4)));
+  // Center of bbox in local coords
+  var cxLocal=(lx1+lx2)/2, cyLocal=(ly1+ly2)/2;
+  // Transform local center to global coords
+  var rad=rot*Math.PI/180;
+  var refGx=cx+cxLocal*Math.cos(rad)-cyLocal*Math.sin(rad);
+  var refGy=cy+cxLocal*Math.sin(rad)+cyLocal*Math.cos(rad);
+  // Value text offset below ref (in local coords, then transform)
+  var valLocalOff=fontSize*1.3;
+  var valGx=cx+cxLocal*Math.cos(rad)-(cyLocal+valLocalOff)*Math.sin(rad);
+  var valGy=cy+cxLocal*Math.sin(rad)+(cyLocal+valLocalOff)*Math.cos(rad);
+  if(ref)fpDrawings.push({layer:layer,drawing:{ref:1,text:ref,x:refGx,y:refGy,fontSize:fontSize,rotation:rot,bboxW:bboxW,bboxH:bboxH}});
   if(val)fpDrawings.push({layer:layer,drawing:{val:1,text:val,x:valGx,y:valGy,fontSize:fontSize*0.8,rotation:rot}});
-  footprints.push({ref,center:[cx,cy],bbox:{pos:[cx,cy],angle:bboxAngle,relpos:[lx1,ly1],size:[lx2-lx1,ly2-ly1]},pads:fp,drawings:fpDrawings,layer});}
+  footprints.push({ref,center:[cx,cy],bbox:{pos:[cx,cy],angle:rot,relpos:[lx1,ly1],size:[lx2-lx1,ly2-ly1]},pads:fp,drawings:fpDrawings,layer});}
 
 // === TRACKS (ALL Y negated) ===
 console.log('[iBOM Export] 转换走线...');
