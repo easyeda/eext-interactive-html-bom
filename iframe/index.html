@@ -74,6 +74,19 @@ button:focus {
   outline: 0;
 }
 
+/* Text-label buttons (Front/Back layout) — auto-width to fit translated labels */
+button#fl-btn, button#fb-btn, button#bl-btn {
+  width: auto;
+  min-width: 44px;
+  padding: 0 8px;
+}
+
+/* BOM-layout + preview button group: align buttons and the layer select to the top */
+#bom-preview-controls > button,
+#bom-preview-controls > select {
+  vertical-align: top;
+}
+
 button#tb-btn {
   background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOSIgaGVpZ2h0PSI5IiB2aWV3Qm94PSIwIDAgOSA5IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8ZyBjbGlwLXBhdGg9InVybCgjY2xpcDBfNF8yKSI+CjxnIGNsaXAtcGF0aD0idXJsKCNjbGlwMV80XzIpIj4KPHBhdGggZD0iTTcuMDQgMC4yNjk5ODhIMS40NEMwLjc5MzgyNyAwLjI2OTk4OCAwLjI3IDAuNzkzODI4IDAuMjcgMS40NFY3LjA0MDAxQzAuMjcgNy42ODYxOCAwLjc5MzgyNyA4LjIwOTk5IDEuNDQgOC4yMDk5OUg3LjA0QzcuNjg2MTcgOC4yMDk5OSA4LjIxIDcuNjg2MTggOC4yMSA3LjA0MDAxVjEuNDRDOC4yMSAwLjc5MzgyOCA3LjY4NjE3IDAuMjY5OTg4IDcuMDQgMC4yNjk5ODhaIiBmaWxsPSIjRjlGOUY5Ii8+CjxwYXRoIGQ9Ik03LjA0IDAuMjY5OTg5SDEuNDRDMC43OTM4MjcgMC4yNjk5ODkgMC4yNyAwLjc5MzgyOSAwLjI3IDEuNDRWNy4wNDAwMUMwLjI3IDcuNjg2MTggMC43OTM4MjcgOC4yMDk5OSAxLjQ0IDguMjA5OTlINy4wNEM3LjY4NjE3IDguMjA5OTkgOC4yMSA3LjY4NjE4IDguMjEgNy4wNDAwMVYxLjQ0QzguMjEgMC43OTM4MjkgNy42ODYxNyAwLjI2OTk4OSA3LjA0IDAuMjY5OTg5WiIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSIwLjQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTEuMzIgMS41OUg3LjE0TTEuMzIgMi45MjAwMUg3LjE0IiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjAuNCIvPgo8cGF0aCBkPSJNNC4zNyAzLjk3VjguMjAwMDFNMC4yNiA0LjEwMDAxSDguMiIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSIwLjMiLz4KPHBhdGggZD0iTTUuNTcgNC45ODUwMUg3LjMyVjUuMjgyNTFINS41N1Y0Ljk4NTAxWk01LjYwNSA1LjYzNTAxSDYuOTU3NVY1LjkyNTAxSDUuNjA1VjUuNjM1MDFaTTUuNDE3NSA0Ljk4NTAxSDUuNzE3NVY1LjY4NTAxQzUuNzE3NSA1Ljc5NTAxIDUuNzEzMzMgNS45MTU4NCA1LjcwNSA2LjA0NzUxQzUuNjk4MzMgNi4xNzkxOCA1LjY4MjUgNi4zMTQxOCA1LjY1NzUgNi40NTI1MUM1LjYzNDE3IDYuNTkwODQgNS41OTkxNyA2LjcyNDE4IDUuNTUyNSA2Ljg1MjUxQzUuNTA3NSA2Ljk4MDg0IDUuNDQ4MzMgNy4wOTY2OCA1LjM3NSA3LjIwMDAxQzUuMzU2NjcgNy4xODE2OCA1LjMzMTY3IDcuMTYwODQgNS4zIDcuMTM3NTFDNS4yNyA3LjExNDE4IDUuMjM4MzMgNy4wOTE2OCA1LjIwNSA3LjA3MDAxQzUuMTcxNjcgNy4wNTAwMSA1LjE0MzMzIDcuMDM0MTggNS4xMiA3LjAyMjUxQzUuMTg4MzMgNi45Mjc1MSA1LjI0MjUgNi44MjMzNCA1LjI4MjUgNi43MTAwMUM1LjMyMjUgNi41OTY2OCA1LjM1MjUgNi40ODA4NCA1LjM3MjUgNi4zNjI1MUM1LjM5MjUgNi4yNDI1MSA1LjQwNSA2LjEyNTAxIDUuNDEgNi4wMTAwMUM1LjQxNSA1Ljg5MzM0IDUuNDE3NSA1Ljc4NTAxIDUuNDE3NSA1LjY4NTAxVjQuOTg1MDFaTTYuODc3NSA1LjYzNTAxSDYuOTM3NUw2Ljk5MjUgNS42MjI1MUw3LjIwNSA1LjcwNzUxQzcuMTUzMzMgNS45MTc1MSA3LjA4MjUgNi4xMDMzNCA2Ljk5MjUgNi4yNjUwMUM2LjkwMjUgNi40MjUwMSA2Ljc5NTgzIDYuNTY1ODQgNi42NzI1IDYuNjg3NTFDNi41NDkxNyA2LjgwNzUxIDYuNDEwODMgNi45MDkxOCA2LjI1NzUgNi45OTI1MUM2LjEwNTgzIDcuMDc3NTEgNS45NDA4MyA3LjE0ODM0IDUuNzYyNSA3LjIwNTAxQzUuNzQ5MTcgNy4xNzY2OCA1LjczMjUgNy4xNDUwMSA1LjcxMjUgNy4xMTAwMUM1LjY5NDE3IDcuMDc2NjggNS42NzMzMyA3LjA0MzM0IDUuNjUgNy4wMTAwMUM1LjYyODMzIDYuOTc2NjggNS42MDc1IDYuOTQ5MTggNS41ODc1IDYuOTI3NTFDNS43NDc1IDYuODg3NTEgNS44OTY2NyA2LjgzMTY4IDYuMDM1IDYuNzYwMDFDNi4xNzUgNi42ODY2OCA2LjMwMDgzIDYuNTk4MzQgNi40MTI1IDYuNDk1MDFDNi41MjU4MyA2LjM5MTY4IDYuNjIxNjcgNi4yNzMzNCA2LjcgNi4xNDAwMUM2Ljc4IDYuMDA1MDEgNi44MzkxNyA1Ljg1NTAxIDYuODc3NSA1LjY5MDAxVjUuNjM1MDFaTTYuMDc3NSA1Ljc5NzUxQzYuMTc3NSA2LjA4OTE4IDYuMzM3NSA2LjMzMDg0IDYuNTU3NSA2LjUyMjUxQzYuNzc3NSA2LjcxNDE4IDcuMDY1ODMgNi44NDgzNCA3LjQyMjUgNi45MjUwMUM3LjM5OTE3IDYuOTQ2NjggNy4zNzQxNyA2Ljk3NDE4IDcuMzQ3NSA3LjAwNzUxQzcuMzIyNSA3LjA0MDg0IDcuMjk4MzMgNy4wNzUwMSA3LjI3NSA3LjExMDAxQzcuMjUzMzMgNy4xNDUwMSA3LjIzNSA3LjE3NjY4IDcuMjIgNy4yMDUwMUM2Ljk2ODMzIDcuMTQwMDEgNi43NTA4MyA3LjA0ODM0IDYuNTY3NSA2LjkzMDAxQzYuMzg1ODMgNi44MTE2OCA2LjIzMTY3IDYuNjY1MDEgNi4xMDUgNi40OTAwMUM1Ljk4IDYuMzEzMzQgNS44NzUgNi4xMDkxOCA1Ljc5IDUuODc3NTFMNi4wNzc1IDUuNzk3NTFaIiBmaWxsPSJibGFjayIvPgo8cGF0aCBkPSJNMS4zMjEzOCA1LjAxNzUxSDMuNDUxMzhWNS4zMTAwMUgxLjMyMTM4VjUuMDE3NTFaTTIuNDM4ODggNS44NjI1MUgzLjMyMzg4VjYuMTU1MDFIMi40Mzg4OFY1Ljg2MjUxWk0xLjIzNjM4IDYuODE3NTFIMy41MjEzOFY3LjExMDAxSDEuMjM2MzhWNi44MTc1MVpNMi4yOTM4OCA1LjEzNTAxSDIuNjExMzhWNi45NjAwMUgyLjI5Mzg4VjUuMTM1MDFaTTEuNTQ2MzggNS43MDAwMUgxLjg1ODg4VjYuOTcyNTFIMS41NDYzOFY1LjcwMDAxWiIgZmlsbD0iYmxhY2siLz4KPC9nPgo8L2c+CjxkZWZzPgo8Y2xpcFBhdGggaWQ9ImNsaXAwXzRfMiI+CjxyZWN0IHdpZHRoPSI4LjQ3IiBoZWlnaHQ9IjguNDciIGZpbGw9IndoaXRlIi8+CjwvY2xpcFBhdGg+CjxjbGlwUGF0aCBpZD0iY2xpcDFfNF8yIj4KPHJlY3Qgd2lkdGg9IjguNDciIGhlaWdodD0iOC40NyIgZmlsbD0id2hpdGUiLz4KPC9jbGlwUGF0aD4KPC9kZWZzPgo8L3N2Zz4K");
 }
@@ -1561,7 +1574,12 @@ var __t = {
     "Export failed: ": "导出失败：",
     "Failed: ": "失败：",
     "Manufacturer": "制造商",
-    "Supplier": "供应商"
+    "Supplier": "供应商",
+    "PCB Preview": "PCB预览",
+    "Layer": "图层",
+    "Top": "顶层",
+    "Bottom": "底层",
+    "Inner": "内层"
   },
   "en": {
     "Loading...": "Loading...",
@@ -1635,15 +1653,27 @@ var __t = {
     "Export failed: ": "Export failed: ",
     "Failed: ": "Failed: ",
     "Manufacturer": "Manufacturer",
-    "Supplier": "Supplier"
+    "Supplier": "Supplier",
+    "PCB Preview": "PCB Preview",
+    "Layer": "Layer",
+    "Top": "Top",
+    "Bottom": "Bottom",
+    "Inner": "Inner"
   }
 };
 function t(key) {
-  try {
-    if (typeof eda !== 'undefined' && eda.sys_I18n) return eda.sys_I18n.text(key);
-  } catch(e) {}
+  // Local dictionary takes precedence for this extension's own keys, so custom
+  // strings (e.g. "PCB Preview") are always translated even if the EDA host
+  // does not know them.
   var d = __t[__locale] || __t['zh-Hans'];
-  return d[key] || key;
+  if (d && Object.prototype.hasOwnProperty.call(d, key)) return d[key];
+  try {
+    if (typeof eda !== 'undefined' && eda.sys_I18n) {
+      var v = eda.sys_I18n.text(key);
+      if (v && v !== key) return v;
+    }
+  } catch(e) {}
+  return key;
 }
 function tReplace(s) {
   // Simple key lookup for inline replacements
@@ -2842,7 +2872,9 @@ function drawProText(ctx, item, color) {
 }
 function drawBgLayer(layername, canvas, layer, scalefactor, edgeColor, polygonColor, textColor) {
   var ctx = canvas.getContext("2d");
-  for (var d of pcbdata.drawings[layername][layer]) {
+  var items = pcbdata.drawings[layername][layer];
+  if (!items) return;
+  for (var d of items) {
     if (["segment", "arc", "circle", "curve", "rect","polyline"].includes(d.type)) {
       drawedge(ctx, scalefactor, d, edgeColor);
     } else if (d.type == "polygon") {
@@ -2852,11 +2884,13 @@ function drawBgLayer(layername, canvas, layer, scalefactor, edgeColor, polygonCo
   }
 }
 
+function layerTracks(k){return k==='F'?pcbdata.tracks.F:k==='B'?pcbdata.tracks.B:(pcbdata.inner&&pcbdata.inner[k]?pcbdata.inner[k].tracks:[]);}
+function layerZones(k){return k==='F'?pcbdata.zones.F:k==='B'?pcbdata.zones.B:(pcbdata.inner&&pcbdata.inner[k]?pcbdata.inner[k].zones:[]);}
 function drawTracks(canvas, layer, color, highlight) {
   ctx = canvas.getContext("2d");
   ctx.strokeStyle = color;
   ctx.lineCap = "round";
-  for(var track of pcbdata.tracks[layer]) {
+  for(var track of layerTracks(layer)) {
     if (highlight && highlightedNet != track.net) continue;
     ctx.lineWidth = track.width;
 
@@ -2893,7 +2927,7 @@ function drawZones(canvas, layer, color, highlight) {
   ctx.strokeStyle = color;
   ctx.fillStyle = color;
   ctx.lineJoin = "round";
-  for(var zone of pcbdata.zones[layer]) {
+  for(var zone of layerZones(layer)) {
     if (!zone.path2d) {
       zone.path2d = getPolygonsPath(zone);
     }
@@ -3109,10 +3143,13 @@ function redrawCanvas(layerdict) {
 }
 
 function resizeCanvas(layerdict) {
-  var canvasdivid = {
+  // In preview mode every layer renders into the front canvas stack, so always
+  // measure the (visible) frontcanvas — otherwise 'B' would measure the hidden
+  // backcanvas (clientWidth 0) and blank the drawing.
+  var canvasdivid = previewMode ? "frontcanvas" : ({
     "F": "frontcanvas",
     "B": "backcanvas"
-  } [layerdict.layer];
+  } [layerdict.layer] || "frontcanvas");
   var width = document.getElementById(canvasdivid).clientWidth * devicePixelRatio;
   var height = document.getElementById(canvasdivid).clientHeight * devicePixelRatio;
   recalcLayerScale(layerdict, width, height);
@@ -3121,6 +3158,10 @@ function resizeCanvas(layerdict) {
 
 function resizeAll() {
   if (typeof allcanvas === 'undefined' || !allcanvas) return;
+  if (previewMode) {
+    resizeCanvas(allcanvas.front);
+    return;
+  }
   resizeCanvas(allcanvas.front);
   resizeCanvas(allcanvas.back);
 }
@@ -3205,7 +3246,7 @@ function netHitScan(layer, x, y) {
 
   // Check track segments
   if (settings.renderTracks && pcbdata.tracks) {
-    for(var track of pcbdata.tracks[layer]) {
+    for(var track of layerTracks(layer)) {
       if(track.type === 'polyline') {
         const path = getPolygonsPath(track);
         if(path) {
@@ -3254,6 +3295,15 @@ function netHitScan(layer, x, y) {
     for(var pad of pcbdata.pads) {
       if (pad.layers.includes(layer) && pointWithinPad(x, y, pad)) {
         return pad.net;
+      }
+    }
+  }
+  // Check zones (copper pours) — allows clicking a copper pour to highlight its net
+  if (settings.renderZones && pcbdata.zones) {
+    for (var zone of layerZones(layer)) {
+      var zpath = getPolygonsPath(zone);
+      if (zpath && hitTestContext2d.isPointInPath(zpath, x, y)) {
+        return zone.net;
       }
     }
   }
@@ -3575,6 +3625,10 @@ var highlightedFootprints = [];
 var highlightedOrphanPads = [];
 var highlightedNet = null;
 var lastClicked;
+var previewMode = false;
+var prevLayerKey = 'F';
+var prevCanvasLayout = null;
+var prevBomLayout = null;
 
 function dbg(html) {
   dbgdiv.innerHTML = html;
@@ -4221,6 +4275,76 @@ function changeCanvasLayout(layout) {
   changeBomMode(settings.bommode);
 }
 
+function populateLayerSelect() {
+  var sel = document.getElementById("layer-select");
+  if (!sel) return;
+  sel.innerHTML = "";
+  // Top
+  var optF = document.createElement("option");
+  optF.value = "F"; optF.textContent = t("Top"); sel.appendChild(optF);
+  // Inner layers (sorted ascending)
+  var ids = (pcbdata.innerLayerIds || []).slice().sort(function(a,b){return +a - +b;});
+  for (var i = 0; i < ids.length; i++) {
+    var id = ids[i];
+    var name = (+id === 1) ? t("Top") : (+id === 2) ? t("Bottom") : (t("Inner") + " " + (+id - 14));
+    var o = document.createElement("option");
+    o.value = id; o.textContent = name; sel.appendChild(o);
+  }
+  // Bottom
+  var optB = document.createElement("option");
+  optB.value = "B"; optB.textContent = t("Bottom"); sel.appendChild(optB);
+}
+
+function setPreviewLayer(key) {
+  if (!previewMode) return;
+  prevLayerKey = key;
+  if (allcanvas && allcanvas.front) {
+    allcanvas.front.layer = key;
+    // Reset pan/zoom and recompute scale+transform so the board is re-centered
+    // (switching between flipped/non-flipped layers changes the centering offset).
+    allcanvas.front.transform.panx = 0;
+    allcanvas.front.transform.pany = 0;
+    allcanvas.front.transform.zoom = 1;
+    resizeCanvas(allcanvas.front);
+  }
+  var sel = document.getElementById("layer-select");
+  if (sel) sel.value = key;
+}
+
+function togglePreview() {
+  previewMode = !previewMode;
+  var sel = document.getElementById("layer-select");
+  var pbtn = document.getElementById("preview-btn");
+  var layoutGrp = document.getElementById("layout-buttons");        // fl/fb/bl container
+  var bomBtns = ["bom-btn","lr-btn","tb-btn"];                       // BOM-layout buttons
+  if (previewMode) {
+    if (pbtn) { pbtn.classList.add("depressed"); pbtn.classList.add("left-most-button"); pbtn.classList.remove("right-most-button"); }
+    if (layoutGrp) layoutGrp.style.display = "none";
+    for (var i=0;i<bomBtns.length;i++){var b=document.getElementById(bomBtns[i]); if(b)b.style.display="none";}
+    if (sel) sel.style.display = "";
+    // remember current layout
+    prevBomLayout = settings.bomlayout;
+    prevCanvasLayout = settings.canvaslayout;
+    // ensure canvases exist (bom-only layout has none)
+    if (!canvassplit) changeBomLayout("left-right");
+    if (bomsplit) bomsplit.collapse(0);
+    if (canvassplit) canvassplit.collapse(1);
+    document.getElementById("frontcanvas").style.display = "";
+    document.getElementById("backcanvas").style.display = "none";
+    setPreviewLayer(prevLayerKey);
+    resizeAll();
+  } else {
+    if (pbtn) { pbtn.classList.remove("depressed"); pbtn.classList.remove("left-most-button"); pbtn.classList.add("right-most-button"); }
+    if (layoutGrp) layoutGrp.style.display = "";
+    for (var i=0;i<bomBtns.length;i++){var b=document.getElementById(bomBtns[i]); if(b)b.style.display="";}
+    if (sel) sel.style.display = "none";
+    document.getElementById("backcanvas").style.display = "";
+    // restore prior layout by rebuilding splits
+    changeBomLayout(settings.bomlayout || prevBomLayout || "left-right");
+    resizeAll();
+  }
+}
+
 function populateMetadata() {
   if(pcbdata.metadata.revision==='0')pcbdata.metadata.revision='';
   if(pcbdata.metadata.company==='Unknown')pcbdata.metadata.company='';
@@ -4592,6 +4716,9 @@ function initBOM() {
   // Triggers render
   changeBomLayout(settings.bomlayout);
 
+  // PCB preview mode (multi-layer copper)
+  populateLayerSelect();
+
   window.onresize = resizeAll;
   window.matchMedia("print").addListener(resizeAll);
 
@@ -4618,6 +4745,14 @@ const CM={1:['F'],2:['B'],12:['F','B']},SM={3:'F',4:'B'};
 function mC(id){return CM[id]||[];}
 function mS(id){return SM[id]!==undefined?SM[id]:null;}
 function isOL(id){return id===11;}
+// Inner copper layer name (EasyEDA Pro: TOP=1, BOTTOM=2, INNER_1..30 = 15..44)
+function copperLayerName(id){
+  if(id===1)return 'Top'; if(id===2)return 'Bottom';
+  if(id>=15&&id<=44)return 'Inner '+(id-14); return null;
+}
+function isInnerCopper(id){return id>=15&&id<=44;}
+function innerRoute(target, id){ if(isInnerCopper(id)){(innerLayers[id]=innerLayers[id]||{tracks:[],zones:[]}); innerLayers[id].tracks.push(target);}}
+var innerLayers={}; // id(string) -> {tracks:[],zones:[]}
 
 // SVG arc command
 function arcC(px,py,x,y,a){
@@ -4800,20 +4935,20 @@ const tracks={F:[],B:[]};
 // Build endpoint→width index for arc width correction
 var epWidths={};
 function epKey(x,y){return Math.round(x*10)+'_'+Math.round(y*10);}
-for(const l of lines){const ls=mC(gL(l));if(!ls.length)continue;var lw=gW(l),net=gN(l);
+for(const l of lines){var lidl=gL(l);const ls=mC(lidl);if(!ls.length&&!isInnerCopper(lidl))continue;var lw=gW(l),net=gN(l);
   var k1=epKey(g(l,'startX'),g(l,'startY')),k2=epKey(g(l,'endX'),g(l,'endY'));
   if(lw>0){if(!epWidths[k1]||lw>epWidths[k1])epWidths[k1]=lw;if(!epWidths[k2]||lw>epWidths[k2])epWidths[k2]=lw;}
-  const t={type:'polyline',svgpath:`M ${g(l,'startX')},${neg(g(l,'startY'))} L ${g(l,'endX')},${neg(g(l,'endY'))}`,width:lw,net};for(const s of ls)tracks[s].push(t);}
-for(const a of arcs){const ls=mC(gL(a));if(!ls.length)continue;const sx=g(a,'startX'),sy=neg(g(a,'startY')),ex=g(a,'endX'),ey=neg(g(a,'endY')),ar=g(a,'arcAngle')*Math.PI/180;
+  const t={type:'polyline',svgpath:`M ${g(l,'startX')},${neg(g(l,'startY'))} L ${g(l,'endX')},${neg(g(l,'endY'))}`,width:lw,net};for(const s of ls)tracks[s].push(t);innerRoute(t,lidl);}
+for(const a of arcs){var lida=gL(a);const ls=mC(lida);if(!ls.length&&!isInnerCopper(lida))continue;const sx=g(a,'startX'),sy=neg(g(a,'startY')),ex=g(a,'endX'),ey=neg(g(a,'endY')),ar=g(a,'arcAngle')*Math.PI/180;
   var aw=gW(a);
   // Fix arc width: use adjacent line width if arc width is smaller
   var ak1=epKey(g(a,'startX'),g(a,'startY')),ak2=epKey(g(a,'endX'),g(a,'endY'));
   var adjW=Math.max(epWidths[ak1]||0,epWidths[ak2]||0);
   if(adjW>aw)aw=adjW;
-  const t={type:'polyline',svgpath:`M ${sx},${sy} ${arcC(sx,sy,ex,ey,ar)}`,width:aw,net:gN(a)};for(const s of ls)tracks[s].push(t);}
-for(const pl of polys){const ls=mC(gL(pl));if(!ls.length)continue;const svg=p2s(gP(pl),neg);if(!svg)continue;for(const s of ls)tracks[s].push({type:'polyline',svgpath:svg,width:gW(pl),net:gN(pl)});}
-for(const f of fills){const ls=mC(gL(f));if(!ls.length)continue;const svg=cp2s(g(f,'complexPolygon'),neg);if(!svg)continue;for(const s of ls)tracks[s].push({type:'polyline',svgpath:svg,width:0,net:gN(f)});}
-for(const v of vias){const vx=g(v,'x')||0,vy=neg(g(v,'y')||0);const vi={start:[vx,vy],end:[vx,vy],width:g(v,'diameter')||0,net:gN(v)};tracks.F.push(vi);tracks.B.push(vi);}
+  const t={type:'polyline',svgpath:`M ${sx},${sy} ${arcC(sx,sy,ex,ey,ar)}`,width:aw,net:gN(a)};for(const s of ls)tracks[s].push(t);innerRoute(t,lida);}
+for(const pl of polys){var lidp=gL(pl);const ls=mC(lidp);if(!ls.length&&!isInnerCopper(lidp))continue;const svg=p2s(gP(pl),neg);if(!svg)continue;const tk={type:'polyline',svgpath:svg,width:gW(pl),net:gN(pl)};for(const s of ls)tracks[s].push(tk);innerRoute(tk,lidp);}
+for(const f of fills){var lidf=gL(f);const ls=mC(lidf);if(!ls.length&&!isInnerCopper(lidf))continue;const svg=cp2s(g(f,'complexPolygon'),neg);if(!svg)continue;const tk={type:'polyline',svgpath:svg,width:0,net:gN(f)};for(const s of ls)tracks[s].push(tk);innerRoute(tk,lidf);}
+for(const v of vias){const vx=g(v,'x')||0,vy=neg(g(v,'y')||0);const vi={start:[vx,vy],end:[vx,vy],width:g(v,'diameter')||0,net:gN(v)};tracks.F.push(vi);tracks.B.push(vi);for(var il in innerLayers){innerLayers[il].tracks.push({start:[vx,vy],end:[vx,vy],width:g(v,'diameter')||0,net:gN(v)});}}
 
 // === ZONES (ALL Y negated) ===
 const pourMap={};for(const p of pours){const pid=p.primitiveId||g(p,'primitiveId');if(pid)pourMap[pid]=p;}
@@ -4853,7 +4988,7 @@ function pourCp2s(cp){
     return pourP2s(s);
   }).filter(Boolean).join(' ');
 }
-for(const pd of poureds){const pid=pd.pourPrimitiveId||g(pd,'pourPrimitiveId');const pour=pourMap[pid];if(!pour)continue;const ls=mC(gL(pour));if(!ls.length)continue;const pf=pd.pourFills||g(pd,'pourFills');if(!pf||!Array.isArray(pf))continue;const net=gN(pour);for(const fill of pf){
+for(const pd of poureds){const pid=pd.pourPrimitiveId||g(pd,'pourPrimitiveId');const pour=pourMap[pid];if(!pour)continue;const ls=mC(gL(pour));const pf=pd.pourFills||g(pd,'pourFills');if(!pf||!Array.isArray(pf))continue;const net=gN(pour);var pourLid=gL(pour);for(const fill of pf){
   var cp=fill.complexPolygon;
   if(!cp&&fill.path){
     var fp=fill.path;
@@ -4865,6 +5000,7 @@ for(const pd of poureds){const pid=pd.pourPrimitiveId||g(pd,'pourPrimitiveId');c
   if(!svg)continue;
   if(fill.fill!==false){
     for(const s of ls)zones[s].push({svgpath:svg,net});
+    if(isInnerCopper(pourLid)){(innerLayers[pourLid]=innerLayers[pourLid]||{tracks:[],zones:[]}); innerLayers[pourLid].zones.push({svgpath:svg,net});}
   }
 }}
 
@@ -5128,7 +5264,7 @@ const bom={both:grp(active),F:grp(active.filter(i=>i.layer==='F')),B:grp(active.
   try{title=(await eda.dmt_Board.getCurrentBoardInfo()).name||title;}catch(e){}
   try{company=(await eda.dmt_SelectControl.getCurrentDocumentInfo()).company||company;}catch(e){}
   const now=new Date(),date=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
-  return {ibom_version:'v2.3-50-g53ae\n',edges_bbox,edges,drawings:{silkscreen:silk,fabrication:{F:[],B:[]}},footprints,metadata:{title,revision:'0',company,date},tracks,zones,pads:[],nets,bom};
+  return {ibom_version:'v2.3-50-g53ae\n',edges_bbox,edges,drawings:{silkscreen:silk,fabrication:{F:[],B:[]}},footprints,metadata:{title,revision:'0',company,date},tracks,zones,pads:[],nets,bom,inner:innerLayers,innerLayerIds:Object.keys(innerLayers).sort((a,b)=>+a-+b)};
 }
 
 // === Data fixer (from standalone viewer) ===
@@ -5532,7 +5668,7 @@ document.addEventListener('DOMContentLoaded', async function() {
           </label>
         </div>
       </div>
-      <div class="button-container hideonprint"
+      <div class="button-container hideonprint" id="layout-buttons"
            style="float: right; position: relative; top: 8px">
         <button id="fl-btn" class="left-most-button" onclick="changeCanvasLayout('F')"
                 data-i18n-title="Front Only" data-i18n="Front">正面
@@ -5544,14 +5680,19 @@ document.addEventListener('DOMContentLoaded', async function() {
                 data-i18n-title="Back Only" data-i18n="Back">背面
         </button>
       </div>
-      <div class="button-container hideonprint"
+      <div class="button-container hideonprint" id="bom-preview-controls"
            style="float: right; position: relative; top: 8px">
         <button id="bom-btn" class="left-most-button" onclick="changeBomLayout('bom-only')"
                 data-i18n-title="BOM Only"></button>
         <button id="lr-btn" class="middle-button" onclick="changeBomLayout('left-right')"
                 data-i18n-title="BOM Left, Graphics Right"></button>
-        <button id="tb-btn" class="right-most-button" onclick="changeBomLayout('top-bottom')"
+        <button id="tb-btn" class="middle-button" onclick="changeBomLayout('top-bottom')"
                 data-i18n-title="BOM Top, Graphics Bottom"></button>
+        <button id="preview-btn" class="right-most-button" onclick="togglePreview()"
+                data-i18n-title="PCB Preview" data-i18n="PCB Preview" title="PCB预览">PCB预览
+        </button>
+        <select id="layer-select" style="display:none; vertical-align:top; box-sizing:border-box; height:44px; margin:0; padding:0 8px; font-size:13px; font-weight:bold; border:1px solid #888; border-left:0; border-radius:0 6px 6px 0; background:#eee;" onchange="setPreviewLayer(this.value)">
+        </select>
       </div>
       <div class="button-container hideonprint"
            style="float: right; position: relative; top: 8px">
