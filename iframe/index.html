@@ -1694,7 +1694,8 @@ var __t = {
     "Follow System": "跟随系统",
     "Light": "浅色",
     "Dark": "深色",
-    "Extra": "扩展字段"
+    "Extra": "扩展字段",
+    "BOM": "BOM"
   },
   "en": {
     "Loading...": "Loading...",
@@ -1790,7 +1791,8 @@ var __t = {
     "Follow System": "Follow System",
     "Light": "Light",
     "Dark": "Dark",
-    "Extra": "Extra"
+    "Extra": "Extra",
+    "BOM": "BOM"
   }
 };
 function t(key) {
@@ -4676,10 +4678,12 @@ function togglePreview() {
   previewMode = !previewMode;
   var sel = document.getElementById("layer-select");
   var pbtn = document.getElementById("preview-btn");
+  var bomReturnBtn = document.getElementById("bom-return-btn");
   var layoutGrp = document.getElementById("layout-buttons");        // fl/fb/bl container
   var bomBtns = ["bom-btn","lr-btn","tb-btn"];                       // BOM-layout buttons
   if (previewMode) {
     if (pbtn) { pbtn.classList.add("depressed"); pbtn.classList.add("left-most-button"); pbtn.classList.remove("right-most-button"); }
+    if (bomReturnBtn) { bomReturnBtn.style.display = ""; }
     if (layoutGrp) layoutGrp.style.display = "none";
     for (var i=0;i<bomBtns.length;i++){var b=document.getElementById(bomBtns[i]); if(b)b.style.display="none";}
     if (sel) sel.style.display = "";
@@ -4696,6 +4700,7 @@ function togglePreview() {
     resizeAll();
   } else {
     if (pbtn) { pbtn.classList.remove("depressed"); pbtn.classList.remove("left-most-button"); pbtn.classList.add("right-most-button"); }
+    if (bomReturnBtn) { bomReturnBtn.style.display = "none"; }
     if (layoutGrp) layoutGrp.style.display = "";
     for (var i=0;i<bomBtns.length;i++){var b=document.getElementById(bomBtns[i]); if(b)b.style.display="";}
     if (sel) sel.style.display = "none";
@@ -6002,7 +6007,7 @@ function showConfigForm(data, defaultConfig) {
       var blob = new Blob([templateHtml], {type: 'text/html'});
       var filename = (data.metadata.title || 'ibom') + '.html';
       await eda.sys_FileSystem.saveFile(blob, filename);
-      btn.textContent = '✅ ' + t('Export complete!');
+      btn.textContent = t('Export complete!');
       btn.style.background = '#34a853';
       setTimeout(function() { try { eda.sys_IFrame.closeIFrame('ibom-export-advanced'); } catch(e) {} }, 1500);
     } catch(ex) {
@@ -6272,6 +6277,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         </button>
         <select id="layer-select" style="display:none; vertical-align:top; box-sizing:border-box; height:44px; margin:0; padding:0 8px; font-size:13px; font-weight:bold; border:1px solid #888; border-left:0; border-radius:0 6px 6px 0; background:#eee;" onchange="setPreviewLayer(this.value)">
         </select>
+        <button id="bom-return-btn" class="right-most-button" style="display:none" onclick="togglePreview()"
+                data-i18n-title="BOM" title="BOM">BOM
+        </button>
       </div>
       <div class="button-container hideonprint"
            style="float: right; position: relative; top: 8px">
