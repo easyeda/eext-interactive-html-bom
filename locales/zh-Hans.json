@@ -82,5 +82,11 @@
 	"Language": "语言",
 	"Auto": "自动",
 	"Chinese": "中文",
-	"English": "英文"
+	"English": "英文",
+	"Floating Toolbar": "悬浮工具栏",
+	"Theme": "主题",
+	"Follow System": "跟随系统",
+	"Light": "浅色",
+	"Dark": "深色",
+	"Extra": "扩展字段"
 }

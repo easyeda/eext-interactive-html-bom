@@ -82,5 +82,10 @@
 	"Language": "Language",
 	"Auto": "Auto",
 	"Chinese": "Chinese",
-	"English": "English"
+	"English": "English",
+	"Floating Toolbar": "Floating Toolbar",
+	"Theme": "Theme",
+	"Follow System": "Follow System",
+	"Light": "Light",
+	"Dark": "Dark"
 }

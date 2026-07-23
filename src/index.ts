@@ -37,7 +37,7 @@ export async function exportHTML(): Promise<void> {
  */
 export async function exportAdvancedHTML(): Promise<void> {
 	await eda.sys_Storage.setExtensionUserConfig('ibom_export_mode', 'advanced');
-	eda.sys_IFrame.openIFrame('/iframe/index.html', 600, 520, 'ibom-export-advanced', {
+	eda.sys_IFrame.openIFrame('/iframe/index.html', 550, 470, 'ibom-export-advanced', {
 		maximizeButton: false,
 		minimizeButton: true,
 		title: eda.sys_I18n.text('Export Configuration'),

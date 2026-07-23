@@ -767,21 +767,86 @@ a {
 #frontcanvas, #backcanvas {
     touch-action: none;
 }
-#loading-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;font-family:sans-serif;color:#333}#loading-overlay p{margin:4px 0;font-size:14px;color:#666}
+#loading-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#333}#loading-overlay p{margin:4px 0;font-size:14px;color:#666}
+/* Floating action button for standalone export */
+#fab-toggle{display:none;position:fixed;bottom:24px;right:24px;width:48px;height:48px;border-radius:50%;background:#1a73e8;color:#fff;border:none;font-size:22px;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,0.25);z-index:9002;transition:transform 0.2s,background 0.2s;line-height:48px;text-align:center}
+#fab-toggle:hover{background:#1557b0;transform:scale(1.1)}
+#fab-toggle:active{transform:scale(0.95)}
+.dark #fab-toggle{background:#8ab4f8;color:#1e222a}
+.dark #fab-toggle:hover{background:#6fa1f0}
+#top.collapsed{height:0!important;border-bottom:none!important;overflow:hidden!important;transition:height 0.25s ease}
+#top{transition:height 0.25s ease}
+/* Floating toolbar card */
+#fab-card{display:none;position:fixed;bottom:80px;right:24px;background:#fff;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.18);padding:12px;z-index:9001;max-width:340px;animation:fabCardIn 0.2s ease}
+#fab-card.show{display:block}
+@keyframes fabCardIn{from{opacity:0;transform:translateY(8px) scale(0.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+#fab-card .fab-card-section{margin-bottom:8px}
+#fab-card .fab-card-section:last-child{margin-bottom:0}
+#fab-card .fab-card-title{font-size:10px;font-weight:700;color:#5f6368;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px;padding:0 2px}
+#fab-card .button-container{margin-bottom:0!important;position:static!important;top:auto!important;float:none!important;display:inline-flex!important;flex-wrap:wrap;gap:2px}
+#fab-card .menu{position:relative!important;float:none!important;top:auto!important;display:inline-block!important;vertical-align:top}
+#fab-card .menu .menubtn{}
+#fab-card .menu-content{position:absolute;bottom:calc(100% + 4px);right:0;max-height:70vh;overflow-y:auto}
+.dark #fab-card{background:#2d333b;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
+.dark #fab-card .fab-card-title{color:#9aa0a6}
 /* Export config form */
-.config-form { padding: 16px; max-width: 560px; margin: 0 auto; }
-.config-form h3 { margin: 0 0 12px 0; font-size: 16px; border-bottom: 1px solid #ccc; padding-bottom: 8px; }
-.config-section { margin-bottom: 14px; }
-.config-section-title { font-weight: bold; font-size: 13px; margin-bottom: 6px; color: #555; }
-.config-row { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-bottom: 4px; }
-.config-row label { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; min-width: 140px; cursor: pointer; }
-.config-row select, .config-row input[type="text"], .config-row input[type="range"] { font-size: 13px; }
-.config-buttons { text-align: right; margin-top: 16px; padding-top: 12px; border-top: 1px solid #ccc; }
-.config-buttons button { width: auto; height: 36px; padding: 0 20px; margin-left: 8px; font-size: 14px; cursor: pointer; }
-.dark .config-section-title { color: #aaa; }
-.dark .config-form h3 { border-color: #555; }
-.dark .config-buttons { border-color: #555; }
+.config-form{padding:20px 24px 16px;max-width:680px;margin:0 auto;width:100%;box-sizing:border-box;overflow:hidden}
+.config-form h3{margin:0 0 16px 0;font-size:17px;font-weight:700;color:#1a1a2e;text-align:center;letter-spacing:0.5px}
+.config-grid-outer{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px 24px}
+.config-grid-outer>div{min-width:0;overflow:hidden}
+.config-section-title{font-weight:600;font-size:12px;margin-bottom:10px;color:#1a73e8;text-transform:uppercase;letter-spacing:0.8px;display:flex;align-items:center;gap:6px}
+.config-section-title::before{content:'';display:inline-block;width:3px;height:13px;background:#1a73e8;border-radius:2px}
+.config-export-cell{display:flex;align-items:flex-end;justify-content:flex-end}
+.config-field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.config-field+.config-field{margin-top:8px}
+.config-field label.field-label{font-size:11px;font-weight:600;color:#5f6368;text-transform:uppercase;letter-spacing:0.5px}
+.config-field select,.config-field input[type="text"]{width:100%;height:34px;border:1px solid #dadce0;border-radius:6px;padding:0 10px;font-size:13px;background:#fff;color:#202124;transition:border-color 0.2s,box-shadow 0.2s;outline:none;box-sizing:border-box;max-width:100%}
+.config-field select:focus,.config-field input[type="text"]:focus{border-color:#1a73e8;box-shadow:0 0 0 2px rgba(26,115,232,0.15)}
+.config-field select:hover,.config-field input[type="text"]:hover{border-color:#b0b3b8}
+.config-cb-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px}
+.config-cb-item{display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:6px;cursor:pointer;transition:all 0.15s;font-size:12px;color:#3c4043;user-select:none}
+.config-cb-item:hover{background:#e8f0fe}
+.config-cb-item input[type="checkbox"]{width:15px;height:15px;accent-color:#1a73e8;cursor:pointer;flex-shrink:0}
+.config-range-row{display:flex;align-items:center;gap:10px}
+.config-range-row input[type="range"]{flex:1;height:4px;accent-color:#1a73e8;cursor:pointer}
+.config-range-label{font-size:13px;font-weight:600;color:#1a73e8;min-width:40px;text-align:right}
+#cfg-export-btn{display:inline-flex;align-items:center;justify-content:center;height:38px;padding:0 40px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;border:none;letter-spacing:0.3px;white-space:nowrap;background:#1a73e8;color:#fff;box-shadow:0 1px 3px rgba(26,115,232,0.3)}
+#cfg-export-btn:hover{background:#1557b0;box-shadow:0 2px 6px rgba(26,115,232,0.4)}
+#cfg-export-btn:active{transform:scale(0.97)}
+#cfg-export-btn:disabled{background:#94b8e9;cursor:not-allowed;box-shadow:none}
+.dark #loading-overlay{background:#252c30}
+.dark .config-form h3{color:#e8eaed}
+.dark .config-section-title{color:#8ab4f8}
+.dark .config-section-title::before{background:#8ab4f8}
+.dark .config-field label.field-label{color:#9aa0a6}
+.dark .config-field select,.dark .config-field input[type="text"]{background:#2d333b;border-color:#3d444d;color:#e8eaed}
+.dark .config-field select:focus,.dark .config-field input[type="text"]:focus{border-color:#8ab4f8;box-shadow:0 0 0 2px rgba(138,180,248,0.15)}
+.dark .config-field select:hover,.dark .config-field input[type="text"]:hover{border-color:#4d5562}
+.dark .config-cb-item{color:#bfc1c4}
+.dark .config-cb-item:hover{background:#262c36}
+.dark #cfg-export-btn{background:#8ab4f8;color:#1e222a;box-shadow:0 1px 3px rgba(138,180,248,0.3)}
+.dark #cfg-export-btn:hover{background:#6fa1f0}
 
+/* Column settings gear icon and panel */
+.col-settings-icon{cursor:pointer;font-size:14px;opacity:0.5;transition:opacity 0.2s;vertical-align:middle}
+.col-settings-icon:hover{opacity:1}
+.col-settings-panel{display:none;position:absolute;top:100%;left:0;z-index:5000;background:#fff;border:1px solid #dadce0;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,0.15);padding:8px 0;min-width:200px;max-height:400px;overflow-y:auto}
+.col-settings-panel.show{display:block}
+.col-settings-item{display:flex;align-items:center;gap:6px;padding:4px 12px;font-size:12px;cursor:default;user-select:none;transition:background 0.1s}
+.col-settings-item:hover{background:#f1f3f4}
+.col-settings-item input[type="checkbox"]{width:14px;height:14px;accent-color:#1a73e8;cursor:pointer;flex-shrink:0}
+.col-settings-item .col-name{flex:1;color:#3c4043}
+.col-settings-item.hidden-col .col-name{color:#9aa0a6;text-decoration:line-through}
+.col-settings-item .col-arrows{display:flex;flex-direction:column;gap:1px}
+.col-settings-item .col-arrows button{width:18px;height:14px;border:1px solid #dadce0;border-radius:3px;background:#fff;cursor:pointer;font-size:9px;line-height:12px;padding:0;color:#5f6368;display:flex;align-items:center;justify-content:center}
+.col-settings-item .col-arrows button:hover{background:#e8f0fe;border-color:#1a73e8}
+.col-settings-item .col-arrows button:disabled{opacity:0.3;cursor:default;background:#f1f3f4}
+.dark .col-settings-panel{background:#2d333b;border-color:#3d444d;box-shadow:0 4px 16px rgba(0,0,0,0.4)}
+.dark .col-settings-item:hover{background:#3d444d}
+.dark .col-settings-item .col-name{color:#e8eaed}
+.dark .col-settings-item.hidden-col .col-name{color:#5f6368}
+.dark .col-settings-item .col-arrows button{background:#2d333b;border-color:#3d444d;color:#9aa0a6}
+.dark .col-settings-item .col-arrows button:hover{background:#3d5a80;border-color:#8ab4f8}
   </style>
   <script type="text/javascript" >
 ///////////////////////////////////////////////
@@ -1608,7 +1673,7 @@ var __t = {
     "Failed: ": "失败：",
     "Manufacturer": "制造商",
     "Supplier": "供应商",
-    "PCB Preview": "PCB预览",
+    "PCB": "PCB",
     "Layer": "图层",
     "Top": "顶层",
     "Bottom": "底层",
@@ -1623,7 +1688,13 @@ var __t = {
     "Language": "语言",
     "Auto": "自动",
     "Chinese": "中文",
-    "English": "英文"
+    "English": "英文",
+    "Floating Toolbar": "悬浮工具栏",
+    "Theme": "主题",
+    "Follow System": "跟随系统",
+    "Light": "浅色",
+    "Dark": "深色",
+    "Extra": "扩展字段"
   },
   "en": {
     "Loading...": "Loading...",
@@ -1698,7 +1769,7 @@ var __t = {
     "Failed: ": "Failed: ",
     "Manufacturer": "Manufacturer",
     "Supplier": "Supplier",
-    "PCB Preview": "PCB Preview",
+    "PCB": "PCB",
     "Layer": "Layer",
     "Top": "Top",
     "Bottom": "Bottom",
@@ -1713,12 +1784,18 @@ var __t = {
     "Language": "Language",
     "Auto": "Auto",
     "Chinese": "Chinese",
-    "English": "English"
+    "English": "English",
+    "Floating Toolbar": "Floating Toolbar",
+    "Theme": "Theme",
+    "Follow System": "Follow System",
+    "Light": "Light",
+    "Dark": "Dark",
+    "Extra": "Extra"
   }
 };
 function t(key) {
   // Local dictionary takes precedence for this extension's own keys, so custom
-  // strings (e.g. "PCB Preview") are always translated even if the EDA host
+  // strings (e.g. "PCB") are always translated even if the EDA host
   // does not know them.
   var d = __t[__locale] || __t['zh-Hans'];
   if (d && Object.prototype.hasOwnProperty.call(d, key)) return d[key];
@@ -2342,6 +2419,16 @@ function initDefaults() {
   document.getElementById("bomCheckboxes").value = bomCheckboxes;
 
   settings.darkenWhenChecked = useConfig ? "" : (readStorage("darkenWhenChecked") || "");
+
+  // Column visibility and order
+  try {
+    var storedVis = readStorage('visibleColumns');
+    settings.visibleColumns = storedVis ? JSON.parse(storedVis) : getDefaultVisibleColumns();
+  } catch(e) { settings.visibleColumns = getDefaultVisibleColumns(); }
+  try {
+    var storedOrder = readStorage('columnOrder');
+    settings.columnOrder = storedOrder ? JSON.parse(storedOrder) : getDefaultColumnOrder();
+  } catch(e) { settings.columnOrder = getDefaultColumnOrder(); }
   populateDarkenWhenCheckedOptions();
 
   function initBooleanSetting(storageString, def, elementId, func) {
@@ -2371,7 +2458,21 @@ function initDefaults() {
   initBooleanSetting("dnpOutline", false, "dnpOutlineCheckbox", dnpOutline);
   initBooleanSetting("redrawOnDrag", config.redraw_on_drag, "dragCheckbox", setRedrawOnDrag);
   initBooleanSetting("showCrosshair", config.show_crosshair, "crosshairCheckbox", setShowCrosshair);
-  initBooleanSetting("darkmode", config.dark_mode, "darkmodeCheckbox", setDarkMode);
+  // dark_mode: 'auto'|'light'|'dark' (new) or boolean (legacy compat)
+  var dm = useConfig ? config.dark_mode : readStorage("darkmode");
+  if (dm === 'auto') {
+    // auto: set initial state from system, listener added later in DOMContentLoaded
+    var mq = window.matchMedia('(prefers-color-scheme: dark)');
+    setDarkMode(mq.matches);
+  } else if (dm === 'light') {
+    setDarkMode(false);
+  } else if (dm === 'dark' || dm === true) {
+    setDarkMode(true);
+  } else if (dm === false) {
+    setDarkMode(false);
+  } else {
+    setDarkMode(config.dark_mode === true || config.dark_mode === 'dark');
+  }
   initBooleanSetting("highlightpin1", config.highlight_pin1, "highlightpin1Checkbox", setHighlightPin1);
   settings.boardRotation = useConfig ? (config.board_rotation * 5) : readStorage("boardRotation");
   if (settings.boardRotation === null) {
@@ -4012,6 +4113,131 @@ function checkboxSetUnsetAllHandler(checkboxname) {
   }
 }
 
+// Column registry for BOM table
+var BOM_COL_DEFS = {
+  checkboxes: { label: 'Checkboxes', cls: 'bom-checkbox' },
+  reference:  { label: 'Reference',  cls: 'References' },
+  extra:      { label: 'Extra',      cls: 'extra' },
+  value:      { label: 'Value',      cls: 'Value' },
+  footprint:  { label: 'Footprint',  cls: 'Footprint' },
+  quantity:   { label: 'Quantity',   cls: 'Quantity' },
+  netname:    { label: 'Net',        cls: 'bom-netname' },
+};
+var BOM_COL_DEFAULT_ORDER = ['checkboxes','reference','extra','value','footprint','quantity','netname'];
+
+function getDefaultColumnOrder() { return BOM_COL_DEFAULT_ORDER.slice(); }
+function getDefaultVisibleColumns() {
+  var v = {}; BOM_COL_DEFAULT_ORDER.forEach(function(k){ v[k] = true; }); return v;
+}
+function getColumnOrder() { return (settings.columnOrder && settings.columnOrder.length) ? settings.columnOrder : getDefaultColumnOrder(); }
+function getVisibleColumns() { return settings.visibleColumns || getDefaultVisibleColumns(); }
+function isColumnVisible(id) { var vc = getVisibleColumns(); return vc[id] !== false; }
+function getActiveColumns() {
+  var order = getColumnOrder();
+  var mode = settings.bommode;
+  return order.filter(function(id) {
+    if (!isColumnVisible(id)) return false;
+    if (id === 'quantity' && mode !== 'grouped') return false;
+    if (id === 'netname' && mode !== 'netlist') return false;
+    if (id === 'netname' && mode !== 'netlist') return false;
+    return true;
+  });
+}
+
+function showColumnSettings(anchorEl) {
+  // Remove existing panel if any
+  var old = document.getElementById('col-settings-panel');
+  if (old) { old.remove(); return; }
+
+  var panel = document.createElement('div');
+  panel.id = 'col-settings-panel';
+  panel.className = 'col-settings-panel show';
+
+  var order = getColumnOrder();
+  var vc = getVisibleColumns();
+  var mode = settings.bommode;
+
+  function renderItems() {
+    panel.innerHTML = '';
+    order.forEach(function(id, idx) {
+      var def = BOM_COL_DEFS[id];
+      if (!def) return;
+      var item = document.createElement('div');
+      item.className = 'col-settings-item' + (vc[id] === false ? ' hidden-col' : '');
+
+      // Checkbox
+      var cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.checked = vc[id] !== false;
+      cb.onchange = function() {
+        vc[id] = cb.checked;
+        settings.visibleColumns = vc;
+        writeStorage('visibleColumns', JSON.stringify(vc));
+        item.className = 'col-settings-item' + (cb.checked ? '' : ' hidden-col');
+        populateBomHeader();
+        populateBomBody();
+      };
+      item.appendChild(cb);
+
+      // Name
+      var nameSpan = document.createElement('span');
+      nameSpan.className = 'col-name';
+      nameSpan.textContent = t(def.label) || def.label;
+      item.appendChild(nameSpan);
+
+      // Arrows
+      var arrows = document.createElement('div');
+      arrows.className = 'col-arrows';
+      var upBtn = document.createElement('button');
+      upBtn.textContent = '▲';
+      upBtn.disabled = (idx === 0);
+      upBtn.onclick = function(e) {
+        e.stopPropagation();
+        if (idx > 0) {
+          var tmp = order[idx]; order[idx] = order[idx-1]; order[idx-1] = tmp;
+          settings.columnOrder = order;
+          writeStorage('columnOrder', JSON.stringify(order));
+          renderItems();
+          populateBomHeader();
+          populateBomBody();
+        }
+      };
+      var downBtn = document.createElement('button');
+      downBtn.textContent = '▼';
+      downBtn.disabled = (idx === order.length - 1);
+      downBtn.onclick = function(e) {
+        e.stopPropagation();
+        if (idx < order.length - 1) {
+          var tmp = order[idx]; order[idx] = order[idx+1]; order[idx+1] = tmp;
+          settings.columnOrder = order;
+          writeStorage('columnOrder', JSON.stringify(order));
+          renderItems();
+          populateBomHeader();
+          populateBomBody();
+        }
+      };
+      arrows.appendChild(upBtn);
+      arrows.appendChild(downBtn);
+      item.appendChild(arrows);
+      panel.appendChild(item);
+    });
+  }
+
+  renderItems();
+  anchorEl.parentElement.style.position = 'relative';
+  anchorEl.parentElement.appendChild(panel);
+
+  // Close on outside click
+  setTimeout(function() {
+    document.addEventListener('click', function closePanel(e) {
+      if (!panel.contains(e.target) && e.target !== anchorEl) {
+        panel.remove();
+        document.removeEventListener('click', closePanel);
+      }
+    });
+  }, 0);
+}
+
 function createColumnHeader(name, cls, comparator) {
   var th = document.createElement("TH");
   th.innerHTML = name;
@@ -4065,9 +4291,18 @@ function populateBomHeader() {
     bomhead.removeChild(bomhead.firstChild);
   }
   var tr = document.createElement("TR");
-  var th = document.createElement("TH");
-  th.classList.add("numCol");
-  tr.appendChild(th);
+  // Number column with gear icon
+  var numTh = document.createElement("TH");
+  numTh.classList.add("numCol");
+  numTh.style.position = "relative";
+  var gear = document.createElement("span");
+  gear.className = "col-settings-icon";
+  gear.textContent = "⚙";
+  gear.onclick = function(e) { e.stopPropagation(); showColumnSettings(gear); };
+  numTh.appendChild(gear);
+  tr.appendChild(numTh);
+
+  var activeCols = getActiveColumns();
   var checkboxCompareClosure = function(checkbox) {
     return (a, b) => {
       var stateA = getCheckboxState(checkbox, a[3]);
@@ -4077,55 +4312,69 @@ function populateBomHeader() {
       return 0;
     }
   }
-  if (settings.bommode == "netlist") {
-    th = createColumnHeader(t("Net"), "bom-netname", (a, b) => {
-      if (a > b) return -1;
-      if (a < b) return 1;
-      return 0;
-    });
-    tr.appendChild(th);
-  } else {
-    for (var checkbox of settings.checkboxes) {
-      th = createColumnHeader(
-        checkbox, "bom-checkbox", checkboxCompareClosure(checkbox));
-      th.onclick = fancyDblClickHandler(
-        th, th.onclick.bind(th), checkboxSetUnsetAllHandler(checkbox));
-      tr.appendChild(th);
-    }
-    tr.appendChild(createColumnHeader(t("Reference"), "References", (a, b) => {
-      var i = 0;
-      while (i < a[3].length && i < b[3].length) {
-        if (a[3][i] != b[3][i]) return a[3][i] > b[3][i] ? 1 : -1;
-        i++;
-      }
-      return a[3].length - b[3].length;
-    }));
-    // Extra fields
-    if (config.extra_fields.length > 0) {
-      var extraFieldCompareClosure = function(fieldIndex) {
-        return (a, b) => {
-          var fa = a[4][fieldIndex];
-          var fb = b[4][fieldIndex];
-          if (fa != fb) return fa > fb ? 1 : -1;
-          else return 0;
+
+  for (var ci = 0; ci < activeCols.length; ci++) {
+    var colId = activeCols[ci];
+    switch (colId) {
+      case 'checkboxes':
+        for (var checkbox of settings.checkboxes) {
+          var cth = createColumnHeader(checkbox, "bom-checkbox", checkboxCompareClosure(checkbox));
+          cth.onclick = fancyDblClickHandler(cth, cth.onclick.bind(cth), checkboxSetUnsetAllHandler(checkbox));
+          tr.appendChild(cth);
         }
-      }
-      for (var i in config.extra_fields) {
-        tr.appendChild(createColumnHeader(
-          config.extra_fields[i], "extra", extraFieldCompareClosure(i)));
-      }
-    }
-    tr.appendChild(createColumnHeader(t("Value"), "Value", (a, b) => {
-      return valueCompare(a[5], b[5], a[1], b[1]);
-    }));
-    tr.appendChild(createColumnHeader(t("Footprint"), "Footprint", (a, b) => {
-      if (a[2] != b[2]) return a[2] > b[2] ? 1 : -1;
-      else return 0;
-    }));
-    if (settings.bommode == "grouped") {
-      tr.appendChild(createColumnHeader(t("Quantity"), "Quantity", (a, b) => {
-        return a[3].length - b[3].length;
-      }));
+        break;
+      case 'reference':
+        tr.appendChild(createColumnHeader(t("Reference"), "References", (a, b) => {
+          var i = 0;
+          while (i < a[3].length && i < b[3].length) {
+            if (a[3][i] != b[3][i]) return a[3][i] > b[3][i] ? 1 : -1;
+            i++;
+          }
+          return a[3].length - b[3].length;
+        }));
+        break;
+      case 'extra':
+        if (config.extra_fields.length > 0) {
+          var extraFieldCompareClosure = function(fieldIndex) {
+            return (a, b) => {
+              var fa = a[4][fieldIndex];
+              var fb = b[4][fieldIndex];
+              if (fa != fb) return fa > fb ? 1 : -1;
+              else return 0;
+            }
+          }
+          for (var ei in config.extra_fields) {
+            tr.appendChild(createColumnHeader(config.extra_fields[ei], "extra", extraFieldCompareClosure(ei)));
+          }
+        }
+        break;
+      case 'value':
+        tr.appendChild(createColumnHeader(t("Value"), "Value", (a, b) => {
+          return valueCompare(a[5], b[5], a[1], b[1]);
+        }));
+        break;
+      case 'footprint':
+        tr.appendChild(createColumnHeader(t("Footprint"), "Footprint", (a, b) => {
+          if (a[2] != b[2]) return a[2] > b[2] ? 1 : -1;
+          else return 0;
+        }));
+        break;
+      case 'quantity':
+        if (settings.bommode == "grouped") {
+          tr.appendChild(createColumnHeader(t("Quantity"), "Quantity", (a, b) => {
+            return a[3].length - b[3].length;
+          }));
+        }
+        break;
+      case 'netname':
+        if (settings.bommode == "netlist") {
+          tr.appendChild(createColumnHeader(t("Net"), "bom-netname", (a, b) => {
+            if (a > b) return -1;
+            if (a < b) return 1;
+            return 0;
+          }));
+        }
+        break;
     }
   }
   bomhead.appendChild(tr);
@@ -4181,58 +4430,74 @@ function populateBomBody() {
     tr.id = "bomrow" + rownum;
     td.textContent = rownum;
     tr.appendChild(td);
+
+    var activeCols = getActiveColumns();
+
     if (settings.bommode == "netlist") {
       netname = bomentry;
-      td = document.createElement("TD");
-      td.innerHTML = highlightFilter(netname ? netname : "&lt;no net&gt;");
-      tr.appendChild(td);
-    } else {
-      if (reflookup) {
-        references = findRefInEntry(bomentry);
-        if (references.length == 0) {
-          continue;
-        }
-      } else {
-        references = bomentry[3];
-      }
-      // Checkboxes
-      for (var checkbox of settings.checkboxes) {
-        if (checkbox) {
+      for (var ci = 0; ci < activeCols.length; ci++) {
+        if (activeCols[ci] === 'netname') {
           td = document.createElement("TD");
-          var input = document.createElement("input");
-          input.type = "checkbox";
-          input.onchange = createCheckboxChangeHandler(checkbox, references, tr);
-          setBomCheckboxState(checkbox, input, references);
-          if (input.checked && settings.darkenWhenChecked == checkbox) {
-            tr.classList.add("checked");
-          }
-          td.appendChild(input);
+          td.innerHTML = highlightFilter(netname ? netname : "&lt;no net&gt;");
           tr.appendChild(td);
         }
       }
-      // References
-      td = document.createElement("TD");
-      td.innerHTML = highlightFilter(references.map(r => r[0]).join(", "));
-      tr.appendChild(td);
-      // Extra fields
-      for (var i in config.extra_fields) {
-        td = document.createElement("TD");
-        td.innerHTML = highlightFilter(bomentry[4][i]);
-        tr.appendChild(td);
+    } else {
+      if (reflookup) {
+        references = findRefInEntry(bomentry);
+        if (references.length == 0) continue;
+      } else {
+        references = bomentry[3];
       }
-      // Value
-      td = document.createElement("TD");
-      td.innerHTML = highlightFilter(bomentry[1]);
-      tr.appendChild(td);
-      // Footprint
-      td = document.createElement("TD");
-      td.innerHTML = highlightFilter(bomentry[2]);
-      tr.appendChild(td);
-      if (settings.bommode == "grouped") {
-        // Quantity
-        td = document.createElement("TD");
-        td.textContent = bomentry[3].length;
-        tr.appendChild(td);
+      for (var ci = 0; ci < activeCols.length; ci++) {
+        var colId = activeCols[ci];
+        switch (colId) {
+          case 'checkboxes':
+            for (var checkbox of settings.checkboxes) {
+              if (checkbox) {
+                td = document.createElement("TD");
+                var input = document.createElement("input");
+                input.type = "checkbox";
+                input.onchange = createCheckboxChangeHandler(checkbox, references, tr);
+                setBomCheckboxState(checkbox, input, references);
+                if (input.checked && settings.darkenWhenChecked == checkbox) {
+                  tr.classList.add("checked");
+                }
+                td.appendChild(input);
+                tr.appendChild(td);
+              }
+            }
+            break;
+          case 'reference':
+            td = document.createElement("TD");
+            td.innerHTML = highlightFilter(references.map(r => r[0]).join(", "));
+            tr.appendChild(td);
+            break;
+          case 'extra':
+            for (var ei in config.extra_fields) {
+              td = document.createElement("TD");
+              td.innerHTML = highlightFilter(bomentry[4][ei]);
+              tr.appendChild(td);
+            }
+            break;
+          case 'value':
+            td = document.createElement("TD");
+            td.innerHTML = highlightFilter(bomentry[1]);
+            tr.appendChild(td);
+            break;
+          case 'footprint':
+            td = document.createElement("TD");
+            td.innerHTML = highlightFilter(bomentry[2]);
+            tr.appendChild(td);
+            break;
+          case 'quantity':
+            if (settings.bommode == "grouped") {
+              td = document.createElement("TD");
+              td.textContent = bomentry[3].length;
+              tr.appendChild(td);
+            }
+            break;
+        }
       }
     }
     bom.appendChild(tr);
@@ -4812,7 +5077,7 @@ function initBOM() {
   // Triggers render
   changeBomLayout(settings.bomlayout);
 
-  // PCB preview mode (multi-layer copper)
+  // PCB mode (multi-layer copper)
   populateLayerSelect();
 
   // Enter preview mode if default view was set to pcb-preview
@@ -5609,68 +5874,84 @@ function buildConfigFormHTML(def) {
     return '<option value="' + val + '"' + (selected ? ' selected' : '') + '>' + t(label) + '</option>';
   }
   function cb(id, key, checked) {
-    return '<label><input id="' + id + '" type="checkbox"' + (checked ? ' checked' : '') + '> ' + t(key) + '</label>';
+    return '<label class="config-cb-item"><input id="' + id + '" type="checkbox"' + (checked ? ' checked' : '') + '> ' + t(key) + '</label>';
   }
   return '<div class="config-form">' +
-    '<h3>' + t('Export Configuration') + '</h3>' +
-    '<div class="config-section">' +
+    '<div class="config-grid-outer">' +
+
+    // Left: Default View
+    '<div>' +
       '<div class="config-section-title">' + t('Default View') + '</div>' +
-      '<div class="config-row">' +
-        '<label>' + t('BOM Layout') + ': ' +
-          '<select id="cfg-bom-view">' +
-            opt('bom-only', 'BOM Only', def.bom_view === 'bom-only') +
-            opt('left-right', 'BOM Left, Graphics Right', def.bom_view === 'left-right') +
-            opt('top-bottom', 'BOM Top, Graphics Bottom', def.bom_view === 'top-bottom') +
-            opt('pcb-preview', 'PCB Preview', def.bom_view === 'pcb-preview') +
-          '</select>' +
-        '</label>' +
-        '<label>' + t('Layer View') + ': ' +
-          '<select id="cfg-layer-view">' +
-            opt('F', 'Front Only', def.layer_view === 'F') +
-            opt('FB', 'Front and Back', def.layer_view === 'FB') +
-            opt('B', 'Back Only', def.layer_view === 'B') +
-          '</select>' +
-        '</label>' +
-        '<label>' + t('Language') + ': ' +
-          '<select id="cfg-locale">' +
-            opt('', 'Auto', !def.locale) +
-            opt('zh-Hans', 'Chinese', def.locale === 'zh-Hans') +
-            opt('en', 'English', def.locale === 'en') +
-          '</select>' +
-        '</label>' +
+      '<div class="config-field">' +
+        '<label class="field-label">' + t('BOM Layout') + '</label>' +
+        '<select id="cfg-bom-view">' +
+          opt('bom-only', 'BOM Only', def.bom_view === 'bom-only') +
+          opt('left-right', 'BOM Left, Graphics Right', def.bom_view === 'left-right') +
+          opt('top-bottom', 'BOM Top, Graphics Bottom', def.bom_view === 'top-bottom') +
+          opt('pcb-preview', 'PCB', def.bom_view === 'pcb-preview') +
+        '</select>' +
+      '</div>' +
+      '<div class="config-field">' +
+        '<label class="field-label">' + t('Layer View') + '</label>' +
+        '<select id="cfg-layer-view">' +
+          opt('F', 'Front Only', def.layer_view === 'F') +
+          opt('FB', 'Front and Back', def.layer_view === 'FB') +
+          opt('B', 'Back Only', def.layer_view === 'B') +
+        '</select>' +
+      '</div>' +
+      '<div class="config-field">' +
+        '<label class="field-label">' + t('Language') + '</label>' +
+        '<select id="cfg-locale">' +
+          opt('', 'Auto', !def.locale) +
+          opt('zh-Hans', 'Chinese', def.locale === 'zh-Hans') +
+          opt('en', 'English', def.locale === 'en') +
+        '</select>' +
       '</div>' +
     '</div>' +
-    '<div class="config-section">' +
+
+    // Right: Display Settings
+    '<div>' +
       '<div class="config-section-title">' + t('Display Settings') + '</div>' +
-      '<div class="config-row">' +
-        cb('cfg-dark-mode', 'Dark Mode', def.dark_mode) +
+      '<div class="config-field" style="margin-bottom:8px">' +
+        '<label class="field-label">' + t('Theme') + '</label>' +
+        '<select id="cfg-theme">' +
+          opt('auto', 'Follow System', def.dark_mode === 'auto' || def.dark_mode === true) +
+          opt('light', 'Light', def.dark_mode === 'light' || def.dark_mode === false) +
+          opt('dark', 'Dark', def.dark_mode === 'dark') +
+        '</select>' +
+      '</div>' +
+      '<div class="config-cb-grid">' +
+        cb('cfg-floating-toolbar', 'Floating Toolbar', def.floating_toolbar !== false) +
         cb('cfg-silkscreen', 'Silkscreen', def.show_silkscreen) +
         cb('cfg-pads', 'Pads', def.show_pads) +
         cb('cfg-fabrication', 'Fab Layer', def.show_fabrication) +
-      '</div>' +
-      '<div class="config-row">' +
         cb('cfg-highlight-pin1', 'Highlight Pin 1', def.highlight_pin1) +
         cb('cfg-redraw-on-drag', 'Redraw on Drag', def.redraw_on_drag) +
         cb('cfg-crosshair', 'Show Crosshair', def.show_crosshair) +
       '</div>' +
     '</div>' +
-    '<div class="config-section">' +
+
+    // Row 2 left: BOM Settings
+    '<div>' +
       '<div class="config-section-title">' + t('BOM Settings') + '</div>' +
-      '<div class="config-row">' +
-        '<label>' + t('BOM Checkboxes') + ': ' +
-          '<input id="cfg-checkboxes" type="text" value="' + (def.checkboxes || '') + '" style="width:200px">' +
-        '</label>' +
+      '<div class="config-field">' +
+        '<label class="field-label">' + t('BOM Checkboxes') + '</label>' +
+        '<input id="cfg-checkboxes" type="text" value="' + (def.checkboxes || '') + '" placeholder="Found,Solder">' +
       '</div>' +
-      '<div class="config-row">' +
-        '<label>' + t('Board Rotation') + ': ' +
-          '<input id="cfg-board-rotation" type="range" min="-36" max="36" value="' + (def.board_rotation || 0) + '"> ' +
-          '<span id="cfg-rotation-label">' + ((def.board_rotation || 0) * 10) + '°</span>' +
-        '</label>' +
+      '<div class="config-field">' +
+        '<label class="field-label">' + t('Board Rotation') + '</label>' +
+        '<div class="config-range-row">' +
+          '<input id="cfg-board-rotation" type="range" min="-36" max="36" value="' + (def.board_rotation || 0) + '">' +
+          '<span id="cfg-rotation-label" class="config-range-label">' + ((def.board_rotation || 0) * 10) + '°</span>' +
+        '</div>' +
       '</div>' +
     '</div>' +
-    '<div class="config-buttons">' +
-      '<button id="cfg-cancel-btn">' + t('Cancel') + '</button>' +
-      '<button id="cfg-export-btn" style="background:#0a6;color:white">' + t('Export') + '</button>' +
+
+    // Row 2 right: Export button
+    '<div class="config-export-cell">' +
+      '<button id="cfg-export-btn">🚀 ' + t('Export') + '</button>' +
+    '</div>' +
+
     '</div>' +
   '</div>';
 }
@@ -5681,7 +5962,8 @@ function readConfigFromForm(def) {
     redraw_on_drag: document.getElementById('cfg-redraw-on-drag').checked,
     highlight_pin1: document.getElementById('cfg-highlight-pin1').checked,
     extra_fields: def.extra_fields || [],
-    dark_mode: document.getElementById('cfg-dark-mode').checked,
+    dark_mode: document.getElementById('cfg-theme').value,
+    floating_toolbar: document.getElementById('cfg-floating-toolbar').checked,
     bom_view: document.getElementById('cfg-bom-view').value,
     board_rotation: parseFloat(document.getElementById('cfg-board-rotation').value) || 0,
     checkboxes: document.getElementById('cfg-checkboxes').value,
@@ -5696,11 +5978,10 @@ function readConfigFromForm(def) {
 
 function showConfigForm(data, defaultConfig) {
   var ov = document.getElementById('loading-overlay');
+  ov.style.justifyContent = 'flex-start';
+  ov.style.paddingTop = '24px';
+  ov.style.overflowY = 'auto';
   ov.innerHTML = buildConfigFormHTML(defaultConfig);
-
-  document.getElementById('cfg-cancel-btn').onclick = function() {
-    try { eda.sys_IFrame.closeIFrame('ibom-export-advanced'); } catch(e) {}
-  };
 
   document.getElementById('cfg-board-rotation').oninput = function() {
     document.getElementById('cfg-rotation-label').textContent = (this.value * 10) + '°';
@@ -5709,7 +5990,7 @@ function showConfigForm(data, defaultConfig) {
   document.getElementById('cfg-export-btn').onclick = async function() {
     var btn = this;
     btn.disabled = true;
-    btn.textContent = t('Generating HTML file...');
+    btn.textContent = '⏳ ' + t('Generating HTML file...');
     try {
       var userConfig = readConfigFromForm(defaultConfig);
       var templateFile = await eda.sys_FileSystem.getExtensionFile('/iframe/index.html');
@@ -5721,10 +6002,12 @@ function showConfigForm(data, defaultConfig) {
       var blob = new Blob([templateHtml], {type: 'text/html'});
       var filename = (data.metadata.title || 'ibom') + '.html';
       await eda.sys_FileSystem.saveFile(blob, filename);
-      btn.textContent = t('Export complete!');
+      btn.textContent = '✅ ' + t('Export complete!');
+      btn.style.background = '#34a853';
       setTimeout(function() { try { eda.sys_IFrame.closeIFrame('ibom-export-advanced'); } catch(e) {} }, 1500);
     } catch(ex) {
-      btn.textContent = t('Export failed: ') + ex.message;
+      btn.textContent = '❌ ' + t('Export failed: ') + ex.message;
+      btn.style.background = '#ea4335';
       btn.disabled = false;
     }
   };
@@ -5742,6 +6025,61 @@ document.addEventListener('DOMContentLoaded', async function() {
     var ov2 = document.getElementById('loading-overlay');
     if (ov2) ov2.style.display = 'none';
     initBOM();
+    // System theme listener for 'auto' mode
+    if (window.config && window.config.dark_mode === 'auto') {
+      var mq = window.matchMedia('(prefers-color-scheme: dark)');
+      mq.addEventListener('change', function(e) { setDarkMode(e.matches); });
+    }
+    // Floating toolbar card mode
+    var useFloating = !window.config || window.config.floating_toolbar !== false;
+    var fab = document.getElementById('fab-toggle');
+    var fabCard = document.getElementById('fab-card');
+    var topEl = document.getElementById('top');
+    var botEl = document.getElementById('bot');
+    if (useFloating && fab && topEl && fabCard) {
+      // Move toolbar elements into floating card (not clone, to avoid duplicate IDs)
+      var bomPreview = document.getElementById('bom-preview-controls');
+      var layoutBtns = document.getElementById('layout-buttons');
+      var bomModeBtns = null;
+      if (bomPreview) bomModeBtns = bomPreview.nextElementSibling;
+      var settingsMenu = topEl.querySelector('.menu');
+      var cardContent = document.createDocumentFragment();
+      function wrapSection(el, title) {
+        var sec = document.createElement('div');
+        sec.className = 'fab-card-section';
+        if (title) {
+          var t2 = document.createElement('div');
+          t2.className = 'fab-card-title';
+          t2.textContent = title;
+          sec.appendChild(t2);
+        }
+        sec.appendChild(el);
+        return sec;
+      }
+      if (bomPreview) cardContent.appendChild(wrapSection(bomPreview, 'BOM'));
+      if (layoutBtns) cardContent.appendChild(wrapSection(layoutBtns, t('Layer View')));
+      if (bomModeBtns && bomModeBtns.classList && bomModeBtns.classList.contains('button-container')) cardContent.appendChild(wrapSection(bomModeBtns, 'BOM Mode'));
+      if (settingsMenu) cardContent.appendChild(wrapSection(settingsMenu, null));
+      fabCard.appendChild(cardContent);
+      // Hide original toolbar, expand canvas
+      topEl.style.display = 'none';
+      if (botEl) { botEl.style.height = '100%'; botEl.style.borderTop = 'none'; }
+      // Show FAB
+      fab.style.display = 'block';
+      fab.onclick = function(e) {
+        e.stopPropagation();
+        var isOpen = fabCard.classList.toggle('show');
+        fab.textContent = isOpen ? '✕' : '☰';
+      };
+      // Close card on outside click
+      document.addEventListener('click', function(e) {
+        if (!fabCard.contains(e.target) && e.target !== fab) {
+          fabCard.classList.remove('show');
+          fab.textContent = '☰';
+        }
+      });
+      resizeAll();
+    }
     return;
   }
   var ov = document.getElementById('loading-overlay');
@@ -5763,9 +6101,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     window.config = {
       show_fabrication:false, redraw_on_drag:true, highlight_pin1:false,
       extra_fields: data.bom&&data.bom.customColumns?data.bom.customColumns:[],
-      dark_mode:false, bom_view:"left-right", board_rotation:0.0,
+      dark_mode:'auto', bom_view:"left-right", board_rotation:0.0,
       checkboxes:t("Found")+","+t("Solder"), show_silkscreen:true, show_pads:true, layer_view:"F",
-      show_crosshair:false
+      show_crosshair:false, floating_toolbar:true
     };
 
     // Check export mode via storage flag
@@ -5825,6 +6163,8 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 <body>
 <div id="loading-overlay"><p data-i18n="Loading...">正在加载...</p></div>
+<button id="fab-toggle" title="Toggle toolbar">☰</button>
+<div id="fab-card"></div>
 <div id="topmostdiv" class="topmostdiv">
   <div id="top">
     <div style="float: right; height: 100%;">
@@ -5928,7 +6268,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         <button id="tb-btn" class="middle-button" onclick="changeBomLayout('top-bottom')"
                 data-i18n-title="BOM Top, Graphics Bottom"></button>
         <button id="preview-btn" class="right-most-button" onclick="togglePreview()"
-                data-i18n-title="PCB Preview" data-i18n="PCB Preview" title="PCB预览">PCB预览
+                data-i18n-title="PCB" data-i18n="PCB" title="PCB">PCB
         </button>
         <select id="layer-select" style="display:none; vertical-align:top; box-sizing:border-box; height:44px; margin:0; padding:0 8px; font-size:13px; font-weight:bold; border:1px solid #888; border-left:0; border-radius:0 6px 6px 0; background:#eee;" onchange="setPreviewLayer(this.value)">
         </select>
