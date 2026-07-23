@@ -621,6 +621,26 @@ mark.highlight {
   display: block;
 }
 
+/* ===== Responsive: phones / narrow screens ===== */
+@media (max-width: 760px) {
+  /* Let the page grow a taller header and let the canvas fill the rest */
+  #topmostdiv { display: flex; flex-direction: column; }
+  #top { height: auto; flex: 0 0 auto; }
+  #bot { height: auto !important; flex: 1 1 auto; min-height: 0; }
+  /* Flatten the floated toolbar wrapper so button groups wrap onto new lines */
+  #top > div:first-child { float: none !important; height: auto !important; display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; }
+  #top .button-container { float: none !important; position: static !important; top: auto !important; margin: 4px; }
+  #top .menu { float: none !important; top: auto !important; margin: 4px; }
+  /* Compact text-label buttons */
+  button#fl-btn, button#fb-btn, button#bl-btn, button#preview-btn {
+    font-size: 12px; padding: 0 5px; min-width: 36px;
+  }
+  #bom-preview-controls > select { height: 40px; font-size: 12px; padding: 0 4px; }
+  .button-container { margin: 4px 4px; }
+  .fileinfo .title { font-size: 14pt; }
+  .searchbox { height: 32px; font-size: 14px; padding: 6px 28px; }
+}
+
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -3330,6 +3350,26 @@ function bboxHitScan(layer, x, y) {
   return result;
 }
 
+// Footprint hit-scan: bbox first, then fall back to pad hit-testing so a
+// component is still selected even if the exact bbox test misses (e.g. rotated
+// parts or minor coordinate offsets inside the host iframe).
+function footprintHitScan(layer, x, y) {
+  var result = bboxHitScan(layer, x, y);
+  if (result.length) return result;
+  for (var i = 0; i < pcbdata.footprints.length; i++) {
+    var fp = pcbdata.footprints[i];
+    if (fp.layer != layer) continue;
+    for (var pi = 0; pi < fp.pads.length; pi++) {
+      var pad = fp.pads[pi];
+      if (pad.layers.includes(layer) && pointWithinPad(x, y, pad)) {
+        result.push(i);
+        break;
+      }
+    }
+  }
+  return result;
+}
+
 function handlePointerDown(e, layerdict) {
   if (e.button != 0 && e.button != 1) {
     return;
@@ -3351,13 +3391,13 @@ function handlePointerDown(e, layerdict) {
   };
 }
 
-function handleMouseClick(e, layerdict) {
+// Convert a pointer event's offset coords into board (PCB) coordinates.
+function eventToBoardCoords(e, layerdict) {
   if (!e.hasOwnProperty("offsetX")) {
     // The polyfill doesn't set this properly
     e.offsetX = e.pageX - e.currentTarget.offsetLeft;
     e.offsetY = e.pageY - e.currentTarget.offsetTop;
   }
-
   var x = e.offsetX;
   var y = e.offsetY;
   var t = layerdict.transform;
@@ -3367,17 +3407,30 @@ function handleMouseClick(e, layerdict) {
     x = (devicePixelRatio * x / t.zoom - t.panx - t.x) / t.s;
   }
   y = (devicePixelRatio * y / t.zoom - t.y - t.pany) / t.s;
-  var v = rotateVector([x, y], -settings.boardRotation);
-  if ("nets" in pcbdata) {
-    var net = netHitScan(layerdict.layer, ...v);
-    if (net !== highlightedNet) {
-      netClicked(net);
+  return rotateVector([x, y], -settings.boardRotation);
+}
+
+// Single click: a footprint identifier box takes priority over copper/tracks.
+// Clicking a footprint that is already highlighted "drills through" to select
+// the copper/track net underneath — equivalent to a double-click but robust in
+// any host environment (no reliance on the dblclick DOM event, which misfires
+// inside the EasyEDA iframe).
+function handleMouseClick(e, layerdict) {
+  var v = eventToBoardCoords(e, layerdict);
+  var footprints = footprintHitScan(layerdict.layer, ...v);
+  if (footprints.length > 0) {
+    var already = footprints.some(function(f){ return highlightedFootprints.indexOf(f) >= 0; });
+    if (already && "nets" in pcbdata) {
+      var net = netHitScan(layerdict.layer, ...v);
+      if (net !== null) { netClicked(net); return; }
     }
+    footprintsClicked(footprints);
+    return;
   }
-  if (highlightedNet === null) {
-    var footprints = bboxHitScan(layerdict.layer, ...v);
-    if (footprints.length > 0) {
-      footprintsClicked(footprints);
+  if ("nets" in pcbdata) {
+    var net2 = netHitScan(layerdict.layer, ...v);
+    if (net2 !== highlightedNet) {
+      netClicked(net2);
     }
   }
 }
