@@ -75,5 +75,12 @@
 	"Failed: ": "失败：",
 	"Manufacturer": "制造商",
 	"Supplier": "供应商",
-	"Exporting iBOM...": "正在导出 iBOM..."
+	"Exporting iBOM...": "正在导出 iBOM...",
+	"Quick Export HTML": "快速导出 HTML",
+	"Advanced Export HTML": "高级导出 HTML...",
+	"Export Configuration": "导出配置",
+	"Language": "语言",
+	"Auto": "自动",
+	"Chinese": "中文",
+	"English": "英文"
 }

@@ -21,15 +21,26 @@ export function showIBOM(): void {
 }
 
 /**
- * 导出独立 HTML 文件
+ * 快速导出 HTML（使用默认配置）
  */
 export async function exportHTML(): Promise<void> {
-	// Set export flag, iframe will check it on init
-	await eda.sys_Storage.setExtensionUserConfig('ibom_export_mode', 'true');
+	await eda.sys_Storage.setExtensionUserConfig('ibom_export_mode', 'quick');
 	eda.sys_IFrame.openIFrame('/iframe/index.html', 400, 200, 'ibom-export', {
 		maximizeButton: false,
 		minimizeButton: false,
 		title: eda.sys_I18n.text('Exporting iBOM...'),
+	});
+}
+
+/**
+ * 高级导出 HTML（可配置导出选项）
+ */
+export async function exportAdvancedHTML(): Promise<void> {
+	await eda.sys_Storage.setExtensionUserConfig('ibom_export_mode', 'advanced');
+	eda.sys_IFrame.openIFrame('/iframe/index.html', 600, 520, 'ibom-export-advanced', {
+		maximizeButton: false,
+		minimizeButton: true,
+		title: eda.sys_I18n.text('Export Configuration'),
 	});
 }
 

@@ -75,5 +75,12 @@
 	"Failed: ": "Failed: ",
 	"Manufacturer": "Manufacturer",
 	"Supplier": "Supplier",
-	"Exporting iBOM...": "Exporting iBOM..."
+	"Exporting iBOM...": "Exporting iBOM...",
+	"Quick Export HTML": "Quick Export HTML",
+	"Advanced Export HTML": "Advanced Export HTML...",
+	"Export Configuration": "Export Configuration",
+	"Language": "Language",
+	"Auto": "Auto",
+	"Chinese": "Chinese",
+	"English": "English"
 }

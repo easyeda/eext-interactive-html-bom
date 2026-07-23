@@ -768,6 +768,19 @@ a {
     touch-action: none;
 }
 #loading-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;font-family:sans-serif;color:#333}#loading-overlay p{margin:4px 0;font-size:14px;color:#666}
+/* Export config form */
+.config-form { padding: 16px; max-width: 560px; margin: 0 auto; }
+.config-form h3 { margin: 0 0 12px 0; font-size: 16px; border-bottom: 1px solid #ccc; padding-bottom: 8px; }
+.config-section { margin-bottom: 14px; }
+.config-section-title { font-weight: bold; font-size: 13px; margin-bottom: 6px; color: #555; }
+.config-row { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-bottom: 4px; }
+.config-row label { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; min-width: 140px; cursor: pointer; }
+.config-row select, .config-row input[type="text"], .config-row input[type="range"] { font-size: 13px; }
+.config-buttons { text-align: right; margin-top: 16px; padding-top: 12px; border-top: 1px solid #ccc; }
+.config-buttons button { width: auto; height: 36px; padding: 0 20px; margin-left: 8px; font-size: 14px; cursor: pointer; }
+.dark .config-section-title { color: #aaa; }
+.dark .config-form h3 { border-color: #555; }
+.dark .config-buttons { border-color: #555; }
 
   </style>
   <script type="text/javascript" >
@@ -1599,7 +1612,18 @@ var __t = {
     "Layer": "图层",
     "Top": "顶层",
     "Bottom": "底层",
-    "Inner": "内层"
+    "Inner": "内层",
+    "Export Configuration": "导出配置",
+    "Default View": "默认视图",
+    "Display Settings": "显示设置",
+    "BOM Settings": "BOM 设置",
+    "Cancel": "取消",
+    "Layer View": "层视图",
+    "BOM Layout": "BOM 布局",
+    "Language": "语言",
+    "Auto": "自动",
+    "Chinese": "中文",
+    "English": "英文"
   },
   "en": {
     "Loading...": "Loading...",
@@ -1678,7 +1702,18 @@ var __t = {
     "Layer": "Layer",
     "Top": "Top",
     "Bottom": "Bottom",
-    "Inner": "Inner"
+    "Inner": "Inner",
+    "Export Configuration": "Export Configuration",
+    "Default View": "Default View",
+    "Display Settings": "Display Settings",
+    "BOM Settings": "BOM Settings",
+    "Cancel": "Cancel",
+    "Layer View": "Layer View",
+    "BOM Layout": "BOM Layout",
+    "Language": "Language",
+    "Auto": "Auto",
+    "Chinese": "Chinese",
+    "English": "English"
   }
 };
 function t(key) {
@@ -2273,36 +2308,44 @@ var settings = {
 }
 
 function initDefaults() {
-  settings.bomlayout = readStorage("bomlayout");
+  var useConfig = !!config._forceDefaults;
+
+  settings.bomlayout = useConfig ? config.bom_view : readStorage("bomlayout");
   if (settings.bomlayout === null) {
     settings.bomlayout = config.bom_view;
+  }
+  // Handle pcb-preview: store flag and fall back to left-right for actual layout
+  settings._enterPreview = false;
+  if (settings.bomlayout === 'pcb-preview') {
+    settings._enterPreview = true;
+    settings.bomlayout = 'left-right';
   }
   if (!['bom-only', 'left-right', 'top-bottom'].includes(settings.bomlayout)) {
     settings.bomlayout = config.bom_view;
   }
-  settings.bommode = readStorage("bommode");
+  settings.bommode = useConfig ? "grouped" : readStorage("bommode");
   if (settings.bommode === null) {
     settings.bommode = "grouped";
   }
   if (!["grouped", "ungrouped", "netlist"].includes(settings.bommode)) {
     settings.bommode = "grouped";
   }
-  settings.canvaslayout = readStorage("canvaslayout");
+  settings.canvaslayout = useConfig ? config.layer_view : readStorage("canvaslayout");
   if (settings.canvaslayout === null) {
     settings.canvaslayout = config.layer_view;
   }
-  var bomCheckboxes = readStorage("bomCheckboxes");
+  var bomCheckboxes = useConfig ? config.checkboxes : readStorage("bomCheckboxes");
   if (bomCheckboxes === null) {
     bomCheckboxes = config.checkboxes;
   }
   settings.checkboxes = bomCheckboxes.split(",").filter((e) => e);
   document.getElementById("bomCheckboxes").value = bomCheckboxes;
 
-  settings.darkenWhenChecked = readStorage("darkenWhenChecked") || "";
+  settings.darkenWhenChecked = useConfig ? "" : (readStorage("darkenWhenChecked") || "");
   populateDarkenWhenCheckedOptions();
 
-  function initBooleanSetting(storageString, def, elementId, func) {    
-    var b = readStorage(storageString);
+  function initBooleanSetting(storageString, def, elementId, func) {
+    var b = useConfig ? def : readStorage(storageString);
     if (b === null) {
       b = def;
     } else {
@@ -2330,7 +2373,7 @@ function initDefaults() {
   initBooleanSetting("showCrosshair", config.show_crosshair, "crosshairCheckbox", setShowCrosshair);
   initBooleanSetting("darkmode", config.dark_mode, "darkmodeCheckbox", setDarkMode);
   initBooleanSetting("highlightpin1", config.highlight_pin1, "highlightpin1Checkbox", setHighlightPin1);
-  settings.boardRotation = readStorage("boardRotation");
+  settings.boardRotation = useConfig ? (config.board_rotation * 5) : readStorage("boardRotation");
   if (settings.boardRotation === null) {
     settings.boardRotation = config.board_rotation * 5;
   } else {
@@ -3731,10 +3774,10 @@ function dnpOutline(value) {
 }
 
 function setDarkMode(value) {
-  if (value) {
-    topmostdiv.classList.add("dark");
-  } else {
-    topmostdiv.classList.remove("dark");
+  var el = document.getElementById('topmostdiv');
+  if (el) {
+    if (value) { el.classList.add("dark"); }
+    else { el.classList.remove("dark"); }
   }
   writeStorage("darkmode", value);
   settings.darkMode = value;
@@ -4772,6 +4815,12 @@ function initBOM() {
   // PCB preview mode (multi-layer copper)
   populateLayerSelect();
 
+  // Enter preview mode if default view was set to pcb-preview
+  if (settings._enterPreview) {
+    togglePreview();
+    settings._enterPreview = false;
+  }
+
   window.onresize = resizeAll;
   window.matchMedia("print").addListener(resizeAll);
 
@@ -5554,8 +5603,139 @@ function fixPcbData(data) {
       (data.bom ? data.bom.both.length : 0), 'BOM groups');
   }
 
+// === Export Config Form ===
+function buildConfigFormHTML(def) {
+  function opt(val, label, selected) {
+    return '<option value="' + val + '"' + (selected ? ' selected' : '') + '>' + t(label) + '</option>';
+  }
+  function cb(id, key, checked) {
+    return '<label><input id="' + id + '" type="checkbox"' + (checked ? ' checked' : '') + '> ' + t(key) + '</label>';
+  }
+  return '<div class="config-form">' +
+    '<h3>' + t('Export Configuration') + '</h3>' +
+    '<div class="config-section">' +
+      '<div class="config-section-title">' + t('Default View') + '</div>' +
+      '<div class="config-row">' +
+        '<label>' + t('BOM Layout') + ': ' +
+          '<select id="cfg-bom-view">' +
+            opt('bom-only', 'BOM Only', def.bom_view === 'bom-only') +
+            opt('left-right', 'BOM Left, Graphics Right', def.bom_view === 'left-right') +
+            opt('top-bottom', 'BOM Top, Graphics Bottom', def.bom_view === 'top-bottom') +
+            opt('pcb-preview', 'PCB Preview', def.bom_view === 'pcb-preview') +
+          '</select>' +
+        '</label>' +
+        '<label>' + t('Layer View') + ': ' +
+          '<select id="cfg-layer-view">' +
+            opt('F', 'Front Only', def.layer_view === 'F') +
+            opt('FB', 'Front and Back', def.layer_view === 'FB') +
+            opt('B', 'Back Only', def.layer_view === 'B') +
+          '</select>' +
+        '</label>' +
+        '<label>' + t('Language') + ': ' +
+          '<select id="cfg-locale">' +
+            opt('', 'Auto', !def.locale) +
+            opt('zh-Hans', 'Chinese', def.locale === 'zh-Hans') +
+            opt('en', 'English', def.locale === 'en') +
+          '</select>' +
+        '</label>' +
+      '</div>' +
+    '</div>' +
+    '<div class="config-section">' +
+      '<div class="config-section-title">' + t('Display Settings') + '</div>' +
+      '<div class="config-row">' +
+        cb('cfg-dark-mode', 'Dark Mode', def.dark_mode) +
+        cb('cfg-silkscreen', 'Silkscreen', def.show_silkscreen) +
+        cb('cfg-pads', 'Pads', def.show_pads) +
+        cb('cfg-fabrication', 'Fab Layer', def.show_fabrication) +
+      '</div>' +
+      '<div class="config-row">' +
+        cb('cfg-highlight-pin1', 'Highlight Pin 1', def.highlight_pin1) +
+        cb('cfg-redraw-on-drag', 'Redraw on Drag', def.redraw_on_drag) +
+        cb('cfg-crosshair', 'Show Crosshair', def.show_crosshair) +
+      '</div>' +
+    '</div>' +
+    '<div class="config-section">' +
+      '<div class="config-section-title">' + t('BOM Settings') + '</div>' +
+      '<div class="config-row">' +
+        '<label>' + t('BOM Checkboxes') + ': ' +
+          '<input id="cfg-checkboxes" type="text" value="' + (def.checkboxes || '') + '" style="width:200px">' +
+        '</label>' +
+      '</div>' +
+      '<div class="config-row">' +
+        '<label>' + t('Board Rotation') + ': ' +
+          '<input id="cfg-board-rotation" type="range" min="-36" max="36" value="' + (def.board_rotation || 0) + '"> ' +
+          '<span id="cfg-rotation-label">' + ((def.board_rotation || 0) * 10) + '°</span>' +
+        '</label>' +
+      '</div>' +
+    '</div>' +
+    '<div class="config-buttons">' +
+      '<button id="cfg-cancel-btn">' + t('Cancel') + '</button>' +
+      '<button id="cfg-export-btn" style="background:#0a6;color:white">' + t('Export') + '</button>' +
+    '</div>' +
+  '</div>';
+}
+
+function readConfigFromForm(def) {
+  return {
+    show_fabrication: document.getElementById('cfg-fabrication').checked,
+    redraw_on_drag: document.getElementById('cfg-redraw-on-drag').checked,
+    highlight_pin1: document.getElementById('cfg-highlight-pin1').checked,
+    extra_fields: def.extra_fields || [],
+    dark_mode: document.getElementById('cfg-dark-mode').checked,
+    bom_view: document.getElementById('cfg-bom-view').value,
+    board_rotation: parseFloat(document.getElementById('cfg-board-rotation').value) || 0,
+    checkboxes: document.getElementById('cfg-checkboxes').value,
+    show_silkscreen: document.getElementById('cfg-silkscreen').checked,
+    show_pads: document.getElementById('cfg-pads').checked,
+    layer_view: document.getElementById('cfg-layer-view').value,
+    show_crosshair: document.getElementById('cfg-crosshair').checked,
+    locale: document.getElementById('cfg-locale').value || '',
+    _forceDefaults: true,
+  };
+}
+
+function showConfigForm(data, defaultConfig) {
+  var ov = document.getElementById('loading-overlay');
+  ov.innerHTML = buildConfigFormHTML(defaultConfig);
+
+  document.getElementById('cfg-cancel-btn').onclick = function() {
+    try { eda.sys_IFrame.closeIFrame('ibom-export-advanced'); } catch(e) {}
+  };
+
+  document.getElementById('cfg-board-rotation').oninput = function() {
+    document.getElementById('cfg-rotation-label').textContent = (this.value * 10) + '°';
+  };
+
+  document.getElementById('cfg-export-btn').onclick = async function() {
+    var btn = this;
+    btn.disabled = true;
+    btn.textContent = t('Generating HTML file...');
+    try {
+      var userConfig = readConfigFromForm(defaultConfig);
+      var templateFile = await eda.sys_FileSystem.getExtensionFile('/iframe/index.html');
+      var templateHtml = await templateFile.text();
+      var pcbJson = JSON.stringify(data).replace(/<\//g, '<\\/');
+      var cfgJson = JSON.stringify(userConfig).replace(/<\//g, '<\\/');
+      templateHtml = templateHtml.replace('var pcbdata = null;', 'var pcbdata = ' + pcbJson + ';');
+      templateHtml = templateHtml.replace('var config = {};', 'var config = ' + cfgJson + ';');
+      var blob = new Blob([templateHtml], {type: 'text/html'});
+      var filename = (data.metadata.title || 'ibom') + '.html';
+      await eda.sys_FileSystem.saveFile(blob, filename);
+      btn.textContent = t('Export complete!');
+      setTimeout(function() { try { eda.sys_IFrame.closeIFrame('ibom-export-advanced'); } catch(e) {} }, 1500);
+    } catch(ex) {
+      btn.textContent = t('Export failed: ') + ex.message;
+      btn.disabled = false;
+    }
+  };
+}
+
 // === Auto-init ===
 document.addEventListener('DOMContentLoaded', async function() {
+  // Apply locale from config if specified (for exported HTML)
+  if (window.config && window.config.locale) {
+    __locale = window.config.locale;
+  }
   applyI18n();
   // If pcbdata is already embedded (standalone HTML export), skip data collection
   if (window.pcbdata && window.pcbdata.footprints) {
@@ -5584,29 +5764,30 @@ document.addEventListener('DOMContentLoaded', async function() {
       show_fabrication:false, redraw_on_drag:true, highlight_pin1:false,
       extra_fields: data.bom&&data.bom.customColumns?data.bom.customColumns:[],
       dark_mode:false, bom_view:"left-right", board_rotation:0.0,
-      checkboxes:t("Found")+","+t("Solder"), show_silkscreen:true, show_pads:true, layer_view:"FB",
+      checkboxes:t("Found")+","+t("Solder"), show_silkscreen:true, show_pads:true, layer_view:"F",
       show_crosshair:false
     };
 
-    // Check if export mode via storage flag
-    var isExport = false;
+    // Check export mode via storage flag
+    var defaultConfig = window.config;
+    var exportMode = '';
     try {
       var exportFlag = await eda.sys_Storage.getExtensionUserConfig('ibom_export_mode');
-      if (exportFlag === 'true') {
-        isExport = true;
-        await eda.sys_Storage.setExtensionUserConfig('ibom_export_mode', '');
+      if (exportFlag === 'quick' || exportFlag === 'true') {
+        exportMode = 'quick';
+      } else if (exportFlag === 'advanced') {
+        exportMode = 'advanced';
       }
+      if (exportFlag) await eda.sys_Storage.setExtensionUserConfig('ibom_export_mode', '');
     } catch(e) {}
 
-    if (isExport) {
+    if (exportMode === 'quick') {
       st(t('Generating HTML file...'));
       try {
-        // Read the iframe HTML template
         var templateFile = await eda.sys_FileSystem.getExtensionFile('/iframe/index.html');
         var templateHtml = await templateFile.text();
-        // Embed pcbdata and config as JSON, escape </ to prevent script tag breakage
         var pcbJson = JSON.stringify(data).replace(/<\//g, '<\\/');
-        var cfgJson = JSON.stringify(window.config).replace(/<\//g, '<\\/');
+        var cfgJson = JSON.stringify(defaultConfig).replace(/<\//g, '<\\/');
         templateHtml = templateHtml.replace('var pcbdata = null;', 'var pcbdata = ' + pcbJson + ';');
         templateHtml = templateHtml.replace('var config = {};', 'var config = ' + cfgJson + ';');
         var blob = new Blob([templateHtml], {type: 'text/html'});
@@ -5618,6 +5799,11 @@ document.addEventListener('DOMContentLoaded', async function() {
         st(t('Export failed: ') + ex.message);
         console.error('[iBOM Export]', ex);
       }
+      return;
+    }
+
+    if (exportMode === 'advanced') {
+      showConfigForm(data, defaultConfig);
       return;
     }
 

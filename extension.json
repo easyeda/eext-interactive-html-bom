@@ -42,8 +42,13 @@
 					},
 					{
 						"id": "exportHTML",
-						"title": "导出 HTML 文件...",
+						"title": "快速导出为 HTML",
 						"registerFn": "exportHTML"
+					},
+					{
+						"id": "exportAdvancedHTML",
+						"title": "自定义导出...",
+						"registerFn": "exportAdvancedHTML"
 					},
 					{
 						"id": "aboutIBOM",
