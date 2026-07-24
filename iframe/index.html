@@ -3062,8 +3062,42 @@ function drawTracks(canvas, layer, color, highlight) {
   ctx = canvas.getContext("2d");
   ctx.strokeStyle = color;
   ctx.lineCap = "round";
+  var style = getComputedStyle(topmostdiv);
+  var viaColor = style.getPropertyValue('--track-color') || color;
+  var viaHoleColor = style.getPropertyValue('--pad-hole-color') || '#CCCCCC';
+  var viaHighlightColor = style.getPropertyValue('--track-color-highlight') || '#D04040';
+
   for(var track of layerTracks(layer)) {
     if (highlight && highlightedNet != track.net) continue;
+
+    // Draw via as annular ring
+    if(track.type === 'via') {
+      var outerR = (track.diameter || 0) / 2;
+      var innerR = (track.holeDiameter || 0) / 2;
+      if (innerR >= outerR) innerR = outerR * 0.5; // fallback if hole >= diameter
+      if (outerR <= 0) continue;
+
+      ctx.save();
+      ctx.translate(track.pos[0], track.pos[1]);
+
+      // Draw outer circle (via pad)
+      ctx.beginPath();
+      ctx.arc(0, 0, outerR, 0, Math.PI * 2);
+      ctx.fillStyle = highlight ? viaHighlightColor : viaColor;
+      ctx.fill();
+
+      // Draw inner hole
+      if (innerR > 0) {
+        ctx.beginPath();
+        ctx.arc(0, 0, innerR, 0, Math.PI * 2);
+        ctx.fillStyle = viaHoleColor;
+        ctx.fill();
+      }
+
+      ctx.restore();
+      continue;
+    }
+
     ctx.lineWidth = track.width;
 
     if(track.type === 'polyline') {
@@ -3087,7 +3121,7 @@ function drawTracks(canvas, layer, color, highlight) {
         ctx.lineTo(...track.end);
         ctx.stroke();
       }
-      
+
     }
 
   }
@@ -5355,7 +5389,15 @@ for(const a of arcs){var lida=gL(a);const ls=mC(lida);if(!ls.length&&!isInnerCop
   const t={type:'polyline',svgpath:`M ${sx},${sy} ${arcC(sx,sy,ex,ey,ar)}`,width:aw,net:gN(a)};for(const s of ls)tracks[s].push(t);innerRoute(t,lida);}
 for(const pl of polys){var lidp=gL(pl);const ls=mC(lidp);if(!ls.length&&!isInnerCopper(lidp))continue;const svg=p2s(gP(pl),neg);if(!svg)continue;const tk={type:'polyline',svgpath:svg,width:gW(pl),net:gN(pl)};for(const s of ls)tracks[s].push(tk);innerRoute(tk,lidp);}
 for(const f of fills){var lidf=gL(f);const ls=mC(lidf);if(!ls.length&&!isInnerCopper(lidf))continue;const svg=cp2s(g(f,'complexPolygon'),neg);if(!svg)continue;const tk={type:'polyline',svgpath:svg,width:0,net:gN(f)};for(const s of ls)tracks[s].push(tk);innerRoute(tk,lidf);}
-for(const v of vias){const vx=g(v,'x')||0,vy=neg(g(v,'y')||0);const vi={start:[vx,vy],end:[vx,vy],width:g(v,'diameter')||0,net:gN(v)};tracks.F.push(vi);tracks.B.push(vi);for(var il in innerLayers){innerLayers[il].tracks.push({start:[vx,vy],end:[vx,vy],width:g(v,'diameter')||0,net:gN(v)});}}
+for(const v of vias){
+  const vx=g(v,'x')||0,vy=neg(g(v,'y')||0);
+  const vd=g(v,'diameter')||0;
+  const hole=g(v,'hole');
+  const vh=hole?(Array.isArray(hole)?(hole[1]||0):(g(v,'holeDiameter')||0)):(g(v,'holeDiameter')||0);
+  const vi={type:'via',pos:[vx,vy],diameter:vd,holeDiameter:vh,net:gN(v)};
+  tracks.F.push(vi);tracks.B.push(vi);
+  for(var il in innerLayers){innerLayers[il].tracks.push({type:'via',pos:[vx,vy],diameter:vd,holeDiameter:vh,net:gN(v)});}
+}
 
 // === ZONES (ALL Y negated) ===
 const pourMap={};for(const p of pours){const pid=p.primitiveId||g(p,'primitiveId');if(pid)pourMap[pid]=p;}
