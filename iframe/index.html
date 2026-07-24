@@ -787,6 +787,8 @@ a {
 #fab-card .menu{position:relative!important;float:none!important;top:auto!important;display:inline-block!important;vertical-align:top}
 #fab-card .menu .menubtn{}
 #fab-card .menu-content{position:absolute;bottom:calc(100% + 4px);right:0;max-height:70vh;overflow-y:auto}
+#fab-card .menu .menu-content{display:none!important}
+#fab-card .menu .menu-content.fab-menu-show{display:block!important}
 .dark #fab-card{background:#2d333b;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
 .dark #fab-card .fab-card-title{color:#9aa0a6}
 /* Export config form */
@@ -3332,6 +3334,26 @@ function resizeAll() {
   resizeCanvas(allcanvas.back);
 }
 
+// Split drag-end handler. In PCB preview mode the BOM panel (bomsplit[0]) and
+// back canvas (canvassplit[1]) are collapsed to 0. Split.js clamps manual
+// dragging to minSize, so once a user drags one open it could not be dragged
+// back to fully collapsed. This snaps any panel dragged below a threshold back
+// to collapsed on release.
+function handleSplitDragEnd() {
+  if (!previewMode) { resizeAll(); return; }
+  try {
+    if (bomsplit) {
+      var bs = bomsplit.getSizes();
+      if (bs && bs[0] > 1 && bs[0] < 18) bomsplit.collapse(0);
+    }
+    if (canvassplit) {
+      var cs = canvassplit.getSizes();
+      if (cs && cs[1] > 1 && cs[1] < 18) canvassplit.collapse(1);
+    }
+  } catch(e) {}
+  resizeAll();
+}
+
 function pointWithinDistanceToSegment(x, y, x1, y1, x2, y2, d) {
   var A = x - x1;
   var B = y - y1;
@@ -3825,6 +3847,9 @@ var highlightedOrphanPads = [];
 var highlightedNet = null;
 var lastClicked;
 var previewMode = false;
+var _floatingToolbarActive = false;
+var _fabLayerViewSec = null;
+var _fabBomModeSec = null;
 var prevLayerKey = 'F';
 var prevCanvasLayout = null;
 var prevBomLayout = null;
@@ -4686,6 +4711,9 @@ function togglePreview() {
     if (bomReturnBtn) { bomReturnBtn.style.display = ""; }
     if (layoutGrp) layoutGrp.style.display = "none";
     for (var i=0;i<bomBtns.length;i++){var b=document.getElementById(bomBtns[i]); if(b)b.style.display="none";}
+    // Hide Layer View and BOM Mode sections in floating card (not relevant in PCB mode)
+    if (_fabLayerViewSec) _fabLayerViewSec.style.display = "none";
+    if (_fabBomModeSec) _fabBomModeSec.style.display = "none";
     if (sel) sel.style.display = "";
     // remember current layout
     prevBomLayout = settings.bomlayout;
@@ -4703,6 +4731,9 @@ function togglePreview() {
     if (bomReturnBtn) { bomReturnBtn.style.display = "none"; }
     if (layoutGrp) layoutGrp.style.display = "";
     for (var i=0;i<bomBtns.length;i++){var b=document.getElementById(bomBtns[i]); if(b)b.style.display="";}
+    // Show Layer View and BOM Mode sections in floating card
+    if (_fabLayerViewSec) _fabLayerViewSec.style.display = "";
+    if (_fabBomModeSec) _fabBomModeSec.style.display = "";
     if (sel) sel.style.display = "none";
     document.getElementById("backcanvas").style.display = "";
     // restore prior layout by rebuilding splits
@@ -4780,7 +4811,7 @@ function changeBomLayout(layout) {
       document.getElementById("tb-btn").classList.add("depressed");
       document.getElementById("frontcanvas").style.display = "";
       document.getElementById("backcanvas").style.display = "";
-      document.getElementById("bot").style.height = "calc(100% - 80px)";
+      document.getElementById("bot").style.height = _floatingToolbarActive ? "100%" : "calc(100% - 80px)";
       document.getElementById("bomdiv").classList.remove("split-horizontal");
       document.getElementById("canvasdiv").classList.remove("split-horizontal");
       document.getElementById("frontcanvas").classList.add("split-horizontal");
@@ -4793,21 +4824,21 @@ function changeBomLayout(layout) {
       }
       bomsplit = Split(['#bomdiv', '#canvasdiv'], {
         sizes: [50, 50],
-        onDragEnd: resizeAll,
+        onDragEnd: handleSplitDragEnd,
         direction: "vertical",
         gutterSize: 5
       });
       canvassplit = Split(['#frontcanvas', '#backcanvas'], {
         sizes: [50, 50],
         gutterSize: 5,
-        onDragEnd: resizeAll
+        onDragEnd: handleSplitDragEnd
       });
       break;
     case 'left-right':
       document.getElementById("lr-btn").classList.add("depressed");
       document.getElementById("frontcanvas").style.display = "";
       document.getElementById("backcanvas").style.display = "";
-      document.getElementById("bot").style.height = "calc(100% - 80px)";
+      document.getElementById("bot").style.height = _floatingToolbarActive ? "100%" : "calc(100% - 80px)";
       document.getElementById("bomdiv").classList.add("split-horizontal");
       document.getElementById("canvasdiv").classList.add("split-horizontal");
       document.getElementById("frontcanvas").classList.remove("split-horizontal");
@@ -4820,14 +4851,14 @@ function changeBomLayout(layout) {
       }
       bomsplit = Split(['#bomdiv', '#canvasdiv'], {
         sizes: [50, 50],
-        onDragEnd: resizeAll,
+        onDragEnd: handleSplitDragEnd,
         gutterSize: 5
       });
       canvassplit = Split(['#frontcanvas', '#backcanvas'], {
         sizes: [50, 50],
         gutterSize: 5,
         direction: "vertical",
-        onDragEnd: resizeAll
+        onDragEnd: handleSplitDragEnd
       });
   }
   settings.bomlayout = layout;
@@ -6042,6 +6073,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     var topEl = document.getElementById('top');
     var botEl = document.getElementById('bot');
     if (useFloating && fab && topEl && fabCard) {
+      _floatingToolbarActive = true;
       // Move toolbar elements into floating card (not clone, to avoid duplicate IDs)
       var bomPreview = document.getElementById('bom-preview-controls');
       var layoutBtns = document.getElementById('layout-buttons');
@@ -6062,10 +6094,21 @@ document.addEventListener('DOMContentLoaded', async function() {
         return sec;
       }
       if (bomPreview) cardContent.appendChild(wrapSection(bomPreview, 'BOM'));
-      if (layoutBtns) cardContent.appendChild(wrapSection(layoutBtns, t('Layer View')));
-      if (bomModeBtns && bomModeBtns.classList && bomModeBtns.classList.contains('button-container')) cardContent.appendChild(wrapSection(bomModeBtns, 'BOM Mode'));
+      if (layoutBtns) { _fabLayerViewSec = wrapSection(layoutBtns, t('Layer View')); cardContent.appendChild(_fabLayerViewSec); }
+      if (bomModeBtns && bomModeBtns.classList && bomModeBtns.classList.contains('button-container')) { _fabBomModeSec = wrapSection(bomModeBtns, 'BOM Mode'); cardContent.appendChild(_fabBomModeSec); }
       if (settingsMenu) cardContent.appendChild(wrapSection(settingsMenu, null));
       fabCard.appendChild(cardContent);
+      // Settings menu: click-based toggle (not hover) in floating card
+      if (settingsMenu) {
+        var fabMenuBtn = settingsMenu.querySelector('.menubtn');
+        var fabMenuContent = settingsMenu.querySelector('.menu-content');
+        if (fabMenuBtn && fabMenuContent) {
+          fabMenuBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            fabMenuContent.classList.toggle('fab-menu-show');
+          });
+        }
+      }
       // Hide original toolbar, expand canvas
       topEl.style.display = 'none';
       if (botEl) { botEl.style.height = '100%'; botEl.style.borderTop = 'none'; }
@@ -6076,13 +6119,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         var isOpen = fabCard.classList.toggle('show');
         fab.textContent = isOpen ? '✕' : '☰';
       };
-      // Close card on outside click
-      document.addEventListener('click', function(e) {
-        if (!fabCard.contains(e.target) && e.target !== fab) {
-          fabCard.classList.remove('show');
-          fab.textContent = '☰';
-        }
-      });
       resizeAll();
     }
     return;
