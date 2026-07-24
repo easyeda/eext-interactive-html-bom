@@ -2400,6 +2400,10 @@ function initDefaults() {
   if (settings.bomlayout === 'pcb-preview') {
     settings._enterPreview = true;
     settings.bomlayout = 'left-right';
+    // Set initial layer from config for PCB preview mode
+    if (config.layer_view && config.layer_view !== 'FB') {
+      prevLayerKey = config.layer_view;
+    }
   }
   if (!['bom-only', 'left-right', 'top-bottom'].includes(settings.bomlayout)) {
     settings.bomlayout = config.bom_view;
@@ -5904,6 +5908,56 @@ function fixPcbData(data) {
       (data.bom ? data.bom.both.length : 0), 'BOM groups');
   }
 
+// === Export Config Persistence ===
+var EXPORT_CONFIG_KEY = 'ibom_export_config';
+
+async function loadExportConfig() {
+  try {
+    var saved = await eda.sys_Storage.getExtensionUserConfig(EXPORT_CONFIG_KEY);
+    if (saved && typeof saved === 'string' && saved.charAt(0) === '{') {
+      return JSON.parse(saved);
+    }
+  } catch(e) {}
+  return null;
+}
+
+async function saveExportConfig(cfg) {
+  try {
+    // Only save user-facing options, not internal flags
+    var toSave = {
+      show_fabrication: cfg.show_fabrication,
+      redraw_on_drag: cfg.redraw_on_drag,
+      highlight_pin1: cfg.highlight_pin1,
+      dark_mode: cfg.dark_mode,
+      floating_toolbar: cfg.floating_toolbar,
+      bom_view: cfg.bom_view,
+      board_rotation: cfg.board_rotation,
+      checkboxes: cfg.checkboxes,
+      show_silkscreen: cfg.show_silkscreen,
+      show_pads: cfg.show_pads,
+      layer_view: cfg.layer_view,
+      show_crosshair: cfg.show_crosshair,
+      locale: cfg.locale || ''
+    };
+    await eda.sys_Storage.setExtensionUserConfig(EXPORT_CONFIG_KEY, JSON.stringify(toSave));
+  } catch(e) {
+    console.warn('[iBOM Export] Failed to save config:', e);
+  }
+}
+
+function mergeExportConfig(defaultConfig, savedConfig) {
+  if (!savedConfig) return defaultConfig;
+  var merged = {};
+  for (var key in defaultConfig) {
+    if (defaultConfig.hasOwnProperty(key)) {
+      merged[key] = (savedConfig[key] !== undefined) ? savedConfig[key] : defaultConfig[key];
+    }
+  }
+  // Also copy saved locale if present
+  if (savedConfig.locale !== undefined) merged.locale = savedConfig.locale;
+  return merged;
+}
+
 // === Export Config Form ===
 function buildConfigFormHTML(def) {
   function opt(val, label, selected) {
@@ -6023,12 +6077,67 @@ function showConfigForm(data, defaultConfig) {
     document.getElementById('cfg-rotation-label').textContent = (this.value * 10) + '°';
   };
 
+  // PCB layer options: Top, Bottom, Inner 1, Inner 2, etc.
+  function populatePcbLayerOptions(selectedVal) {
+    var sel = document.getElementById('cfg-layer-view');
+    sel.innerHTML = '';
+    var optF = document.createElement('option');
+    optF.value = 'F'; optF.textContent = t('Top'); sel.appendChild(optF);
+    // Inner layers from pcbdata
+    var ids = (data.innerLayerIds || []).slice().sort(function(a,b){return +a - +b;});
+    for (var i = 0; i < ids.length; i++) {
+      var id = ids[i];
+      var name = (+id === 1) ? t('Top') : (+id === 2) ? t('Bottom') : (t('Inner') + ' ' + (+id - 14));
+      var o = document.createElement('option');
+      o.value = id; o.textContent = name; sel.appendChild(o);
+    }
+    var optB = document.createElement('option');
+    optB.value = 'B'; optB.textContent = t('Bottom'); sel.appendChild(optB);
+    // Restore selection if valid
+    if (selectedVal) sel.value = selectedVal;
+  }
+
+  // Normal layer options: Front Only, Front and Back, Back Only
+  function populateNormalLayerOptions(selectedVal) {
+    var sel = document.getElementById('cfg-layer-view');
+    sel.innerHTML = '';
+    var options = [
+      { value: 'F', label: 'Front Only' },
+      { value: 'FB', label: 'Front and Back' },
+      { value: 'B', label: 'Back Only' }
+    ];
+    for (var i = 0; i < options.length; i++) {
+      var o = document.createElement('option');
+      o.value = options[i].value;
+      o.textContent = t(options[i].label);
+      sel.appendChild(o);
+    }
+    if (selectedVal) sel.value = selectedVal;
+  }
+
+  // Track current layer view mode and initialize based on BOM layout
+  var isPcbMode = defaultConfig.bom_view === 'pcb-preview';
+  if (isPcbMode) {
+    populatePcbLayerOptions(defaultConfig.layer_view);
+  }
+
+  // When BOM Layout changes, switch layer view options
+  document.getElementById('cfg-bom-view').addEventListener('change', function() {
+    var currentVal = document.getElementById('cfg-layer-view').value;
+    if (this.value === 'pcb-preview') {
+      populatePcbLayerOptions(currentVal);
+    } else {
+      populateNormalLayerOptions(currentVal);
+    }
+  });
+
   document.getElementById('cfg-export-btn').onclick = async function() {
     var btn = this;
     btn.disabled = true;
     btn.textContent = '⏳ ' + t('Generating HTML file...');
     try {
       var userConfig = readConfigFromForm(defaultConfig);
+      await saveExportConfig(userConfig);  // Remember user's choices
       var templateFile = await eda.sys_FileSystem.getExtensionFile('/iframe/index.html');
       var templateHtml = await templateFile.text();
       var pcbJson = JSON.stringify(data).replace(/<\//g, '<\\/');
@@ -6144,8 +6253,14 @@ document.addEventListener('DOMContentLoaded', async function() {
       extra_fields: data.bom&&data.bom.customColumns?data.bom.customColumns:[],
       dark_mode:'auto', bom_view:"left-right", board_rotation:0.0,
       checkboxes:t("Found")+","+t("Solder"), show_silkscreen:true, show_pads:true, layer_view:"F",
-      show_crosshair:false, floating_toolbar:true
+      show_crosshair:false, floating_toolbar:false
     };
+
+    // Load saved export config and merge with defaults
+    var savedConfig = await loadExportConfig();
+    if (savedConfig) {
+      window.config = mergeExportConfig(window.config, savedConfig);
+    }
 
     // Check export mode via storage flag
     var defaultConfig = window.config;
@@ -6163,6 +6278,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (exportMode === 'quick') {
       st(t('Generating HTML file...'));
       try {
+        await saveExportConfig(defaultConfig);  // Persist current config
         var templateFile = await eda.sys_FileSystem.getExtensionFile('/iframe/index.html');
         var templateHtml = await templateFile.text();
         var pcbJson = JSON.stringify(data).replace(/<\//g, '<\\/');
