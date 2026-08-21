@@ -9,7 +9,8 @@
 :root {
   --pcb-edge-color: black;
   --pad-color: #878787;
-  --pad-hole-color: #CCCCCC;
+  --pad-hole-color: #FAFAFA;
+  --via-color: #5D5D5D;
   --pad-color-highlight: #D04040;
   --pin1-outline-color: #ffb629;
   --pin1-outline-color-highlight: #b4ff03;
@@ -34,6 +35,8 @@ html, body {
 .dark.topmostdiv {
   --pcb-edge-color: #eee;
   --pad-color: #808080;
+  --pad-hole-color: #F4F4F4;
+  --via-color: #686868;
   --pin1-outline-color: #ffa800;
   --pin1-outline-color-highlight: #ccff00;
   --track-color: #42524f;
@@ -2870,7 +2873,7 @@ function drawPadHole(ctx, pad, padHoleColor) {
   ctx.save();
   var hcp = pad.holeCenterPoint || {x: pad.pos[0], y: pad.pos[1]};
   ctx.translate(hcp.x, hcp.y);    
-  ctx.rotate(deg2rad(pad.angle));
+  ctx.rotate(deg2rad(pad.drillangle !== undefined ? pad.drillangle : pad.angle));
   ctx.fillStyle = padHoleColor;
   var ds0 = pad.drillsize[0], ds1 = pad.drillsize[1] || ds0;
   if (pad.drillshape == "oblong" && ds0 !== ds1) {
@@ -3025,8 +3028,16 @@ function drawProText(ctx, item, color) {
   ctx.save(); ctx.fillStyle = color;
   ctx.translate(item.x || 0, item.y || 0);
   if (item.rotation) ctx.rotate(-item.rotation * Math.PI / 180);
+  if (item.glyphMirror) ctx.scale(-1, 1);
+  // The bottom canvas is already mirrored by prepareCanvas(). Mirroring the
+  // glyph here again makes bottom-side EasyEDA text appear backwards.
   var fontSize = item.fontSize || 10;
-  ctx.font = fontSize + "px sans-serif"; ctx.textBaseline = "alphabetic";
+  ctx.font = fontSize + "px sans-serif";
+  var align = item.alignMode || 1;
+  var horizontalAlign = align >= 7 ? "right" : align >= 4 ? "center" : "left";
+  if (item.flipAlign) horizontalAlign = horizontalAlign === "left" ? "right" : horizontalAlign === "right" ? "left" : "center";
+  ctx.textAlign = horizontalAlign;
+  ctx.textBaseline = [1, 4, 7].includes(align) ? "top" : [2, 5, 8].includes(align) ? "middle" : "bottom";
   // Draw bbox-matching box if dimensions provided
   if (item.bboxW && item.bboxH) {
     ctx.save();
@@ -3038,8 +3049,10 @@ function drawProText(ctx, item, color) {
     ctx.strokeRect(-item.bboxW/2, -item.bboxH/2, item.bboxW, item.bboxH);
     ctx.restore();
   }
-  var lines = item.text.split("\n");
-  for (var i = 0; i < lines.length; i++) { if (lines[i]) ctx.fillText(lines[i], 0, i * fontSize * 1.3); }
+  var lines = item.text.split("\n"), lineHeight = fontSize * 1.3, startY = 0;
+  if ([2, 5, 8].includes(align)) startY = -(lines.length - 1) * lineHeight / 2;
+  else if ([3, 6, 9].includes(align)) startY = -(lines.length - 1) * lineHeight;
+  for (var i = 0; i < lines.length; i++) { if (lines[i]) ctx.fillText(lines[i], 0, startY + i * lineHeight); }
   ctx.restore();
 }
 function drawBgLayer(layername, canvas, layer, scalefactor, edgeColor, polygonColor, textColor) {
@@ -3058,43 +3071,45 @@ function drawBgLayer(layername, canvas, layer, scalefactor, edgeColor, polygonCo
 
 function layerTracks(k){return k==='F'?pcbdata.tracks.F:k==='B'?pcbdata.tracks.B:(pcbdata.inner&&pcbdata.inner[k]?pcbdata.inner[k].tracks:[]);}
 function layerZones(k){return k==='F'?pcbdata.zones.F:k==='B'?pcbdata.zones.B:(pcbdata.inner&&pcbdata.inner[k]?pcbdata.inner[k].zones:[]);}
+function layerVias(k){return (pcbdata.vias||[]).filter(function(v){return !v.layers || v.layers.includes(k) || (k!=='F'&&k!=='B'&&v.layers.includes('inner'));});}
+function drawViaShape(ctx, via, viaColor, viaHoleColor, highlight) {
+  var outerR = (via.diameter || 0) / 2;
+  var innerR = (via.holeDiameter || 0) / 2;
+  if (innerR >= outerR) innerR = outerR * 0.5;
+  if (outerR <= 0) return;
+  ctx.save();
+  ctx.translate(via.pos[0], via.pos[1]);
+  ctx.beginPath();
+  ctx.arc(0, 0, outerR, 0, Math.PI * 2);
+  ctx.fillStyle = viaColor;
+  ctx.fill();
+  if (innerR > 0) {
+    ctx.beginPath();
+    ctx.arc(0, 0, innerR, 0, Math.PI * 2);
+    ctx.fillStyle = viaHoleColor;
+    ctx.fill();
+  }
+  ctx.restore();
+}
+function drawVias(canvas, layer, highlight) {
+  var ctx = canvas.getContext("2d");
+  var style = getComputedStyle(topmostdiv);
+  var viaColor = highlight ? (style.getPropertyValue('--track-color-highlight') || '#D04040') : (style.getPropertyValue('--via-color') || '#5D5D5D');
+  var viaHoleColor = style.getPropertyValue('--pad-hole-color') || '#FAFAFA';
+  for (var via of layerVias(layer)) {
+    if (highlight && highlightedNet != via.net) continue;
+    drawViaShape(ctx, via, viaColor, viaHoleColor, highlight);
+  }
+}
 function drawTracks(canvas, layer, color, highlight) {
   ctx = canvas.getContext("2d");
   ctx.strokeStyle = color;
   ctx.lineCap = "round";
-  var style = getComputedStyle(topmostdiv);
-  var viaColor = style.getPropertyValue('--track-color') || color;
-  var viaHoleColor = style.getPropertyValue('--pad-hole-color') || '#CCCCCC';
-  var viaHighlightColor = style.getPropertyValue('--track-color-highlight') || '#D04040';
 
   for(var track of layerTracks(layer)) {
     if (highlight && highlightedNet != track.net) continue;
 
-    // Draw via as annular ring
     if(track.type === 'via') {
-      var outerR = (track.diameter || 0) / 2;
-      var innerR = (track.holeDiameter || 0) / 2;
-      if (innerR >= outerR) innerR = outerR * 0.5; // fallback if hole >= diameter
-      if (outerR <= 0) continue;
-
-      ctx.save();
-      ctx.translate(track.pos[0], track.pos[1]);
-
-      // Draw outer circle (via pad)
-      ctx.beginPath();
-      ctx.arc(0, 0, outerR, 0, Math.PI * 2);
-      ctx.fillStyle = highlight ? viaHighlightColor : viaColor;
-      ctx.fill();
-
-      // Draw inner hole
-      if (innerR > 0) {
-        ctx.beginPath();
-        ctx.arc(0, 0, innerR, 0, Math.PI * 2);
-        ctx.fillStyle = viaHoleColor;
-        ctx.fill();
-      }
-
-      ctx.restore();
       continue;
     }
 
@@ -3169,6 +3184,9 @@ function drawNets(canvas, layer, highlight) {
   if (settings.renderZones) {
     var zoneColor = style.getPropertyValue(highlight ? '--zone-color-highlight' : '--zone-color');
     drawZones(canvas, layer, zoneColor, highlight);
+  }
+  if (settings.renderPads) {
+    drawVias(canvas, layer, highlight);
   }
   if (highlight && settings.renderPads) {
     var padColor = style.getPropertyValue('--pad-color-highlight');
@@ -5213,6 +5231,16 @@ function rrP(x,y,w,h,rx,ry){
   if(rx===0&&ry===0)return`M ${x},${y} L ${x+w},${y} L ${x+w},${y+h} L ${x},${y+h} Z`;
   return`M ${x+rx},${y} L ${x+w-rx},${y} A ${rx},${ry} 0 0,1 ${x+w},${y+ry} L ${x+w},${y+h-ry} A ${rx},${ry} 0 0,1 ${x+w-rx},${y+h} L ${x+rx},${y+h} A ${rx},${ry} 0 0,1 ${x},${y+h-ry} L ${x},${y+ry} A ${rx},${ry} 0 0,1 ${x+rx},${y} Z`;
 }
+function rotatedRectP(x,y,w,h,rotation,round,fy){
+  var rad=rotation*Math.PI/180,cr=Math.cos(rad),sr=Math.sin(rad);
+  var point=function(dx,dy){return[x+dx*cr-dy*sr,fy(y+dx*sr+dy*cr)];};
+  round=Math.max(0,Math.min(round||0,w/2,h/2));
+  var p0=point(round,0),p1=point(w-round,0),p2=point(w,round),p3=point(w,h-round);
+  var p4=point(w-round,h),p5=point(round,h),p6=point(0,h-round),p7=point(0,round);
+  if(!round){var c0=point(0,0),c1=point(w,0),c2=point(w,h),c3=point(0,h);return`M ${c0[0]},${c0[1]} L ${c1[0]},${c1[1]} L ${c2[0]},${c2[1]} L ${c3[0]},${c3[1]} Z`;}
+  var a=fy===neg?Math.PI/2:-Math.PI/2;
+  return`M ${p0[0]},${p0[1]} L ${p1[0]},${p1[1]} ${arcC(p1[0],p1[1],p2[0],p2[1],a)} L ${p3[0]},${p3[1]} ${arcC(p3[0],p3[1],p4[0],p4[1],a)} L ${p5[0]},${p5[1]} ${arcC(p5[0],p5[1],p6[0],p6[1],a)} L ${p7[0]},${p7[1]} ${arcC(p7[0],p7[1],p0[0],p0[1],a)} Z`;
+}
 
 // Polygon→SVG. fy: function to transform Y (identity or negate)
 function p2s(d,fy){
@@ -5223,12 +5251,9 @@ function p2s(d,fy){
   while(i<d.length){const c=d[i];
     if(typeof c==='string'){const cmd=c.toUpperCase();
       if(cmd==='CIRCLE'&&i+3<d.length){const cx=d[i+1],cy=fy(d[i+2]),r=d[i+3];i+=4;P.push(`M ${cx+r},${cy} A ${r},${r} 0 1,0 ${cx-r},${cy} A ${r},${r} 0 1,0 ${cx+r},${cy}`);px=cx+r;py=cy;f=false;}
-      else if(cmd==='R'&&i+6<d.length){const ox=d[i+1],oy=d[i+2],ow=d[i+3],oh=d[i+4],rot=d[i+5],round=d[i+6];i+=7;
-        // R command: rotation=90 swaps w and h. Use neg(oy) as default Y.
-        var rw=(rot===90||rot===-90)?oh:ow, rh=(rot===90||rot===-90)?ow:oh;
-        const ny=fy===neg?fy(oy):fy(oy);
-        P.push(rrP(ox,ny,rw,rh,round,round));px=ox+round;py=ny;f=false;}
-      else if(cmd==='ARC'&&i+3<d.length){let ad=d[i+1],ax=d[i+2],ay=fy(d[i+3]);i+=4;
+      else if(cmd==='R'&&i+5<d.length){const ox=d[i+1],oy=d[i+2],ow=d[i+3],oh=d[i+4],rot=d[i+5];var modernR=i+7<d.length&&typeof d[i+7]==='number',round=(modernR?d[i+7]:(d[i+6]||0));i+=modernR?8:Math.min(7,d.length-i);
+        P.push(rotatedRectP(ox,oy,ow,oh,rot,round,fy));var rp=(()=>{var rr=rot*Math.PI/180;return[ox+round*Math.cos(rr),fy(oy+round*Math.sin(rr))];})();px=rp[0];py=rp[1];f=false;}
+      else if((cmd==='ARC'||cmd==='CARC')&&i+3<d.length){let ad=d[i+1],ax=d[i+2],ay=fy(d[i+3]);i+=4;
         let ar=ad*Math.PI/180;
         if(px!==null)P.push(arcC(px,py,ax,ay,ar));px=ax;py=ay;}
       else if(cmd==='L'&&i+2<d.length){const lx=d[i+1],ly=fy(d[i+2]);i+=3;P.push(f?`M ${lx},${ly}`:`L ${lx},${ly}`);px=lx;py=ly;f=false;}
@@ -5255,29 +5280,65 @@ function id(v){return v;}    // identity (unused, kept for reference)
 async function safe(fn,l,fb=[]){try{return await fn();}catch(e){console.warn('[iBOM]',l,e);return fb;}}
 
 console.log('[iBOM Export] 采集数据...');
-const[comp,pads,lines,arcs,polys,vias,pours,poureds,strs,fills,nets]=await Promise.all([
+const[comp,pads,lines,arcs,polys,vias,pours,poureds,strs,attrs,fills,nets]=await Promise.all([
   safe(()=>eda.pcb_PrimitiveComponent.getAll(),'Comp'),safe(()=>eda.pcb_PrimitivePad.getAll(),'Pad'),
   safe(()=>eda.pcb_PrimitiveLine.getAll(),'Line'),safe(()=>eda.pcb_PrimitiveArc.getAll(),'Arc'),
   safe(()=>eda.pcb_PrimitivePolyline.getAll(),'Poly'),safe(()=>eda.pcb_PrimitiveVia.getAll(),'Via'),
   safe(()=>eda.pcb_PrimitivePour.getAll(),'Pour'),safe(()=>eda.pcb_PrimitivePoured.getAll(),'Poured'),
-  safe(()=>eda.pcb_PrimitiveString.getAll(),'Str'),safe(()=>eda.pcb_PrimitiveFill.getAll(),'Fill'),
+  safe(()=>eda.pcb_PrimitiveString.getAll(),'Str'),safe(()=>eda.pcb_PrimitiveAttribute.getAll(),'Attr'),
+  safe(()=>eda.pcb_PrimitiveFill.getAll(),'Fill'),
   safe(()=>eda.pcb_Net.getAllNetsName(),'Net')]);
 console.log(`[iBOM] ${comp.length}comp ${lines.length}line ${polys.length}poly`);
 
 // === BOARD EDGES (layer 11) — ALL Y negated ===
 const MG=5;let bx1=Infinity,by1=Infinity,bx2=-Infinity,by2=-Infinity;
 function tb(x,y){if(x<bx1)bx1=x;if(y<by1)by1=y;if(x>bx2)bx2=x;if(y>by2)by2=y;}
+function normalizeOutlineRect(pg){
+  if(!Array.isArray(pg)||String(pg[0]).toUpperCase()!=='R'||pg.length<6)return pg;
+  var x=Number(pg[1])||0,y=Number(pg[2])||0,w=Math.abs(Number(pg[3])||0),h=Math.abs(Number(pg[4])||0);
+  var rot=((Number(pg[5])||0)%360+360)%360;
+  if(!w||!h||Math.abs(rot%90)>0.001)return pg;
+  var choices=[{x:x,y:y},{x:x-w,y:y},{x:x,y:y-h},{x:x-w,y:y-h}];
+  choices.forEach(function(c){c.score=pads.reduce(function(n,pad){var px=g(pad,'x'),py=g(pad,'y');return n+(px>=c.x-1&&px<=c.x+w+1&&py>=c.y-1&&py<=c.y+h+1?1:0);},0);});
+  choices.sort(function(a,b){return b.score-a.score;});
+  if(!choices[0].score)return pg;
+  return ['R',choices[0].x,choices[0].y,w,h,0,pg.length>7?pg[7]:(pg[6]||0)];
+}
 const edges=[];
 for(const l of lines){if(!isOL(gL(l)))continue;const sx=g(l,'startX'),sy=neg(g(l,'startY')),ex=g(l,'endX'),ey=neg(g(l,'endY'));tb(sx,sy);tb(ex,ey);edges.push({type:'line',svgpath:`M ${sx},${sy} L ${ex},${ey}`,width:gW(l)});}
 for(const a of arcs){if(!isOL(gL(a)))continue;const sx=g(a,'startX'),sy=neg(g(a,'startY')),ex=g(a,'endX'),ey=neg(g(a,'endY')),ar=g(a,'arcAngle')*Math.PI/180;tb(sx,sy);tb(ex,ey);edges.push({type:'arc',svgpath:`M ${sx},${sy} ${arcC(sx,sy,ex,ey,ar)}`,width:gW(a)});}
-for(const pl of polys){if(!isOL(gL(pl)))continue;const pg=gP(pl),svg=p2s(pg,neg);
-  if(Array.isArray(pg)){for(let i=0;i<pg.length;i++){const c=pg[i];if(typeof c==='number'&&i+1<pg.length&&typeof pg[i+1]==='number'){tb(c,neg(pg[i+1]));i++;}else if(typeof c==='string'){const cmd=c.toUpperCase();if(cmd==='ARC'&&i+3<pg.length){tb(pg[i+2],neg(pg[i+3]));i+=3;}else if(cmd==='L'&&i+2<pg.length){tb(pg[i+1],neg(pg[i+2]));i+=2;}else if(cmd==='R'&&i+6<pg.length){const ox=pg[i+1],oy=pg[i+2],ow=pg[i+3],oh=pg[i+4],rot=pg[i+5];var rw=(rot===90||rot===-90)?oh:ow,rh=(rot===90||rot===-90)?ow:oh;tb(ox,neg(oy));tb(ox+rw,neg(oy)+rh);i+=6;}else if(cmd==='CIRCLE'&&i+3<pg.length){const cx=pg[i+1],cy=neg(pg[i+2]),r=pg[i+3];tb(cx-r,cy-r);tb(cx+r,cy+r);i+=3;}}}}
+for(const pl of polys){if(!isOL(gL(pl)))continue;const pg=normalizeOutlineRect(gP(pl)),svg=p2s(pg,neg);
+  if(Array.isArray(pg)){for(let i=0;i<pg.length;i++){const c=pg[i];if(typeof c==='number'&&i+1<pg.length&&typeof pg[i+1]==='number'){tb(c,neg(pg[i+1]));i++;}else if(typeof c==='string'){const cmd=c.toUpperCase();if((cmd==='ARC'||cmd==='CARC')&&i+3<pg.length){tb(pg[i+2],neg(pg[i+3]));i+=3;}else if(cmd==='L'&&i+2<pg.length){tb(pg[i+1],neg(pg[i+2]));i+=2;}else if(cmd==='R'&&i+5<pg.length){const ox=pg[i+1],oy=pg[i+2],ow=pg[i+3],oh=pg[i+4],rot=(pg[i+5]||0)*Math.PI/180,cr=Math.cos(rot),sr=Math.sin(rot);[[0,0],[ow,0],[ow,oh],[0,oh]].forEach(function(p){tb(ox+p[0]*cr-p[1]*sr,neg(oy+p[0]*sr+p[1]*cr));});i+=i+7<pg.length?7:Math.min(6,pg.length-i-1);}else if(cmd==='CIRCLE'&&i+3<pg.length){const cx=pg[i+1],cy=neg(pg[i+2]),r=pg[i+3];tb(cx-r,cy-r);tb(cx+r,cy+r);i+=3;}}}}
   if(svg)edges.push({type:'polyline',svgpath:svg,width:gW(pl)});}
 let edges_bbox;
 if(edges.length>0)edges_bbox={minx:bx1-MG,miny:by1-MG,maxx:bx2+MG,maxy:by2+MG};
 else{try{const fb=await eda.pcb_Primitive.getPrimitivesBBox();edges_bbox={minx:fb.x-MG,miny:neg(fb.y+fb.height)-MG,maxx:fb.x+fb.width+MG,maxy:neg(fb.y)+MG};}catch(e){edges_bbox={minx:0,miny:0,maxx:0,maxy:0};}}
 console.log(`[iBOM] ${edges.length} edges, bbox:`,JSON.stringify(edges_bbox));
 
+function scaleDrillToPadUnits(ds,size){
+  if(!ds||!ds[0]||!size)return ds;
+  var minPad=Math.min(Math.abs(size[0]||0),Math.abs(size[1]||0));
+  if(minPad>20&&ds[0]<minPad*0.2&&ds[0]*10<minPad*1.2){
+    return [ds[0]*10,(ds[1]||ds[0])*10];
+  }
+  return ds;
+}
+function parsePadHoleData(hole,size){
+  if(!hole)return null;
+  var holeKind,hw=0,hh=0;
+  if(Array.isArray(hole)){
+    holeKind=hole[0];
+    hw=Number(hole[1])||0;
+    hh=Number(hole[2])||hw;
+  } else {
+    holeKind=hole.holeType||hole.type;
+    hw=Number(hole.diameter||hole.width)||0;
+    hh=Number(hole.length||hole.height)||hw;
+  }
+  if(!hw)return null;
+  var ds=scaleDrillToPadUnits([hw,hh||hw],size);
+  return {drillsize:ds,drillshape:(holeKind==='SLOT'||holeKind==='RECT'||Math.abs(ds[0]-ds[1])>0.01)?'oblong':'round'};
+}
 // === PADS (Y as-is, NO flip) ===
 // === PADS ===
 function cvtPad(pad){
@@ -5319,14 +5380,21 @@ function cvtPad(pad){
     // Fallback: treat as oval
     shape='oval';size=[ps[1]||0,ps[2]||0];
   }
-  const hole=g(pad,'hole');let ds,dsh;if(hole){var hw=hole[1]||0,hh=hole[2]||hole[1]||0;if(hole[0]==='ROUND'||hw===hh){dsh='round';}else{dsh='oblong';}ds=[hw,hh];}
-  const lid=gL(pad),layers=mC(lid),type=lid===12?'th':'smd';
+  const hole=g(pad,'hole');let ds,dsh;
+  var holeInfo=parsePadHoleData(hole,size);
+  if(holeInfo){ds=holeInfo.drillsize;dsh=holeInfo.drillshape;}
+  const lid=gL(pad),layers=mC(lid),type=(lid===12||!!ds)?'th':'smd';
   const px=g(pad,'x')||0, py=neg(g(pad,'y')||0);
   // Read rotation directly as property (degrees). getState_Rotation() may return radians.
   var rawRot=pad.rotation!==undefined?pad.rotation:(pad.getState_rotation?pad.getState_rotation():0);
   if(rawRot===undefined||rawRot===null)rawRot=0;
   const angle=-rawRot, pn=g(pad,'padNumber')||'';
-  const r={layers,pos:[px,py],size,angle,shape,type,net:gN(pad),holeCenterPoint:{x:px,y:py}};
+  var holeOffsetX=Number(g(pad,'holeOffsetX'))||0,holeOffsetY=Number(g(pad,'holeOffsetY'))||0;
+  var padRad=rawRot*Math.PI/180;
+  var holeCenterX=px+holeOffsetX*Math.cos(padRad)-holeOffsetY*Math.sin(padRad);
+  var holeCenterY=py-(holeOffsetX*Math.sin(padRad)+holeOffsetY*Math.cos(padRad));
+  var holeRotation=Number(g(pad,'holeRotation'))||0;
+  const r={layers,pos:[px,py],size,angle,shape,type,net:gN(pad),number:String(pn),holeCenterPoint:{x:holeCenterX,y:holeCenterY},drillangle:-(rawRot+holeRotation)};
   if(radius>0)r.radius=radius;
   if(polygons)r.polygons=polygons;
   if(shapeType==='POLYLINE_COMPLEX_POLYGON'||shapeType==='POLY'||shapeType===3){
@@ -5349,10 +5417,10 @@ for(const c of comp){
   let sumAbsLx=0,sumAbsLy=0;
   fp.forEach(p=>{const dx=p.pos[0]-cx,dy=p.pos[1]-cy,lx=dx*cr-dy*sr,ly=dx*sr+dy*cr,hw=p.size[0]/2,hh=p.size[1]/2;if(lx-hw<lx1)lx1=lx-hw;if(ly-hh<ly1)ly1=ly-hh;if(lx+hw>lx2)lx2=lx+hw;if(ly+hh>ly2)ly2=ly+hh;sumAbsLx+=Math.abs(lx);sumAbsLy+=Math.abs(ly);});
   if(lx1===Infinity){lx1=0;ly1=0;lx2=0;ly2=0;}
-  // Build ref/val text drawings centered inside the bbox
+  // Component attributes are collected from IPCB_PrimitiveAttribute below; avoid
+  // inventing default ref/value text that may not exist on the physical PCB.
   var fpDrawings=[];
   var val=g(c,'name')||'';
-  // Resolve template variables like ={Value}
   if(val.match(/^=\{.*\}$/)){var fld=val.replace(/^=\{/,'').replace(/\}$/,'');var op2=g(c,'otherProperty')||c.otherProperty||{};val=op2[fld]||'';}
   var bboxW=lx2-lx1, bboxH=ly2-ly1;
   var fontSize=Math.max(10,Math.min(50,Math.min(bboxW*0.4,bboxH*0.4)));
@@ -5366,8 +5434,6 @@ for(const c of comp){
   var valLocalOff=fontSize*1.3;
   var valGx=cx+cxLocal*Math.cos(rad)-(cyLocal+valLocalOff)*Math.sin(rad);
   var valGy=cy+cxLocal*Math.sin(rad)+(cyLocal+valLocalOff)*Math.cos(rad);
-  if(ref)fpDrawings.push({layer:layer,drawing:{ref:1,text:ref,x:refGx,y:refGy,fontSize:fontSize,rotation:rot,bboxW:bboxW,bboxH:bboxH}});
-  if(val)fpDrawings.push({layer:layer,drawing:{val:1,text:val,x:valGx,y:valGy,fontSize:fontSize*0.8,rotation:rot}});
   footprints.push({ref,center:[cx,cy],bbox:{pos:[cx,cy],angle:rot,relpos:[lx1,ly1],size:[lx2-lx1,ly2-ly1]},pads:fp,drawings:fpDrawings,layer});}
 
 // === TRACKS (ALL Y negated) ===
@@ -5389,12 +5455,13 @@ for(const a of arcs){var lida=gL(a);const ls=mC(lida);if(!ls.length&&!isInnerCop
   const t={type:'polyline',svgpath:`M ${sx},${sy} ${arcC(sx,sy,ex,ey,ar)}`,width:aw,net:gN(a)};for(const s of ls)tracks[s].push(t);innerRoute(t,lida);}
 for(const pl of polys){var lidp=gL(pl);const ls=mC(lidp);if(!ls.length&&!isInnerCopper(lidp))continue;const svg=p2s(gP(pl),neg);if(!svg)continue;const tk={type:'polyline',svgpath:svg,width:gW(pl),net:gN(pl)};for(const s of ls)tracks[s].push(tk);innerRoute(tk,lidp);}
 for(const f of fills){var lidf=gL(f);const ls=mC(lidf);if(!ls.length&&!isInnerCopper(lidf))continue;const svg=cp2s(g(f,'complexPolygon'),neg);if(!svg)continue;const tk={type:'polyline',svgpath:svg,width:0,net:gN(f)};for(const s of ls)tracks[s].push(tk);innerRoute(tk,lidf);}
+const allVias=[];
 for(const v of vias){
   const vx=g(v,'x')||0,vy=neg(g(v,'y')||0);
   const vd=g(v,'diameter')||0;
-  const hole=g(v,'hole');
-  const vh=hole?(Array.isArray(hole)?(hole[1]||0):(g(v,'holeDiameter')||0)):(g(v,'holeDiameter')||0);
-  const vi={type:'via',pos:[vx,vy],diameter:vd,holeDiameter:vh,net:gN(v)};
+  const vh=g(v,'holeDiameter')||0;
+  const vi={type:'via',pos:[vx,vy],diameter:vd,holeDiameter:vh,net:gN(v),layers:['F','B','inner']};
+  allVias.push(vi);
   tracks.F.push(vi);tracks.B.push(vi);
   for(var il in innerLayers){innerLayers[il].tracks.push({type:'via',pos:[vx,vy],diameter:vd,holeDiameter:vh,net:gN(v)});}
 }
@@ -5413,10 +5480,10 @@ function pourP2s(d){
   while(i<d.length){const c=d[i];
     if(typeof c==='string'){const cmd=c.toUpperCase();
       if(cmd==='CIRCLE'&&i+3<d.length){const cx=pourTransformX(d[i+1]),cy=pourTransformY(d[i+2]),r=d[i+3]*10;i+=4;P.push(`M ${cx+r},${cy} A ${r},${r} 0 1,0 ${cx-r},${cy} A ${r},${r} 0 1,0 ${cx+r},${cy}`);px=cx+r;py=cy;f=false;}
-      else if(cmd==='R'&&i+6<d.length){const ox=pourTransformX(d[i+1]),oy=d[i+2],w=d[i+3]*10,h=d[i+4]*10,rot=d[i+5],round=d[i+6]*10;i+=7;
+      else if(cmd==='R'&&i+5<d.length){const ox=pourTransformX(d[i+1]),oy=d[i+2],w=d[i+3]*10,h=d[i+4]*10,rot=d[i+5];var modernR=i+7<d.length&&typeof d[i+7]==='number',round=(modernR?d[i+7]:(d[i+6]||0))*10;i+=modernR?8:Math.min(7,d.length-i);
         const ny=pourTransformY(oy);
         P.push(rrP(ox,ny,w,h,round,round));px=ox+round;py=ny;f=false;}
-      else if(cmd==='ARC'&&i+3<d.length){let ad=d[i+1],ax=pourTransformX(d[i+2]),ay=pourTransformY(d[i+3]);i+=4;
+      else if((cmd==='ARC'||cmd==='CARC')&&i+3<d.length){let ad=d[i+1],ax=pourTransformX(d[i+2]),ay=pourTransformY(d[i+3]);i+=4;
         let ar=ad*Math.PI/180;
         if(px!==null)P.push(arcC(px,py,ax,ay,ar));px=ax;py=ay;}
       else if(cmd==='L'&&i+2<d.length){const lx=pourTransformX(d[i+1]),ly=pourTransformY(d[i+2]);i+=3;P.push(f?`M ${lx},${ly}`:`L ${lx},${ly}`);px=lx;py=ly;f=false;}
@@ -5464,23 +5531,16 @@ for(const c of comp){
   // Also collect part numbers / manufacturer IDs to filter
   const mfr=g(c,'manufacturerId')||'';if(mfr)silkFilterSet.add(mfr);
   const sup=g(c,'supplierId')||'';if(sup)silkFilterSet.add(sup);
-  // Collect all otherProperty values as potential part info
-  for(const k in op){if(op[k]&&typeof op[k]==='string')silkFilterSet.add(op[k]);}
 }
 const silkHexRe=/^[0-9a-f]{24,}$/i;
 const silkDimRe=/_L\d/;
 // Part number pattern: 6+ chars with mixed letters+digits, often with hyphens
-const silkPartRe=/^[A-Z0-9][A-Z0-9._-]{5,}$/i;
 function silkShouldFilter(text,x,y,desSet){
   if(silkFilterSet.has(text))return true;
-  if(x===0&&y===0)return true;
-  if(x<0||y<0)return true;
   if(silkHexRe.test(text))return true;
   if(silkDimRe.test(text))return true;
   // Skip if it's a designator
   if(desSet&&desSet.has(text))return false;
-  // Filter part numbers: 6+ chars, has both letters and digits, not a common signal name
-  if(text.length>=6&&silkPartRe.test(text)&&/\d/.test(text)&&/[A-Za-z]/.test(text))return true;
   return false;
 }
 for(const l of lines){const s=mS(gL(l));if(!s)continue;silk[s].push({type:'polyline',svgpath:`M ${g(l,'startX')},${neg(g(l,'startY'))} L ${g(l,'endX')},${neg(g(l,'endY'))}`,width:gW(l)});}
@@ -5488,8 +5548,7 @@ for(const a of arcs){const s=mS(gL(a));if(!s)continue;const sx=g(a,'startX'),sy=
 for(const pl of polys){const s=mS(gL(pl));if(!s)continue;const svg=p2s(gP(pl),neg);if(svg)silk[s].push({type:'polyline',svgpath:svg,width:gW(pl)});}
 for(const f of fills){const s=mS(gL(f));if(!s)continue;const svg=cp2s(g(f,'complexPolygon'),neg);if(svg)silk[s].push({type:'polyline',svgpath:svg,width:0});}
 const silkDesSet=new Set();for(const c of comp){const des=g(c,'designator')||'';if(des)silkDesSet.add(des);}
-for(const st of strs){const s=mS(gL(st));if(!s)continue;const tx=g(st,'x')||0,ty=g(st,'y')||0,text=(g(st,'text')||'').trim();if(!text||silkShouldFilter(text,tx,ty,silkDesSet))continue;silk[s].push({text,x:tx,y:neg(ty),fontSize:g(st,'fontSize')||10,rotation:g(st,'rotation')||0});}
-
+for(const st of strs){const s=mS(gL(st));if(!s)continue;const tx=g(st,'x')||0,ty=g(st,'y')||0,text=(g(st,'text')||'').trim();if(!text||silkShouldFilter(text,tx,ty,silkDesSet))continue;silk[s].push({text,x:tx,y:neg(ty),fontSize:g(st,'fontSize')||10,rotation:g(st,'rotation')||0,alignMode:g(st,'alignMode')||1,glyphMirror:s==='B'});}
 // === FOOTPRINT SILKSCREEN (from footprint library files) ===
 console.log('[iBOM Export] 提取封装丝印...');
 // Minimal zip reader: extract first file from a zip File/Blob
@@ -5522,7 +5581,7 @@ async function unzipFirst(file){
 }
 // Parse .elibu text: extract POLY and FILL on silk layers (3=top silk, 4=bot silk)
 function parseElibSilk(text){
-  var items={F:[],B:[]};
+  var items={F:[],B:[],pads:[]};
   if(!text)return items;
   var lines2=text.split('\n');
   for(var line of lines2){
@@ -5530,7 +5589,18 @@ function parseElibSilk(text){
     var hdr,data;
     try{hdr=JSON.parse(parts[0]);data=JSON.parse(parts[1].replace(/\|$/,''));}catch(e){continue;}
     var type=hdr.type;
-    if(type==='POLY'){
+    if(type==='PAD'){
+      if(data.num!==undefined&&data.centerX!==undefined&&data.centerY!==undefined){
+        var padShape=data.defaultPad||data.pad||null;
+        var padSize=Array.isArray(padShape)?[Number(padShape[1])||0,Number(padShape[2])||Number(padShape[1])||0]:null;
+        var h=parsePadHoleData(data.hole,padSize);
+        items.pads.push({
+          number:String(data.num),x:data.centerX,y:data.centerY,
+          hole:h,holeOffsetX:Number(data.padOffsetX)||0,holeOffsetY:Number(data.padOffsetY)||0,
+          holeRotation:Number(data.relativeAngle)||0
+        });
+      }
+    } else if(type==='POLY'){
       var lid2=data.layerId;
       if(lid2!==3&&lid2!==4)continue;
       var side=lid2===3?'F':'B';
@@ -5540,35 +5610,79 @@ function parseElibSilk(text){
       var lid2=data.layerId;
       if(lid2!==3&&lid2!==4)continue;
       var side=lid2===3?'F':'B';
-      var path=data.path;
-      if(path)items[side].push({type:'FILL',path:path,width:0});
+      var paths=data.path;
+      if(paths){
+        if(!Array.isArray(paths[0]))paths=[paths];
+        paths.forEach(function(path){if(path)items[side].push({type:'FILL',path:path,width:0});});
+      }
+    } else if(type==='STRING'){
+      var lid2=data.layerId;
+      if(lid2!==3&&lid2!==4)continue;
+      var side=lid2===3?'F':'B',content=String(data.text||'').trim();
+      if(!content||data.positionX===null||data.positionY===null)continue;
+      items[side].push({
+        type:'STRING',text:content,x:Number(data.positionX)||0,y:Number(data.positionY)||0,
+        fontSize:Number(data.fontSize)||10,rotation:Number(data.angle)||0,
+        origin:Number(data.origin)||0,mirror:data.mirror===1||data.mirror===true
+      });
     }
   }
+  // Imported/custom footprints can store an R rectangle's width or height in
+  // the opposite local direction. Pick the orientation that actually encloses
+  // the footprint pads; this keeps the correction local to library silk only.
+  ['F','B'].forEach(function(side){
+    items[side].forEach(function(item){
+      var p=item.path;if(!Array.isArray(p)||String(p[0]).toUpperCase()!=='R'||p.length<6||!items.pads.length)return;
+      var x=Number(p[1])||0,y=Number(p[2])||0,w=Math.abs(Number(p[3])||0),h=Math.abs(Number(p[4])||0);
+      if(!w||!h)return;
+      var choices=[
+        {x:x,y:y,sx:1,sy:1},{x:x-w,y:y,sx:-1,sy:1},
+        {x:x,y:y-h,sx:1,sy:-1},{x:x-w,y:y-h,sx:-1,sy:-1}
+      ];
+      choices.forEach(function(c){c.score=items.pads.reduce(function(n,pad){return n+(pad.x>=c.x-1&&pad.x<=c.x+w+1&&pad.y>=c.y-1&&pad.y<=c.y+h+1?1:0);},0);});
+      choices.sort(function(a,b){return b.score-a.score;});
+      var best=choices[0],normal=choices.find(function(c){return c.sx===1&&c.sy===1;});
+      if(best.score>normal.score&&best.score>0){p[1]=best.x;p[2]=best.y;p[3]=w;p[4]=h;}
+    });
+  });
   return items;
 }
-// Transform local footprint coords to global PCB coords
-// localX,localY: footprint-local coords (mm, Y-up)
-// cx,cy: component center in PCB coords (0.1mm, Y already negated)
-// rot: component rotation in degrees
-// layer: 'F' or 'B'
-// Returns [globalX, globalY] in PCB coords (0.1mm, Y-down)
-function fpToGlobal(lx,ly,cx,cy,rot,layer){
-  // Footprint coords are in mm(?), PCB coords in 0.1mm — actually both should be same unit
-  // Based on elibu data: coords like 180.003, -54.998 match 0.1mm scale
+// Transform footprint-library coordinates into the viewer's negated PCB world Y.
+// prepareCanvas mirrors the complete board only when displaying the back side.
+function fpToGlobal(lx,ly,cx,cy,rot,layer,matrix){
+  if(matrix)return[matrix.a*lx+matrix.b*ly+matrix.tx,matrix.c*lx+matrix.d*ly+matrix.ty];
   var rad=rot*Math.PI/180;
   var cosR=Math.cos(rad),sinR=Math.sin(rad);
-  // If back layer, mirror X
-  var mx=layer==='B'?-lx:lx;
-  var my=ly;
-  // Rotate
-  var rx=mx*cosR-my*sinR;
-  var ry=mx*sinR+my*cosR;
-  // Translate to global (cy is already negated, ly needs negation for Y-down)
-  return [cx+rx, cy-ry];
+  // Footprint coordinates are Y-up, while EasyEDA PCB world coordinates are
+  // Y-down and the viewer stores their negated Y. This matrix also matches the
+  // clockwise-positive component rotation used by EasyEDA.
+  var rx=lx*cosR+ly*sinR;
+  var ry=-lx*sinR+ly*cosR;
+  return [cx+rx,cy+ry];
 }
-function fpSilkToSvg(item,cx,cy,rot,layer){
+function fpArcAngle(angle,layer,matrix){
+  // EasyEDA arc angles are defined in a Y-up geometric coordinate system,
+  // whereas the generated SVG path is interpreted in Y-down screen space.
+  // A reflected fitted transform reverses the winding one additional time.
+  return matrix&&matrix.a*matrix.d-matrix.b*matrix.c<0?angle:-angle;
+}
+function fpRoundedRectToSvg(x,y,w,h,r,rectRot,cx,cy,rot,layer,matrix){
+  r=Math.max(0,Math.min(r,w/2,h/2));
+  var rr=rectRot*Math.PI/180,cr=Math.cos(rr),sr=Math.sin(rr);
+  var point=function(px,py){var dx=px-x,dy=py-y;return fpToGlobal(x+dx*cr-dy*sr,y+dx*sr+dy*cr,cx,cy,rot,layer,matrix);};
+  var move=function(p){return 'M '+p[0]+','+p[1];};
+  var line=function(p){return 'L '+p[0]+','+p[1];};
+  var arc=function(from,to){return arcC(from[0],from[1],to[0],to[1],fpArcAngle(Math.PI/2,layer,matrix));};
+  var p0=point(x+r,y),p1=point(x+w-r,y),p2=point(x+w,y+r),p3=point(x+w,y+h-r);
+  var p4=point(x+w-r,y+h),p5=point(x+r,y+h),p6=point(x,y+h-r),p7=point(x,y+r);
+  if(!r)return [move(point(x,y)),line(point(x+w,y)),line(point(x+w,y+h)),line(point(x,y+h)),'Z'].join(' ');
+  return [move(p0),line(p1),arc(p1,p2),line(p3),arc(p3,p4),line(p5),arc(p5,p6),line(p7),arc(p7,p0),'Z'].join(' ');
+}
+function fpSilkToSvg(item,cx,cy,rot,layer,originOffset,matrix){
   var path=item.path;
   if(!path||!Array.isArray(path)||path.length<2)return null;
+  var ox=originOffset?originOffset[0]:0,oy=originOffset?originOffset[1]:0;
+  var transform=function(x,y){return fpToGlobal(x+ox,y+oy,cx,cy,rot,layer,matrix);};
   var parts=[];var i=0;var first=true;
   var prevX=0,prevY=0;
   while(i<path.length){
@@ -5576,59 +5690,164 @@ function fpSilkToSvg(item,cx,cy,rot,layer){
     if(typeof c==='string'){
       var cmd=c.toUpperCase();
       if(cmd==='L'&&i+2<path.length){
-        var pt=fpToGlobal(path[i+1],path[i+2],cx,cy,rot,layer);
+        var pt=transform(path[i+1],path[i+2]);
         parts.push((first?'M ':'L ')+pt[0]+','+pt[1]);
         prevX=pt[0];prevY=pt[1];
         i+=3;first=false;
       } else if(cmd==='CIRCLE'&&i+3<path.length){
-        var cpt=fpToGlobal(path[i+1],path[i+2],cx,cy,rot,layer);
+        var cpt=transform(path[i+1],path[i+2]);
         var r=path[i+3];
         parts.push('M '+(cpt[0]+r)+','+cpt[1]+' A '+r+','+r+' 0 1,0 '+(cpt[0]-r)+','+cpt[1]+' A '+r+','+r+' 0 1,0 '+(cpt[0]+r)+','+cpt[1]);
         prevX=cpt[0]+r;prevY=cpt[1];
         i+=4;first=false;
-      } else if(cmd==='ARC'&&i+3<path.length){
+      } else if((cmd==='ARC'||cmd==='CARC')&&i+3<path.length){
         var ad=path[i+1],ax=path[i+2],ay=path[i+3];
-        var apt=fpToGlobal(ax,ay,cx,cy,rot,layer);
-        var ar2=ad*Math.PI/180;
+        var apt=transform(ax,ay);
+        var ar2=fpArcAngle(ad*Math.PI/180,layer,matrix);
         if(!first){
           parts.push(arcC(prevX,prevY,apt[0],apt[1],ar2));
         }
         prevX=apt[0];prevY=apt[1];
         i+=4;
-      } else if(cmd==='R'&&i+6<path.length){
-        // Rounded rectangle: R, ox, oy, w, h, rotation, roundRadius
-        // ox, oy are offset coordinates; apply scaled offset to rect center
-        var rx=path[i+1],ry=path[i+2],rw=path[i+3],rh=path[i+4],rrot=path[i+5],rrr=path[i+6];
-        // Handle R-command internal rotation=90 swapping width and height
-        var effectiveW=(rrot===90||rrot===-90)?rh:rw;
-        var effectiveH=(rrot===90||rrot===-90)?rw:rh;
-        // Apply ox,oy as scaled offset (elibu coords may use different scale)
-        var offX=rx, offY=ry;
-        // Transform corners: anchor at (ox,oy) with size (w,h)
-        var rpt1=fpToGlobal(offX,offY,cx,cy,rot,layer);
-        var rpt2=fpToGlobal(offX+effectiveW,offY-effectiveH,cx,cy,rot,layer);
-        var minX=Math.min(rpt1[0],rpt2[0]);
-        var minY=Math.min(rpt1[1],rpt2[1]);
-        var maxX=Math.max(rpt1[0],rpt2[0]);
-        var maxY=Math.max(rpt1[1],rpt2[1]);
-        // Use bounding box dimensions for the axis-aligned rect
-        parts.push(rrP(minX,minY,maxX-minX,maxY-minY,rrr,rrr));
-        prevX=minX+rrr;prevY=minY;
-        i+=7;first=false;
+      } else if(cmd==='R'&&i+5<path.length){
+        // R, x, y, width, height, rotation, isCCW, roundRadius. Older files may omit
+        // isCCW and/or roundRadius, so only consume fields that are present.
+        var rx=path[i+1],ry=path[i+2],rw=path[i+3],rh=path[i+4],rrot=path[i+5]||0;
+        var hasModernRadius=i+7<path.length&&typeof path[i+7]==='number';
+        var rrr=hasModernRadius?path[i+7]:0;
+        parts.push(fpRoundedRectToSvg(rx+ox,ry+oy,rw,rh,rrr,rrot,cx,cy,rot,layer,matrix));
+        var rectStart=transform(rx+Math.min(rrr,rw/2),ry);
+        prevX=rectStart[0];prevY=rectStart[1];
+        i+=hasModernRadius?8:6;first=false;
       } else {i++;}
     } else if(typeof c==='number'&&i+1<path.length){
-      var pt=fpToGlobal(c,path[i+1],cx,cy,rot,layer);
+      var pt=transform(c,path[i+1]);
       parts.push((first?'M ':'L ')+pt[0]+','+pt[1]);
       prevX=pt[0];prevY=pt[1];
       i+=2;first=false;
     } else {i++;}
   }
   if(parts.length<1)return null;
+  if(item.type==='FILL')parts.push('Z');
   return parts.join(' ');
+}
+function fpPlacementTransform(items,boardPads,cx,cy){
+  if(!items||!items.pads||!boardPads)return null;
+  var local={},board={};
+  items.pads.forEach(function(p){(local[p.number]=local[p.number]||[]).push(p);});
+  boardPads.forEach(function(p){if(p.number!=='')(board[p.number]=board[p.number]||[]).push(p);});
+  var pairs=[];
+  Object.keys(local).forEach(function(n){
+    if(local[n].length===1&&board[n]&&board[n].length===1)pairs.push({lx:local[n][0].x,ly:local[n][0].y,qx:board[n][0].pos[0],qy:board[n][0].pos[1]});
+  });
+  if(pairs.length<2)return null;
+  var lc=pairs.reduce(function(a,p){a.x+=p.lx;a.y+=p.ly;return a;},{x:0,y:0});
+  var qc=pairs.reduce(function(a,p){a.x+=p.qx;a.y+=p.qy;return a;},{x:0,y:0});
+  lc.x/=pairs.length;lc.y/=pairs.length;qc.x/=pairs.length;qc.y/=pairs.length;
+  var rc=0,rs=0,fc=0,fs=0;
+  pairs.forEach(function(p){
+    var x=p.lx-lc.x,y=p.ly-lc.y,u=p.qx-qc.x,v=p.qy-qc.y;
+    rc+=x*u+y*v;rs+=x*v-y*u;
+    fc+=x*u-y*v;fs+=x*v+y*u;
+  });
+  function candidate(a,b,c,d){
+    var tx=qc.x-a*lc.x-b*lc.y,ty=qc.y-c*lc.x-d*lc.y,error=0;
+    pairs.forEach(function(p){var dx=a*p.lx+b*p.ly+tx-p.qx,dy=c*p.lx+d*p.ly+ty-p.qy;error+=dx*dx+dy*dy;});
+    return{a,b,c,d,tx,ty,error,originError:(tx-cx)*(tx-cx)+(ty-cy)*(ty-cy)};
+  }
+  var rr=Math.hypot(rc,rs),fr=Math.hypot(fc,fs),choices=[];
+  if(rr>1e-9){var co=rc/rr,si=rs/rr;choices.push(candidate(co,-si,si,co));}
+  if(fr>1e-9){var fco=fc/fr,fsi=fs/fr;choices.push(candidate(fco,fsi,fsi,-fco));}
+  if(!choices.length)return null;
+  choices.sort(function(a,b){
+    if(Math.abs(a.error-b.error)>1e-6)return a.error-b.error;
+    var ac=a.originError<=4,bc=b.originError<=4;
+    if(ac!==bc)return ac?-1:1;
+    // Preserve the orientation-preserving solution when the component origin
+    // cannot safely disambiguate a symmetric pad layout.
+    return (b.a*b.d-b.b*b.c)-(a.a*a.d-a.b*a.c);
+  });
+  return choices[0];
+}
+function fpTextToGlobal(item,cx,cy,rot,layer,originOffset,matrix,side){
+  var ox=originOffset?originOffset[0]:0,oy=originOffset?originOffset[1]:0;
+  var pt=fpToGlobal(item.x+ox,item.y+oy,cx,cy,rot,layer,matrix);
+  var angle=(item.rotation||0)*Math.PI/180,vx=Math.cos(angle),vy=-Math.sin(angle);
+  var a,b,c,d;
+  if(matrix){a=matrix.a;b=matrix.b;c=matrix.c;d=matrix.d;}
+  else{var r=rot*Math.PI/180;a=Math.cos(r);b=Math.sin(r);c=-Math.sin(r);d=Math.cos(r);}
+  var tx=a*vx+b*vy,ty=c*vx+d*vy,reflected=a*d-b*c<0;
+  var originMap=[1,4,7,2,5,8,3,6,9];
+  var glyphMirror=side==='B'?true:(reflected!==!!item.mirror);
+  return{text:item.text,x:pt[0],y:pt[1],fontSize:item.fontSize,rotation:-Math.atan2(ty,tx)*180/Math.PI,
+    alignMode:originMap[item.origin]||1,glyphMirror:glyphMirror,flipAlign:side!=='B'&&glyphMirror};
+}
+function fpOriginOffset(items,boardPads,cx,cy,rot,layer){
+  if(!items||!items.pads||!boardPads)return[0,0];
+  var localByNumber={},boardByNumber={};
+  items.pads.forEach(function(p){(localByNumber[p.number]=localByNumber[p.number]||[]).push(p);});
+  boardPads.forEach(function(p){if(p.number!=='') (boardByNumber[p.number]=boardByNumber[p.number]||[]).push(p);});
+  var offsets=[];var rad=rot*Math.PI/180,cosR=Math.cos(rad),sinR=Math.sin(rad);
+  Object.keys(localByNumber).forEach(function(number){
+    var lp=localByNumber[number],bp=boardByNumber[number];
+    if(!bp)return;
+    for(var bi=0;bi<bp.length;bi++){
+      var dx=bp[bi].pos[0]-cx,dy=bp[bi].pos[1]-cy;
+      var boardLocalX=dx*cosR-dy*sinR,boardLocalY=dx*sinR+dy*cosR;
+      for(var li=0;li<lp.length;li++){
+        var ox=boardLocalX-lp[li].x,oy=boardLocalY-lp[li].y;
+        offsets.push([ox,oy]);
+      }
+    }
+  });
+  if(!offsets.length)return[0,0];
+  // A pad number can occur more than once. Score every possible translation
+  // against the complete pad set instead of choosing the smallest offset,
+  // which incorrectly drags large custom footprints toward their component origin.
+  var bestOffset=offsets[0],bestMatches=-1,bestError=Infinity,tolerance2=4;
+  offsets.forEach(function(o){
+    var matches=0,error=0;
+    items.pads.forEach(function(lp){
+      var candidates=boardByNumber[lp.number];if(!candidates)return;
+      var gp=fpToGlobal(lp.x+o[0],lp.y+o[1],cx,cy,rot,layer),nearest=Infinity;
+      candidates.forEach(function(bp){var dx=bp.pos[0]-gp[0],dy=bp.pos[1]-gp[1],d=dx*dx+dy*dy;if(d<nearest)nearest=d;});
+      if(nearest<=tolerance2){matches++;error+=nearest;}
+    });
+    if(matches>bestMatches||(matches===bestMatches&&error<bestError)){
+      bestMatches=matches;bestError=error;bestOffset=o;
+    }
+  });
+  return bestOffset;
+}
+function padHoleNeedsFallback(pad){
+  if(!pad)return false;
+  if(!pad.drillsize||!pad.drillsize[0])return true;
+  var minPad=Math.min(Math.abs(pad.size&&pad.size[0]||0),Math.abs(pad.size&&pad.size[1]||0));
+  return minPad>20&&pad.drillsize[0]<minPad*0.2;
+}
+function applyLibPadHoles(items,boardPads,cx,cy,rot,layer,originOffset,matrix){
+  if(!items||!items.pads||!boardPads)return;
+  var byNum={};
+  boardPads.forEach(function(p){if(p.number!=='')(byNum[p.number]=byNum[p.number]||[]).push(p);});
+  items.pads.forEach(function(lp){
+    if(!lp.hole)return;
+    var candidates=byNum[lp.number];if(!candidates||!candidates.length)return;
+    var base=fpToGlobal(lp.x+(originOffset?originOffset[0]:0),lp.y+(originOffset?originOffset[1]:0),cx,cy,rot,layer,matrix);
+    var best=null,bestD=Infinity;
+    candidates.forEach(function(bp){var dx=bp.pos[0]-base[0],dy=bp.pos[1]-base[1],d=dx*dx+dy*dy;if(d<bestD){bestD=d;best=bp;}});
+    if(!best||!padHoleNeedsFallback(best))return;
+    best.drillsize=lp.hole.drillsize;
+    best.drillshape=lp.hole.drillshape;
+    var hpt=fpToGlobal(lp.x+(originOffset?originOffset[0]:0)+lp.holeOffsetX,lp.y+(originOffset?originOffset[1]:0)+lp.holeOffsetY,cx,cy,rot,layer,matrix);
+    best.holeCenterPoint={x:hpt[0],y:hpt[1]};
+    best.drillangle=(best.angle||0)-lp.holeRotation;
+    best.type='th';
+  });
 }
 // Cache: footprintUuid -> parsed silk items
 var fpSilkCache={};
 var fpSilkCount=0;
+var componentPlacement={};
 for(var ci=0;ci<comp.length;ci++){
   var c=comp[ci];
   var fpInfo=c.footprint||g(c,'footprint');
@@ -5654,13 +5873,22 @@ for(var ci=0;ci<comp.length;ci++){
   var cx2=g(c,'x')||0,cy2=neg(g(c,'y')||0);
   var rot2=g(c,'rotation')||0;
   var lid2=gL(c),clayer=lid2===1?'F':'B';
+  var placementMatrix=fpPlacementTransform(silkItems,footprints[ci]&&footprints[ci].pads,cx2,cy2);
+  var originOffset=placementMatrix?[0,0]:fpOriginOffset(silkItems,footprints[ci]&&footprints[ci].pads,cx2,cy2,rot2,clayer);
+  componentPlacement[String(g(c,'primitiveId')||'')]={cx:cx2,cy:cy2,rot:rot2,layer:clayer,offset:originOffset};
+  applyLibPadHoles(silkItems,footprints[ci]&&footprints[ci].pads,cx2,cy2,rot2,clayer,originOffset,placementMatrix);
   // Determine silk layer mapping: if component is on back, top silk of footprint maps to back silk of PCB
   ['F','B'].forEach(function(fpSide){
     var pcbSide;
     if(clayer==='F')pcbSide=fpSide;
     else pcbSide=fpSide==='F'?'B':'F';// mirror for back-side components
     (silkItems[fpSide]||[]).forEach(function(item){
-      var svg=fpSilkToSvg(item,cx2,cy2,rot2,clayer);
+      if(item.type==='STRING'){
+        silk[pcbSide].push(fpTextToGlobal(item,cx2,cy2,rot2,clayer,originOffset,placementMatrix,pcbSide));
+        fpSilkCount++;
+        return;
+      }
+      var svg=fpSilkToSvg(item,cx2,cy2,rot2,clayer,originOffset,placementMatrix);
       if(svg){
         silk[pcbSide].push({type:'polyline',svgpath:svg,width:item.width||0});
         fpSilkCount++;
@@ -5669,6 +5897,21 @@ for(var ci=0;ci<comp.length;ci++){
   });
 }
 console.log('[iBOM Export] 封装丝印:', fpSilkCount, '条');
+
+// EasyEDA resolves component-owned attribute positions to PCB world coordinates.
+for(const at of attrs){
+  const key=String(g(at,'key')||''),value=String(g(at,'value')||'');
+  const keyVisible=g(at,'keyVisible')===true,valueVisible=g(at,'valueVisible')===true;
+  var attrText='';
+  if(keyVisible&&valueVisible)attrText=key+(key&&value?': ':'')+value;
+  else if(keyVisible)attrText=key;
+  else if(valueVisible)attrText=value;
+  if(!attrText)continue;
+  var attrX=g(at,'x'),attrY=g(at,'y');
+  if(attrX===null||attrX===undefined||attrY===null||attrY===undefined)continue;
+  var side=mS(gL(at));if(!side)continue;
+  silk[side].push({text:attrText,x:attrX,y:neg(attrY),fontSize:g(at,'fontSize')||10,rotation:g(at,'rotation')||0,alignMode:g(at,'alignMode')||1,glyphMirror:side==='B'});
+}
 
 // === BOM ===
 const skipped=[],hasCC={M:false,S:false},active=[];
@@ -5713,7 +5956,7 @@ const bom={both:grp(active),F:grp(active.filter(i=>i.layer==='F')),B:grp(active.
   try{title=(await eda.dmt_Board.getCurrentBoardInfo()).name||title;}catch(e){}
   try{company=(await eda.dmt_SelectControl.getCurrentDocumentInfo()).company||company;}catch(e){}
   const now=new Date(),date=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
-  return {ibom_version:'v2.3-50-g53ae\n',edges_bbox,edges,drawings:{silkscreen:silk,fabrication:{F:[],B:[]}},footprints,metadata:{title,revision:'0',company,date},tracks,zones,pads:[],nets,bom,inner:innerLayers,innerLayerIds:Object.keys(innerLayers).sort((a,b)=>+a-+b)};
+  return {ibom_version:'v2.3-50-g53ae\n',edges_bbox,edges,drawings:{silkscreen:silk,fabrication:{F:[],B:[]}},footprints,metadata:{title,revision:'0',company,date},tracks,zones,vias:allVias,pads:[],nets,bom,inner:innerLayers,innerLayerIds:Object.keys(innerLayers).sort((a,b)=>+a-+b)};
 }
 
 // === Data fixer (from standalone viewer) ===
@@ -5774,7 +6017,7 @@ function fixPcbData(data) {
               (overlapRatio*100).toFixed(0) + '% -> ' + (fOverlapRatio*100).toFixed(0) + '%), flipping edge Y');
             data.edges.forEach(function(edge) {
               if(edge.svgpath) {
-                edge.svgpath = edge.svgpath.replace(/([MLAZ])\s*([-\d.]+),([-\d.]+)/gi, function(m,cmd,x,y) {
+                edge.svgpath = edge.svgpath.replace(/([ML])\s*([-\d.]+),([-\d.]+)/gi, function(m,cmd,x,y) {
                   return cmd + ' ' + x + ',' + (-parseFloat(y));
                 }).replace(/A\s*([-\d.]+),([-\d.]+)\s+([-\d.]+)\s+(\d),(\d)\s+([-\d.]+),([-\d.]+)/gi, function(m,rx,ry,rot,la,sw,x,y) {
                   return 'A ' + rx + ',' + ry + ' ' + rot + ' ' + la + ',' + (sw==='0'?'1':'0') + ' ' + x + ',' + (-parseFloat(y));
@@ -5793,8 +6036,10 @@ function fixPcbData(data) {
             console.log('[iBOM Viewer] Shifting edge Y by ' + shiftY.toFixed(1) + ' to align with components');
             data.edges.forEach(function(edge) {
               if(edge.svgpath) {
-                edge.svgpath = edge.svgpath.replace(/([-\d.]+),([-\d.]+)/g, function(m,x,y) {
-                  return x + ',' + (parseFloat(y) + shiftY);
+                edge.svgpath = edge.svgpath.replace(/([ML])\s*([-\d.]+),([-\d.]+)/gi, function(m,cmd,x,y) {
+                  return cmd + ' ' + x + ',' + (parseFloat(y) + shiftY);
+                }).replace(/A\s*([-\d.]+),([-\d.]+)\s+([-\d.]+)\s+(\d),(\d)\s+([-\d.]+),([-\d.]+)/gi, function(m,rx,ry,rot,la,sw,x,y) {
+                  return 'A ' + rx + ',' + ry + ' ' + rot + ' ' + la + ',' + sw + ' ' + x + ',' + (parseFloat(y) + shiftY);
                 });
               }
             });
